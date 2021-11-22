@@ -12,7 +12,7 @@ StraightNode::StraightNode(QColor color)
 void StraightNode::paintEvent(QPaintEvent *ev)
 {
     int width = this->width(), height = this->height();
-
+    // draw the deflaut StraightNode, from top to bottom
     QPainter painter(this);
 
     painter.translate(width/2, height/2);

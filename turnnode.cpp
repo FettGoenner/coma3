@@ -13,7 +13,7 @@ TurnNode::TurnNode(QColor color)
 void TurnNode::paintEvent(QPaintEvent *ev)
 {
     int width = this->width(), height = this->height();
-
+    // draw the deflaut TurnNode, from right to bottom
     QPainter painter(this);
     painter.translate(width/2, height/2);
     painter.rotate(rotateAngle);
@@ -33,6 +33,7 @@ void TurnNode::paintEvent(QPaintEvent *ev)
 
     painter.setPen(pen);
     painter.setBrush(linear);
+
 
     const QPointF points[4] = {
         QPointF(2*width/5, height),
