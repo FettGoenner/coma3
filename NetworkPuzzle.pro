@@ -12,12 +12,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     node.cpp \
+    playground.cpp \
     straightnode.cpp \
     turnnode.cpp
 
 HEADERS += \
     mainwindow.h \
     node.h \
+    playground.h \
     straightnode.h \
     turnnode.h
 
