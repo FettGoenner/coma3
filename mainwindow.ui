@@ -60,7 +60,7 @@
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="timeSpend">
+      <widget class="QLabel" name="totalPlayTime">
        <property name="text">
         <string>00:00</string>
        </property>

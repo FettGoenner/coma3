@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QVector>
+#include <QTimer>
 #include "node.h"
 
 QT_BEGIN_NAMESPACE
@@ -21,10 +22,15 @@ private:
     Ui::MainWindow *ui;
     QVector<QVector<Node>> playGround;
     int totalSteps;
+    QTimer *timer;
+    bool gameStarted;
+    int totalPlayTime;
 signals:
     QString sendSteps(QString totalsteps);
 public slots:
     void setSteps() {
+        if (!gameStarted)
+            gameStarted = true;
         ++totalSteps;
         emit sendSteps(QString::number(totalSteps));
     }
