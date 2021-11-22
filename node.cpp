@@ -25,8 +25,7 @@ void Node::mouseReleaseEvent(QMouseEvent *ev)
     rotateAngle == 270 ? rotateAngle = 0 : rotateAngle += 90;
     update();
 
-//    for (int &i : this->orientation)
-//        qDebug() << i;
+    // send signal clicked()
     emit clicked();
     return QWidget::mousePressEvent(ev);
 }
