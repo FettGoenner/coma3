@@ -21,7 +21,7 @@ void TurnNode::paintEvent(QPaintEvent *ev)
 
     QPen pen;
     pen.setWidth(3);
-    painter.drawRect(0, 0, width, height);
+//    painter.drawRect(0, 0, width, height);
 
     pen.setWidth(0);
     pen.setColor(QColor(0, 0, 0, 0));

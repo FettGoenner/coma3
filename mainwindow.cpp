@@ -5,17 +5,23 @@
 #include "playground.h"
 #include <QDebug>
 #include <QTime>
+#include <QHBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-
     , timer(new QTimer(this))
 
 {
     ui->setupUi(this);
-    PlayGround * playground = new PlayGround(ui->gameWindow);
 
+    // Let playground has same size as ui->gameWindow
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    ui->gameWindow->setLayout(layout);
+
+    PlayGround * playground = new PlayGround(ui->gameWindow, 3);
+    ui->gameWindow->layout()->addWidget(playground);
+    // Pause button
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
         if (ui->pauseBtn->text() == "Pause") {
             ui->pauseBtn->setText("Resume");

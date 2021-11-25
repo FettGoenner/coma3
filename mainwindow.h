@@ -2,9 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QVector>
+
 #include <QTimer>
-#include "node.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,7 +19,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QVector<QVector<Node>> playGround;
 
     QTimer *timer;
 };

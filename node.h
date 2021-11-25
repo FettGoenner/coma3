@@ -1,16 +1,16 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <QWidget>
+#include <QFrame>
 #include <QVector>
 
-class Node : public QWidget
+class Node : public QFrame
 {
     Q_OBJECT
 public:
-    explicit Node(QWidget *parent = nullptr);
+    explicit Node(QFrame *parent = nullptr);
     void rotate90(); // rotate the node 90 degrees clockwise
-    QVector<bool> orientation = {0, 0, 0, 0}; // shows where the ways are
+    QVector<bool> orientation = {0, 0, 0, 0}; // shows where the ways are {top, right, bottom, left}
     QColor nodeColor;
     int rotateAngle = 0; // the angle that this node already rotated
 protected:

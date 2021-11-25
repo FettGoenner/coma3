@@ -2,6 +2,8 @@
 #define PLAYGROUND_H
 
 #include <QWidget>
+#include <QVector>
+#include "node.h"
 
 class PlayGround : public QWidget
 {
@@ -9,10 +11,14 @@ class PlayGround : public QWidget
 private:
 
 public:
-    explicit PlayGround(QWidget *parent = nullptr);
+    explicit PlayGround(QWidget *parent = nullptr, int playGroundSize = 7);
     bool gameStarted;
     int totalPlayTime;
     int totalSteps;
+    int playGroundSize;
+    QVector<QVector<Node*>> playGround;
+protected:
+    void paintEvent(QPaintEvent*) override;
 signals:
     QString sendSteps(QString totalsteps);
 public slots:

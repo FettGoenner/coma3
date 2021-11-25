@@ -20,10 +20,7 @@ void StraightNode::paintEvent(QPaintEvent *ev)
     painter.translate(-width/2, -height/2);
 
     QPen pen;
-    pen.setWidth(3);
-    painter.drawRect(0, 0, width, height);
-
-    pen.setWidth(1);
+    pen.setWidth(0);
     pen.setColor(QColor(0, 0, 0, 0));
 
     QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
@@ -33,8 +30,13 @@ void StraightNode::paintEvent(QPaintEvent *ev)
     painter.setPen(pen);
     painter.setBrush(linear);
 
-
-    painter.drawRect(2*width/5, -1, width/5, height+1);
+    const QPointF points[4] = {
+        QPointF(2*width/5, 0),
+        QPointF(3*width/5, 0),
+        QPointF(3*width/5, height),
+        QPointF(2*width/5, height),
+    };
+    painter.drawPolygon(points, 4);
 
     return QWidget::paintEvent(ev);
 }
