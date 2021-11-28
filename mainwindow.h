@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <QLabel>
 #include <QTimer>
 
 QT_BEGIN_NAMESPACE
@@ -19,7 +19,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
+    QLabel *statusLabel;
     QTimer *timer;
 };
 #endif // MAINWINDOW_H

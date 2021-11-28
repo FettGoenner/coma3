@@ -1,25 +1,32 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "straightnode.h"
-#include "turnnode.h"
-#include "playground.h"
 #include <QDebug>
 #include <QTime>
 #include <QHBoxLayout>
 
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "linetile.h"
+#include "cornertile.h"
+#include "playground.h"
+#include "newgamedialog.h"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , timer(new QTimer(this))
-
+    , statusLabel(new QLabel)
 {
     ui->setupUi(this);
 
+//    ui->statusBar->showMessage(tr("欢迎访问Qt爱好者社区！"));
     // Let playground has same size as ui->gameWindow
     QHBoxLayout *layout = new QHBoxLayout(this);
     ui->gameWindow->setLayout(layout);
+    //set statusbar
+    int gameSeed = QRandomGenerator::global()->bounded(-999999999, 999999999);
+    statusLabel->setText(QString::number(gameSeed));
+    ui->statusBar->addWidget(this->statusLabel);
 
-    PlayGround * playground = new PlayGround(ui->gameWindow, 3);
+    PlayGround * playground = new PlayGround(ui->gameWindow, 7, 7, gameSeed);
+    connect(playground, &PlayGround::sendGameSeed, this->statusLabel, &QLabel::setText);
     ui->gameWindow->layout()->addWidget(playground);
     // Pause button
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
@@ -34,20 +41,27 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
-
     // set text to totalSteps
     connect(playground, &PlayGround::sendSteps, ui->totalSteps_2, &QLabel::setText);
     // Timer
-    connect(timer, &QTimer::timeout, this, [=]() {
-        if (playground->gameStarted) {
-            ++playground->totalPlayTime;
-            int minute = playground->totalPlayTime/60;
-            int sec = playground->totalPlayTime%60;
-            QTime time(0, minute, sec);
-            ui->totalPlayTime->setText(time.toString("mm:ss"));
+    connect(playground, &PlayGround::sendTime, ui->totalPlayTime, &QLabel::setText);
+
+    connect(ui->newGameBtn, &QPushButton::clicked, this, [=]() {
+        NewGameDialog dialog(this, playground->playGroundSizeY, playground->playGroundSizeX);
+        if (dialog.exec() == QDialog::Accepted) {
+            playground->setSize(dialog.rows, dialog.columns);
+            playground->setGameSeed(dialog.seed);
+            playground->initializeGame();
+            ui->totalPlayTime->setText("00:00");
+            ui->totalSteps_2->setText("0");
         }
+
     });
-    timer->start(1000);
+    connect(ui->resetBtn, &QPushButton::clicked, this, [=]() {
+        playground->resetGame();
+        ui->totalPlayTime->setText("00:00");
+        ui->totalSteps_2->setText("0");
+    });
 }
 
 MainWindow::~MainWindow()

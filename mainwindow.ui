@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuStart">
@@ -50,7 +50,6 @@
    </widget>
    <addaction name="menuStart"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
    <property name="locale">
     <locale language="English" country="UnitedStates"/>
@@ -142,6 +141,7 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSave_Game">
    <property name="text">
     <string>Save Game</string>

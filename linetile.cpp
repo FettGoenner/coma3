@@ -1,15 +1,38 @@
-#include "straightnode.h"
+#include "linetile.h"
 #include <QPainter>
 #include <QPen>
 
-StraightNode::StraightNode(QColor color)
+LineTile::LineTile(QColor color)
 {
-    this->orientation[0] = true;
-    this->orientation[2] = true;
-    nodeColor = color;
+    this->nodes[0] = true;
+    this->nodes[2] = true;
+    this->nodeColor = color;
 }
 
-void StraightNode::paintEvent(QPaintEvent *ev)
+LineTile::LineTile(QString nodes, QColor color)
+{
+    this->setNodes(nodes);
+    this->nodeColor = color;
+}
+
+void LineTile::setNodes(QString nodes)
+{
+    this->clearNodes();
+    if (nodes.isEmpty()) {
+        this->nodes[0] = true;
+        this->nodes[2] = true;
+    } else if (nodes.size() == 2) {
+        for (const QChar &s : nodes)
+            this->nodes[s.digitValue()] = true;
+    } else {
+        throw "The nodes does not match to any LineTiles";
+    }
+    if (!this->nodes[0])
+        this->rotateAngle = 90;
+    update();
+}
+
+void LineTile::paintEvent(QPaintEvent *ev)
 {
     int width = this->width(), height = this->height();
     // draw the deflaut StraightNode, from top to bottom

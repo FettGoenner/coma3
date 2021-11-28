@@ -1,4 +1,4 @@
-#include "node.h"
+#include "tile.h"
 #include <QPainter>
 #include <QDebug>
 #include <QTimer>
@@ -6,7 +6,7 @@
 #include <QCoreApplication>
 #include <QEventLoop>
 
-Node::Node(QFrame *parent) :
+Tile::Tile(QFrame *parent) :
     QFrame(parent)
 {
     setCursor(Qt::PointingHandCursor);
@@ -15,16 +15,28 @@ Node::Node(QFrame *parent) :
                   "}");
 }
 
-void Node::rotate90()
+void Tile::rotate90()
 {
-    bool last = orientation[3];
-    orientation.pop_back();
-    orientation.insert(orientation.begin(), last);
+    bool last = nodes[3];
+    nodes.pop_back();
+    nodes.insert(nodes.begin(), last);
     rotateAngle == 270 ? rotateAngle = 0 : rotateAngle += 90;
     update();
 }
 
-void Node::mouseReleaseEvent(QMouseEvent *ev)
+QString Tile::getNodeString()
+{
+
+    QString nodeString;
+    for (int i = 0; i < 4; ++i) {
+        if (this->nodes[i])
+            nodeString += QString::number(i);
+    }
+    return nodeString;
+
+}
+
+void Tile::mouseReleaseEvent(QMouseEvent *ev)
 {
     rotate90();
     // send signal clicked()
