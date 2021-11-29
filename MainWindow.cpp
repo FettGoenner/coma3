@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "DockerWindow.h"
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QAction>
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget * parent)
 
     // Dock-Widget mit PushButton links anfügen
     QDockWidget * dockwidget = new QDockWidget ;
-    dockwidget->setWidget(new QLabel("At the Right.")) ;
+    dockwidget->setWidget(new DockerWindow(this)) ;
     addDockWidget(Qt::RightDockWidgetArea, dockwidget) ;
 
     // Menü zur MenuBar hinzufügen
