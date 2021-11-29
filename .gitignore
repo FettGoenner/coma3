@@ -1,0 +1,6 @@
+moc*
+*.o
+out
+Makefile
+
+!.gitignore
