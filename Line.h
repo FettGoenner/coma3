@@ -21,7 +21,7 @@ public:
     // Initialisierungskonstruktor
     // konstruiert mit n Rotationen
     Line ( size_t n )
-        : Tile( "line" , n)
+        : Tile( "line" , n )
     { }
 
 } ;

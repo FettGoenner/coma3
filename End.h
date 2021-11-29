@@ -20,8 +20,8 @@ public:
 
     // Initialisierungskonstruktor
     // konstruiert mit n Rotationen
-    End ( size_t n)
-        : Tile( "end", n)
+    End ( size_t n )
+        : Tile( "end", n )
     { }
 
 } ;

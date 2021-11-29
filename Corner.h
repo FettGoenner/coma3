@@ -20,7 +20,7 @@ public:
 
     // Initialisierungskonstruktor
     // konstruiert mit n Rotationen
-    Corner ( size_t n)
+    Corner ( size_t n )
         : Tile( "corner", n )
     { }
 

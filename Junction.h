@@ -20,7 +20,7 @@ public:
 
     // Initialisierungskonstruktor
     // konstruiert mit n Rotationen
-    Junction ( size_t n)
+    Junction ( size_t n )
         : Tile( "junction", n )
     { }
 
