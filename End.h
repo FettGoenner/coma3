@@ -11,7 +11,7 @@ class End
 
 public:
 
-/*** Konstruktor ***/
+/*** Konstruktoren ***/
 
     // Standardkonstruktor
     End ()

@@ -1,5 +1,5 @@
-SOURCES = main.cpp
-HEADERS = Tile.h Line.h Corner.h Junction.h End.h
+SOURCES = main.cpp MainWindow.cpp
+HEADERS = MainWindow.h
 TARGET  = out
 
 QT += widgets

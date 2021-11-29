@@ -11,7 +11,7 @@ class Line
 
 public:
 
-/*** Konstruktor ***/
+/*** Konstruktoren ***/
 
     // Standardkonstruktor
     Line ()

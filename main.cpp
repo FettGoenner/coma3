@@ -2,16 +2,18 @@
 #include "Corner.h"
 #include "Junction.h"
 #include "End.h"
+#include "MainWindow.h"
+#include <QApplication>
 #include <iostream>
 
 using namespace std ;
 
-int main ()
+int main (int argc, char * argv[])
 {
-    Line l ;
-    cout << l << endl ;
-    Corner c ;
-    cout << c << endl ;
-    Junction j ;
-    cout << j ;
+    QApplication app(argc, argv) ;
+
+    MainWindow window ;
+    window.show() ;
+
+    return app.exec() ;
 }

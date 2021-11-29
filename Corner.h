@@ -11,7 +11,7 @@ class Corner
 
 public:
 
-/*** Konstruktor ***/
+/*** Konstruktoren ***/
 
     // Standardkonstruktor
     Corner ()

@@ -11,7 +11,7 @@ class Junction
 
 public:
 
-/*** Konstruktor ***/
+/*** Konstruktoren ***/
 
     // Standardkonstruktor
     Junction ()
