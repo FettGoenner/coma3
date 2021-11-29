@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Network Puzzle</string>
   </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuStart">
@@ -108,6 +108,13 @@
       <widget class="QPushButton" name="pauseBtn">
        <property name="text">
         <string>Pause</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="solutionBtn">
+       <property name="text">
+        <string>Solution</string>
        </property>
       </widget>
      </item>

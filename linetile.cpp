@@ -25,21 +25,27 @@ void LineTile::setNodes(QString nodes)
         for (const QChar &s : nodes)
             this->nodes[s.digitValue()] = true;
     } else {
-        throw "The nodes does not match to any LineTiles";
+        throw "The nodes do not match to any LineTiles";
     }
     if (!this->nodes[0])
         this->rotateAngle = 90;
+    else
+        this->rotateAngle = 0;
     update();
 }
 
 void LineTile::paintEvent(QPaintEvent *ev)
 {
-    int width = this->width(), height = this->height();
+    double width = this->width(), height = this->height();
     // draw the deflaut StraightNode, from top to bottom
     QPainter painter(this);
-
     painter.translate(width/2, height/2);
-    painter.rotate(rotateAngle);
+    if (this->rotateAngle % 180 != 0) {
+        double temp = width;
+        width = height;
+        height = temp;
+    }
+    painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
 
     QPen pen;

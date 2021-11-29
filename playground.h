@@ -36,6 +36,7 @@ public:
     void clearEverything();
     int getBounded(int lowest, int highest);
     QVector<QVector<QString>> depthAlgo();
+    QVector<QVector<QString>> primAlgo();
 
 protected:
     void paintEvent(QPaintEvent*) override;
@@ -58,6 +59,7 @@ public slots:
     }
     void checkAnswer();
     void resetGame();
+    void showSolution();
 };
 
 #endif // PLAYGROUND_H

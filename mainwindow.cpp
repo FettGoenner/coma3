@@ -16,9 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-//    ui->statusBar->showMessage(tr("欢迎访问Qt爱好者社区！"));
     // Let playground has same size as ui->gameWindow
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout;
     ui->gameWindow->setLayout(layout);
     //set statusbar
     int gameSeed = QRandomGenerator::global()->bounded(-999999999, 999999999);
@@ -62,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->totalPlayTime->setText("00:00");
         ui->totalSteps_2->setText("0");
     });
+    connect(ui->solutionBtn, &QPushButton::clicked, playground, &PlayGround::showSolution);
 }
 
 MainWindow::~MainWindow()

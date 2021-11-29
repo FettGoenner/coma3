@@ -20,7 +20,7 @@ void Tile::rotate90()
     bool last = nodes[3];
     nodes.pop_back();
     nodes.insert(nodes.begin(), last);
-    rotateAngle == 270 ? rotateAngle = 0 : rotateAngle += 90;
+    rotateAngle += 90;
     update();
 }
 
@@ -33,7 +33,6 @@ QString Tile::getNodeString()
             nodeString += QString::number(i);
     }
     return nodeString;
-
 }
 
 void Tile::mouseReleaseEvent(QMouseEvent *ev)

@@ -31,13 +31,18 @@ void EndTile::setNodes(QString nodes)
 
 void EndTile::paintEvent(QPaintEvent *ev)
 {
-    int width = this->width(), height = this->height();
+    double width = this->width(), height = this->height();
     // draw the deflaut headNode, top
     QPainter painter(this);
-
     painter.translate(width/2, height/2);
-    painter.rotate(rotateAngle);
+    if (this->rotateAngle % 180 != 0) {
+        double temp = width;
+        width = height;
+        height = temp;
+    }
+    painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
+
     QPen pen;
     pen.setWidth(0);
     pen.setColor(QColor(0, 0, 0, 0));

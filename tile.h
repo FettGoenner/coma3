@@ -3,7 +3,7 @@
 
 #include <QFrame>
 #include <QVector>
-
+#include <QDebug>
 class Tile : public QFrame
 {
     Q_OBJECT
@@ -29,17 +29,17 @@ public:
     static int getNode(int node) {
         int ans;
         switch (node) {
-            case 0:
-                ans = 2;
+            case North:
+                ans = South;
                 break;
-            case 1:
-                ans = 3;
+            case East:
+                ans = West;
                 break;
-            case 2:
-                ans = 0;
+            case South:
+                ans = North;
                 break;
-            case 3:
-                ans = 1;
+            case West:
+                ans = East;
                 break;
         }
         return ans;

@@ -56,10 +56,15 @@ void CornerTile::setNodes(QString nodes)
 
 void CornerTile::paintEvent(QPaintEvent *ev)
 {
-    int width = this->width(), height = this->height();
+    double width = this->width(), height = this->height();
     // draw the deflaut TurnNode, from right to bottom
     QPainter painter(this);
     painter.translate(width/2, height/2);
+    if (this->rotateAngle % 180 != 0) {
+        double temp = width;
+        width = height;
+        height = temp;
+    }
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
 
