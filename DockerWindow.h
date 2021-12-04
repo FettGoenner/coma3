@@ -2,7 +2,6 @@
 #define DOCKERWINDOW_H
 
 #include <QWidget>
-#include <QMainWindow>
 
 class DockerWindow
     : public QWidget
