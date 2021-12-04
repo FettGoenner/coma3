@@ -6,7 +6,7 @@
 #include "ui_mainwindow.h"
 #include "linetile.h"
 #include "cornertile.h"
-#include "playground.h"
+#include "gameview.h"
 #include "newgamedialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -30,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(this->seedStatusLabel);
     ui->statusBar->addWidget(this->algoStatusLabel);
 
-    PlayGround * playground = new PlayGround(ui->gameWindow, 7, 7, gameSeed);
-    connect(playground, &PlayGround::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
+    GameView * playground = new GameView(ui->gameWindow, 7, 7, gameSeed);
+    connect(playground, &GameView::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
     ui->gameWindow->layout()->addWidget(playground);
     // Pause button
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
@@ -47,9 +47,9 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     // set text to totalSteps
-    connect(playground, &PlayGround::sendSteps, ui->totalSteps_2, &QLabel::setText);
+    connect(playground, &GameView::sendSteps, ui->totalSteps_2, &QLabel::setText);
     // Timer
-    connect(playground, &PlayGround::sendTime, ui->totalPlayTime, &QLabel::setText);
+    connect(playground, &GameView::sendTime, ui->totalPlayTime, &QLabel::setText);
 
     connect(ui->newGameBtn, &QPushButton::clicked, this, [=]() {
         NewGameDialog dialog(this, playground->playGroundSizeY, playground->playGroundSizeX);
@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->totalPlayTime->setText("00:00");
         ui->totalSteps_2->setText("0");
     });
-    connect(ui->solutionBtn, &QPushButton::clicked, playground, &PlayGround::showSolution);
+    connect(ui->solutionBtn, &QPushButton::clicked, playground, &GameView::showSolution);
 }
 
 MainWindow::~MainWindow()
