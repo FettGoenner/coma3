@@ -11,22 +11,24 @@ CONFIG += c++11
 SOURCES += \
     cornertile.cpp \
     endtile.cpp \
+    gamemodel.cpp \
+    gameview.cpp \
     junctiontile.cpp \
     linetile.cpp \
     main.cpp \
     mainwindow.cpp \
     newgamedialog.cpp \
-    playground.cpp \
     tile.cpp
 
 HEADERS += \
     cornertile.h \
     endtile.h \
+    gamemodel.h \
+    gameview.h \
     junctiontile.h \
     linetile.h \
     mainwindow.h \
     newgamedialog.h \
-    playground.h \
     tile.h
 
 FORMS += \

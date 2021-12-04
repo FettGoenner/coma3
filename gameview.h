@@ -1,5 +1,5 @@
-#ifndef PLAYGROUND_H
-#define PLAYGROUND_H
+#ifndef GAMEVIEW_H
+#define GAMEVIEW_H
 
 #include <QWidget>
 #include <QVector>
@@ -62,4 +62,4 @@ public slots:
     void showSolution();
 };
 
-#endif // PLAYGROUND_H
+#endif // GAMEVIEW_H
