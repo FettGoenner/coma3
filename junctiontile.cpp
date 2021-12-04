@@ -1,6 +1,5 @@
 #include "junctiontile.h"
 #include <QPainter>
-#include <QPen>
 
 JunctionTile::JunctionTile(QColor color)
 {
@@ -12,7 +11,7 @@ JunctionTile::JunctionTile(QColor color)
 
 JunctionTile::JunctionTile(QString nodes, QColor color)
 {
-    this->setNodes(nodes);
+    JunctionTile::setNodes(nodes);
     this->nodeColor = color;
 }
 
@@ -52,17 +51,12 @@ void JunctionTile::paintEvent(QPaintEvent *ev)
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
 
-    QPen pen;
-
-    pen.setWidth(0);
-    pen.setColor(QColor(0, 0, 0, 0));
-
     QLinearGradient linear(QPointF(width/2, 0), QPointF(width/2, height));
     linear.setColorAt(.35, nodeColor);
     linear.setColorAt(.5, Qt::white);
     linear.setColorAt(.65, nodeColor);
 
-    painter.setPen(pen);
+    painter.setPen(Qt::NoPen);
     painter.setBrush(linear);
 
     const QPointF points[4] = {

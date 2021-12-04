@@ -12,7 +12,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , statusLabel(new QLabel)
+    , seedStatusLabel(new QLabel)
+    , algoStatusLabel(new QLabel)
+    , sizeStatusLabel(new QLabel)
 {
     ui->setupUi(this);
 
@@ -21,11 +23,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->gameWindow->setLayout(layout);
     //set statusbar
     int gameSeed = QRandomGenerator::global()->bounded(-999999999, 999999999);
-    statusLabel->setText(QString::number(gameSeed));
-    ui->statusBar->addWidget(this->statusLabel);
+    seedStatusLabel->setText(QString::number(gameSeed));
+    algoStatusLabel->setText("Depth");
+    sizeStatusLabel->setText("7x7");
+    ui->statusBar->addWidget(this->sizeStatusLabel);
+    ui->statusBar->addWidget(this->seedStatusLabel);
+    ui->statusBar->addWidget(this->algoStatusLabel);
 
     PlayGround * playground = new PlayGround(ui->gameWindow, 7, 7, gameSeed);
-    connect(playground, &PlayGround::sendGameSeed, this->statusLabel, &QLabel::setText);
+    connect(playground, &PlayGround::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
     ui->gameWindow->layout()->addWidget(playground);
     // Pause button
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
@@ -50,9 +56,11 @@ MainWindow::MainWindow(QWidget *parent)
         if (dialog.exec() == QDialog::Accepted) {
             playground->setSize(dialog.rows, dialog.columns);
             playground->setGameSeed(dialog.seed);
-            playground->initializeGame();
+            playground->initializeGame(dialog.algoType);
             ui->totalPlayTime->setText("00:00");
             ui->totalSteps_2->setText("0");
+            this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.rows).arg(dialog.columns));
+            this->algoStatusLabel->setText(dialog.algoType);
         }
 
     });

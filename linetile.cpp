@@ -1,6 +1,5 @@
 #include "linetile.h"
 #include <QPainter>
-#include <QPen>
 
 LineTile::LineTile(QColor color)
 {
@@ -11,7 +10,7 @@ LineTile::LineTile(QColor color)
 
 LineTile::LineTile(QString nodes, QColor color)
 {
-    this->setNodes(nodes);
+    LineTile::setNodes(nodes);
     this->nodeColor = color;
 }
 
@@ -48,15 +47,11 @@ void LineTile::paintEvent(QPaintEvent *ev)
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
 
-    QPen pen;
-    pen.setWidth(0);
-    pen.setColor(QColor(0, 0, 0, 0));
-
     QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
     linear.setColorAt(.35, nodeColor);
     linear.setColorAt(.5, Qt::white);
     linear.setColorAt(.65, nodeColor);
-    painter.setPen(pen);
+    painter.setPen(Qt::NoPen);
     painter.setBrush(linear);
 
     const QPointF points[4] = {

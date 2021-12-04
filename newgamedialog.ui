@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>299</width>
-    <height>243</height>
+    <width>300</width>
+    <height>260</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,6 +109,20 @@
            <property name="text">
             <string>roll</string>
            </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="algoTypeComboBox">
+           <item>
+            <property name="text">
+             <string>Depth</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Prim</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>

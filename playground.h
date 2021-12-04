@@ -29,7 +29,7 @@ public:
     QVector<QVector<QString>> resetVector;
     QTimer *timer;
 
-    void initializeGame();
+    void initializeGame(QString algo = "Depth");
     void setSize(int row, int column);
     void setGameSeed(int seed);
     void setGameWithVector2d(QVector<QVector<QString>> &v);

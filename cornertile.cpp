@@ -1,8 +1,6 @@
 #include "cornertile.h"
 #include <QPainter>
-#include <QPen>
 #include <QTimer>
-#include <QDebug>
 
 CornerTile::CornerTile(QColor color)
 {
@@ -13,7 +11,7 @@ CornerTile::CornerTile(QColor color)
 
 CornerTile::CornerTile(QString nodes, QColor color)
 {
-    this->setNodes(nodes);
+    CornerTile::setNodes(nodes);
     this->nodeColor = color;
 }
 
@@ -68,19 +66,12 @@ void CornerTile::paintEvent(QPaintEvent *ev)
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
 
-    QPen pen;
-    pen.setWidth(3);
-    //    painter.drawRect(0, 0, width, height);
-
-    pen.setWidth(0);
-    pen.setColor(QColor(0, 0, 0, 0));
-
     QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
     linear.setColorAt(.35, nodeColor);
     linear.setColorAt(.5, Qt::white);
     linear.setColorAt(.65, nodeColor);
 
-    painter.setPen(pen);
+    painter.setPen(Qt::NoPen);
     painter.setBrush(linear);
 
 

@@ -8,6 +8,7 @@ NewGameDialog::NewGameDialog(QWidget *parent, int row, int col) :
     , rows(row)
     , columns(col)
     , seed(this->getRandomValue())
+    , algoType("Depth")
     , ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
@@ -29,6 +30,9 @@ NewGameDialog::NewGameDialog(QWidget *parent, int row, int col) :
 
     connect(ui->getRandomSeedBtn, &QPushButton::clicked, this, [=]() {
         ui->seedSpinBox->setValue(this->getRandomValue());
+    });
+    connect(ui->algoTypeComboBox, &QComboBox::currentTextChanged, this, [=]() {
+        this->algoType = ui->algoTypeComboBox->currentText();
     });
 
 }

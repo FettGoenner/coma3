@@ -1,15 +1,13 @@
+#include <QVector>
+#include <QStack>
+#include <QPainter>
+#include <QTime>
+
 #include "playground.h"
 #include "linetile.h"
 #include "cornertile.h"
 #include "endtile.h"
 #include "junctiontile.h"
-#include <QVector>
-#include <QStack>
-#include <QDebug>
-#include <QPainter>
-#include <QPen>
-#include <QTime>
-
 PlayGround::PlayGround(QWidget *parent,int playGroundSizeY, int playGroundSizeX, int gameSeed) :
     QWidget(parent)
   , playGroundSizeX(playGroundSizeX) // default is 7 -> 7x7
@@ -30,15 +28,18 @@ PlayGround::PlayGround(QWidget *parent,int playGroundSizeY, int playGroundSizeX,
     this->initializeGame();
 }
 
-void PlayGround::initializeGame()
+void PlayGround::initializeGame(QString algo)
 {
     // get initialized game with QStrings in a 2d Vector
-    //    QVector<QVector<QString>> depthGame = this->depthAlgo();
-    QVector<QVector<QString>> depthGame = this->primAlgo();
+    QVector<QVector<QString>> game;
+    if (algo == "Depth")
+        game = this->depthAlgo();
+    else if (algo == "Prim")
+        game = this->primAlgo();
     // save the correct answer
-    this->answer = depthGame;
+    this->answer = game;
     this->clearEverything();
-    setGameWithVector2d(depthGame);
+    setGameWithVector2d(game);
 }
 
 void PlayGround::setSize(int row, int column)
@@ -69,7 +70,6 @@ void PlayGround::setGameWithVector2d(QVector<QVector<QString>> &v)
         for (int j = 0; j < playGroundSizeX; ++j) {
             // get the string of the nodes on the position [i,j]
             QString nodes = v[i][j];
-            qDebug() << nodes;
             Tile *tile;
             if (nodes.size() == 1) {
                 tile = new EndTile(nodes, Qt::blue);
@@ -89,9 +89,9 @@ void PlayGround::setGameWithVector2d(QVector<QVector<QString>> &v)
                     tile = new LineTile(nodes, Qt::blue);
             }
             // rotate the tile randomly
-            for (int k = 0; k < getBounded(0, 3); ++k)
-                tile->rotate90();
-
+            //            for (int k = 0; k < getBounded(0, 3); ++k)
+            //                tile->rotate90();
+            tile->rotateWithAnimation(getBounded(0, 4) * 90);
 
             // save tile in 2d vector playGround
             this->playGround[i][j] = tile;
@@ -124,6 +124,7 @@ void PlayGround::clearEverything()
     // create gridlayout
     this->gridLayout = new QGridLayout(this);
     this->gridLayout->setSpacing(0);
+    this->gridLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(this->gridLayout);
 
 }
@@ -147,15 +148,15 @@ QVector<QVector<QString>> PlayGround::depthAlgo()
         currentTile = tileStack.top();
         int currentY = currentTile[0], currentX = currentTile[1];
         QVector<QVector<int>> chooseTile{
-            {currentY - 1, currentX,     Tile::North},
-            {currentY,     currentX + 1, Tile::East},
-            {currentY,     currentX - 1, Tile::West},
-            {currentY + 1, currentX,     Tile::South},
+            {currentY - 1, currentX,     Tile::North, Tile::South},
+            {currentY,     currentX + 1, Tile::East,  Tile::West},
+            {currentY,     currentX - 1, Tile::West,  Tile::East},
+            {currentY + 1, currentX,     Tile::South, Tile::North},
         };
         for (int i = 0; i < chooseTile.size(); ++i) {
             int y = chooseTile[i][0], x = chooseTile[i][1];
             if (x < 0 || y < 0 || y >= m || x >= n || !v[y][x].isEmpty())
-                chooseTile.erase(chooseTile.begin() + (i--));
+                chooseTile.erase(chooseTile.cbegin() + (i--));
         }
         if (chooseTile.empty() || v[currentY][currentX].size() == 3) {
             tileStack.pop();
@@ -164,7 +165,7 @@ QVector<QVector<QString>> PlayGround::depthAlgo()
         int selectIndex = getBounded(0, chooseTile.size());
         tileStack.push(chooseTile[selectIndex]);
         v[currentY][currentX] += QString::number(chooseTile[selectIndex][2]);
-        v[chooseTile[selectIndex][0]][chooseTile[selectIndex][1]] +=  QString::number(Tile::getNode(chooseTile[selectIndex][2]));
+        v[chooseTile[selectIndex][0]][chooseTile[selectIndex][1]] +=  QString::number(chooseTile[selectIndex][3]);
     }
     return v;
 }
@@ -178,37 +179,39 @@ QVector<QVector<QString> > PlayGround::primAlgo()
     this->startTile = {startTileY, startTileX};
     QVector<int> currentTile({startTileY, startTileX});
     QVector<QVector<int>> awaitTiles;
-    bool keepGoing = true;
-    while (keepGoing) {
+    do {
         int currentY = currentTile[0], currentX = currentTile[1];
         usedV[currentY][currentX] = true;
-        if (v[currentY][currentX].size() < 3) {
-            QVector<QVector<int>> chooseTile{
-                {currentY - 1, currentX,     currentY, currentX, Tile::North},
-                {currentY,     currentX + 1, currentY, currentX, Tile::East},
-                {currentY,     currentX - 1, currentY, currentX, Tile::West},
-                {currentY + 1, currentX,     currentY, currentX, Tile::South},
-            };
-            for (int i = 0; i < chooseTile.size(); ++i) {
-                int y = chooseTile[i][0], x = chooseTile[i][1];
-                if (x >= 0 && y >= 0 && y < m && x < n && !usedV[y][x]) {
-                    awaitTiles.push_back(chooseTile[i]);
-                    usedV[y][x] = true;
-                }
+        QVector<QVector<int>> chooseTile{
+            {currentY - 1, currentX,     currentY, currentX, 0, 2},
+            {currentY,     currentX + 1, currentY, currentX, 1, 3},
+            {currentY + 1, currentX,     currentY, currentX, 2, 0},
+            {currentY,     currentX - 1, currentY, currentX, 3, 1},
+        };
+        for (int i = 0; i < chooseTile.size(); ++i) {
+            int y = chooseTile[i][0], x = chooseTile[i][1];
+            if (x < 0 || y < 0 || y >= m || x >= n || usedV[y][x]) {
+                chooseTile.erase(chooseTile.cbegin() + i);
+                --i;
             }
         }
-        if (awaitTiles.empty()) {
-            keepGoing = false;
-            continue;
+        while (v[currentY][currentX].size() + chooseTile.size() >= 4)
+            chooseTile.erase(chooseTile.cbegin() + this->getBounded(0, chooseTile.size()));
+
+
+        for (auto & tile : chooseTile) {
+            awaitTiles.push_back(tile);
+            usedV[tile[0]][tile[1]] = true;
         }
-        int selectedIndex = getBounded(0, awaitTiles.size());
-        QVector<int> selectedTile = awaitTiles[selectedIndex];
+
+        int selectIndex = getBounded(0, awaitTiles.size());
+        QVector<int> selectedTile = awaitTiles[selectIndex];
+        awaitTiles.erase(awaitTiles.cbegin() + selectIndex);
+        v[selectedTile[0]][selectedTile[1]] += QString::number(selectedTile[5]);
         v[selectedTile[2]][selectedTile[3]] += QString::number(selectedTile[4]);
-        v[selectedTile[0]][selectedTile[1]] += QString::number(Tile::getNode(selectedTile[4]));
-        awaitTiles.erase(awaitTiles.begin() + selectedIndex);
         currentTile = selectedTile;
 
-    }
+    } while (!awaitTiles.empty());
 
     return v;
 }
@@ -222,41 +225,39 @@ void PlayGround::checkAnswer()
         for (int j = 0; j < n; ++j)
             checkVecktor[i][j] = playGround[i][j]->nodes;
 
-    QStack<QVector<int>> nodesStack;
-    nodesStack.push(this->startTile);
+    QStack<QVector<int>> tilesStack;
+    tilesStack.push(this->startTile);
     QVector<int> currentTile;
-    while (!nodesStack.empty()) {
-        currentTile = nodesStack.top();
+    while (!tilesStack.empty()) {
+        currentTile = tilesStack.top();
         int currentY = currentTile[0], currentX = currentTile[1];
         QVector<QVector<int>> chooseNode{
-            {currentY - 1, currentX,     Tile::North},
-            {currentY,     currentX + 1, Tile::East},
-            {currentY + 1, currentX,     Tile::South},
-            {currentY,     currentX - 1, Tile::West},
+            {currentY - 1, currentX,     Tile::North, Tile::South},
+            {currentY,     currentX + 1, Tile::East,  Tile::West},
+            {currentY + 1, currentX,     Tile::South, Tile::North},
+            {currentY,     currentX - 1, Tile::West,  Tile::East},
         };
-        for (int i = 0, j = 0; i < 4; ++i, ++j) {
-            if (!checkVecktor[currentY][currentX][i]) {
-                chooseNode.erase(chooseNode.begin() + j);
-                --j;
-            }
-        }
+        for (int i = 0, j = 0; i < 4; ++i, ++j)
+            if (!checkVecktor[currentY][currentX][i])
+                chooseNode.erase(chooseNode.cbegin() + (j--));
+
 
         if (chooseNode.empty()) {
-            nodesStack.pop();
+            tilesStack.pop();
             continue;
         }
 
         for (int i = 0; i < chooseNode.size(); ++i) {
             int y = chooseNode[i][0], x = chooseNode[i][1];
-            if (x < 0 || y < 0 || y >= m || x >= n || Tile::noNodes(checkVecktor[y][x])) {
+            if (x < 0 || y < 0 || y >= m || x >= n || !checkVecktor[y][x][chooseNode[i][3]]) {
                 this->bgc = Qt::white;
                 update();
                 return;
             }
         }
         --countTiles;
-        nodesStack.push(chooseNode[0]);
-        checkVecktor[chooseNode[0][0]][chooseNode[0][1]][Tile::getNode(chooseNode[0][2])] = false;
+        tilesStack.push(chooseNode[0]);
+        checkVecktor[chooseNode[0][0]][chooseNode[0][1]][chooseNode[0][3]] = false;
         checkVecktor[currentY][currentX][chooseNode[0][2]] = false;
 
     }
@@ -303,10 +304,7 @@ void PlayGround::paintEvent(QPaintEvent *ev)
     // draw the deflaut StraightNode, from top to bottom
     QPainter painter(this);
 
-    QPen pen;
-    pen.setColor(QColor(255, 0, 0, 0));
-
-    painter.setPen(pen);
+    painter.setPen(Qt::NoPen);
     QBrush brush;
     brush.setColor(this->bgc);
     brush.setStyle(Qt::SolidPattern);

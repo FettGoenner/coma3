@@ -17,6 +17,7 @@ public:
     int rows;
     int columns;
     int seed;
+    QString algoType;
 private:
     Ui::NewGameDialog *ui;
     int getRandomValue();

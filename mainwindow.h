@@ -19,7 +19,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QLabel *statusLabel;
+    QLabel *seedStatusLabel;
+    QLabel *algoStatusLabel;
+    QLabel *sizeStatusLabel;
     QTimer *timer;
 };
 #endif // MAINWINDOW_H
