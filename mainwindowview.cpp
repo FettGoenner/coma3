@@ -2,12 +2,12 @@
 #include <QTime>
 #include <QHBoxLayout>
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "linetile.h"
-#include "cornertile.h"
+#include "mainwindowview.h"
+#include "ui_mainwindowview.h"
 #include "gameview.h"
 #include "newgamedialog.h"
+#include "gamemodel.h"
+#include "tileview.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,33 +30,45 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(this->seedStatusLabel);
     ui->statusBar->addWidget(this->algoStatusLabel);
 
-    GameView * playground = new GameView(ui->gameWindow, 7, 7, gameSeed);
-    connect(playground, &GameView::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
-    ui->gameWindow->layout()->addWidget(playground);
+    GameModel *gameModel = new GameModel(7, 7, gameSeed);
+    GameView * gameView = new GameView(gameModel, ui->gameWindow);
+    connect(gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
+    ui->gameWindow->layout()->addWidget(gameView);
     // Pause button
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
         if (ui->pauseBtn->text() == "Pause") {
             ui->pauseBtn->setText("Resume");
-            playground->gameStarted = false;
+            gameModel->gameStarted = false;
             //TODO
         } else {
             ui->pauseBtn->setText("Pause");
-            playground->gameStarted = true;
+            gameModel->gameStarted = true;
             //TODO
         }
     });
+    connect(gameModel, &GameModel::gameStart, ui->pauseBtn, [=]() {
+        ui->pauseBtn->setText("Pause");
+    });
 
     // set text to totalSteps
-    connect(playground, &GameView::sendSteps, ui->totalSteps_2, &QLabel::setText);
+    connect(gameModel, &GameModel::sendSteps, ui->totalSteps_2, &QLabel::setText);
     // Timer
-    connect(playground, &GameView::sendTime, ui->totalPlayTime, &QLabel::setText);
+    connect(gameModel, &GameModel::sendTime, ui->totalPlayTime, &QLabel::setText);
 
     connect(ui->newGameBtn, &QPushButton::clicked, this, [=]() {
-        NewGameDialog dialog(this, playground->playGroundSizeY, playground->playGroundSizeX);
+        NewGameDialog dialog(gameModel->getRow(), gameModel->getCol(), gameModel->getAlgoType() , this);
         if (dialog.exec() == QDialog::Accepted) {
-            playground->setSize(dialog.rows, dialog.columns);
-            playground->setGameSeed(dialog.seed);
-            playground->initializeGame(dialog.algoType);
+            int algoType = 0;
+            if (dialog.algoType == "Depth")
+                algoType = GameModel::Depth;
+            else if (dialog.algoType == "Prim")
+                algoType = GameModel::Prim;
+            else
+
+                throw "unknown game type";
+            gameModel->setSize(dialog.rows, dialog.columns);
+            gameModel->setGameSeed(dialog.seed);
+            gameModel->initializeGame(algoType);
             ui->totalPlayTime->setText("00:00");
             ui->totalSteps_2->setText("0");
             this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.rows).arg(dialog.columns));
@@ -65,11 +77,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     });
     connect(ui->resetBtn, &QPushButton::clicked, this, [=]() {
-        playground->resetGame();
+        gameModel->resetGame();
         ui->totalPlayTime->setText("00:00");
         ui->totalSteps_2->setText("0");
     });
-    connect(ui->solutionBtn, &QPushButton::clicked, playground, &GameView::showSolution);
+    connect(ui->solutionBtn, &QPushButton::clicked, gameModel, &GameModel::showSolution);
 }
 
 MainWindow::~MainWindow()

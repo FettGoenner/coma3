@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QTime>
 
-#include "tile.h"
+#include "tilemodel.h"
 #include "gamemodel.h"
 
 class GameView : public QWidget
@@ -17,12 +17,15 @@ class GameView : public QWidget
 private:
     GameModel *gameModel;
     QGridLayout *gridLayout = nullptr;
+    QColor bgc = Qt::white;
+
+    void clearLayout();
 public:
     explicit GameView(GameModel *gameModel, QWidget *parent = nullptr);
 
-    void initializeGame(QString algo = "Depth");
-
-    void setGameWithVector2d(QVector<QVector<QString>> &v);
+public slots:
+    void showGame(bool clearStatus = false);
+    void changeBgc(bool connected);
 
 protected:
     void paintEvent(QPaintEvent*) override;

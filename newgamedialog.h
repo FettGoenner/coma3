@@ -12,7 +12,7 @@ class NewGameDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewGameDialog(QWidget *parent = nullptr, int row = 7, int col = 7);
+    explicit NewGameDialog(int row = 7, int col = 7, QString algoType = "Depth", QWidget *parent = nullptr);
     ~NewGameDialog();
     int rows;
     int columns;

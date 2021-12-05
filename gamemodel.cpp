@@ -1,20 +1,76 @@
-#include "gamemodel.h"
 #include <QStack>
+
+#include "gamemodel.h"
+#include "tilemodel.h"
+#include "endtilemodel.h"
+#include "junctiontilemodel.h"
+#include "cornertilemodel.h"
+#include "linetilemodel.h"
 
 GameModel::GameModel(size_t row, size_t col, int gameSeed, QObject *parent) :
     QObject(parent)
   , dimX(row)
   , dimY(col)
-  , game(QVector<QVector<Tile*>>(dimY, QVector<Tile*>(dimX, nullptr)))
+  , game(QVector<QVector<TileModel*>>(dimY, QVector<TileModel*>(dimX, nullptr)))
   , resetVector(QVector<QVector<QString>>(dimY, QVector<QString>(dimX, "")))
   , timer(new QTimer)
 {
     setGameSeed(gameSeed);
-    connect(this->timer, &QTimer::timeout, this, [=]() {
-        ++this->totalPlayTime;
-        this->setTime();
-    });
-    this->timer->setInterval(1000);
+    connect(this->timer, &QTimer::timeout, this, &GameModel::setTime);
+    this->timer->start(1000);
+
+    this->initializeGame();
+}
+
+void GameModel::initializeGame(int algo)
+{
+    this->algoType = algo;
+    // get initialized game with QStrings in a 2d Vector
+    QVector<QVector<QString>> gameAfterAlgo;
+    if (algo == GameModel::Depth)
+        gameAfterAlgo = this->depthAlgo();
+    else if (algo == GameModel::Prim)
+        gameAfterAlgo = this->primAlgo();
+    else
+        throw "Unknown algo type";
+
+    // save the correct answer
+    this->answer = gameAfterAlgo;
+    this->clearEverything();
+
+    // initialize different tiles on different positions
+    for (size_t i = 0; i < this->dimY; ++i) {
+        for (size_t j = 0; j < this->dimX; ++j) {
+            // get the string of the nodes on the position [i,j]
+            QString nodes = gameAfterAlgo[i][j];
+            TileModel *tile;
+            if (nodes.size() == 1) {
+                tile = new EndTile(nodes);
+            } else if (nodes.size() == 3) {
+                tile = new JunctionTile(nodes);
+            } else {
+                int first = nodes[0].digitValue(), second = nodes[1].digitValue();
+                if (first > second) {
+                    int temp = first;
+                    first = second;
+                    second = temp;
+                }
+                if (second - first == 1 || second - first == 3)
+                    tile = new CornerTile(nodes);
+
+                else
+                    tile = new LineTile(nodes);
+            }
+            // rotate the tile randomly
+            for (int k = 0; k < getBounded(0, 4); ++k)
+                tile->rotate90();
+
+            // save tile in 2d vector playGround
+            this->game[i][j] = tile;
+            this->resetVector[i][j] = tile->getNodeString();
+        }
+    }
+    emit this->onGameInitialization(true);
 }
 
 void GameModel::setSize(int row, int col)
@@ -27,7 +83,7 @@ void GameModel::setSize(int row, int col)
             this->game[i][j] = nullptr;
         }
     }
-    this->game = QVector<QVector<Tile*>>(this->dimY, QVector<Tile*>(this->dimX, nullptr));
+    this->game = QVector<QVector<TileModel*>>(this->dimY, QVector<TileModel*>(this->dimX, nullptr));
 
     this->resetVector = QVector<QVector<QString>>(this->dimY, QVector<QString>(this->dimX, ""));
 }
@@ -50,7 +106,17 @@ int GameModel::getBounded(int lowest, int highest)
     return this->gen.bounded(lowest, highest);
 }
 
-QVector<QVector<QString> > GameModel::depthAlgo()
+size_t GameModel::getRow() const
+{
+    return this->dimY;
+}
+
+size_t GameModel::getCol() const
+{
+    return this->dimX;
+}
+
+QVector<QVector<QString>> GameModel::depthAlgo()
 {
     int m = this->dimY, n = this->dimX;
     QVector<QVector<QString>> v(m, QVector<QString>(n, ""));
@@ -63,10 +129,10 @@ QVector<QVector<QString> > GameModel::depthAlgo()
         currentTile = tileStack.top();
         int currentY = currentTile[0], currentX = currentTile[1];
         QVector<QVector<int>> chooseTile{
-            {currentY - 1, currentX,     Tile::North, Tile::South},
-            {currentY,     currentX + 1, Tile::East,  Tile::West},
-            {currentY,     currentX - 1, Tile::West,  Tile::East},
-            {currentY + 1, currentX,     Tile::South, Tile::North},
+            {currentY - 1, currentX,     TileModel::North, TileModel::South},
+            {currentY,     currentX + 1, TileModel::East,  TileModel::West},
+            {currentY,     currentX - 1, TileModel::West,  TileModel::East},
+            {currentY + 1, currentX,     TileModel::South, TileModel::North},
         };
         for (int i = 0; i < chooseTile.size(); ++i) {
             int y = chooseTile[i][0], x = chooseTile[i][1];
@@ -85,7 +151,7 @@ QVector<QVector<QString> > GameModel::depthAlgo()
     return v;
 }
 
-QVector<QVector<QString> > GameModel::primAlgo()
+QVector<QVector<QString>> GameModel::primAlgo()
 {
     int m = this->dimY, n = this->dimX;
     QVector<QVector<QString>> v(m, QVector<QString>(n, ""));
@@ -131,10 +197,30 @@ QVector<QVector<QString> > GameModel::primAlgo()
     return v;
 }
 
+QString GameModel::getAlgoType()
+{
+    if (this->algoType == GameModel::Depth)
+        return "Depth";
+    else if (this->algoType == GameModel::Prim)
+        return "Prim";
+    return "";
+}
+
+void GameModel::setTime()
+{
+    if (this->gameStarted) {
+        ++this->totalPlayTime;
+        int minute = this->totalPlayTime/60;
+        int sec = this->totalPlayTime%60;
+        QTime time(0, minute, sec);
+        emit sendTime(time.toString("mm:ss"));
+    }
+}
+
 bool GameModel::checkAnswer()
 {
     int m = this->dimY, n = this->dimX;
-    int countTiles = m*n - 1;
+    size_t countTiles = m*n - 1;
     QVector<QVector<QVector<bool>>> checkVecktor(m, QVector<QVector<bool>>(n, {false, false, false, false}));
     for (int i = 0; i < m; ++i)
         for (int j = 0; j < n; ++j)
@@ -147,10 +233,10 @@ bool GameModel::checkAnswer()
         currentTile = tilesStack.top();
         int currentY = currentTile[0], currentX = currentTile[1];
         QVector<QVector<int>> chooseNode{
-            {currentY - 1, currentX,     Tile::North, Tile::South},
-            {currentY,     currentX + 1, Tile::East,  Tile::West},
-            {currentY + 1, currentX,     Tile::South, Tile::North},
-            {currentY,     currentX - 1, Tile::West,  Tile::East},
+            {currentY - 1, currentX,     TileModel::North, TileModel::South},
+            {currentY,     currentX + 1, TileModel::East,  TileModel::West},
+            {currentY + 1, currentX,     TileModel::South, TileModel::North},
+            {currentY,     currentX - 1, TileModel::West,  TileModel::East},
         };
         for (int i = 0, j = 0; i < 4; ++i, ++j)
             if (!checkVecktor[currentY][currentX][i])
@@ -163,8 +249,10 @@ bool GameModel::checkAnswer()
 
         for (int i = 0; i < chooseNode.size(); ++i) {
             int y = chooseNode[i][0], x = chooseNode[i][1];
-            if (x < 0 || y < 0 || y >= m || x >= n || !checkVecktor[y][x][chooseNode[i][3]])
+            if (x < 0 || y < 0 || y >= m || x >= n || !checkVecktor[y][x][chooseNode[i][3]]) {
+                emit onGameStatus(false);
                 return false;
+            }
         }
         --countTiles;
         tilesStack.push(chooseNode[0]);
@@ -172,31 +260,36 @@ bool GameModel::checkAnswer()
         checkVecktor[currentY][currentX][chooseNode[0][2]] = false;
 
     }
-    if (countTiles == 0)
+    if (countTiles == 0){
+        this->gameStarted = false;
+        emit onGameStatus(true);
         return true;
-    else
+    }
+    else{
+        emit onGameStatus(false);
         return false;
+    }
 }
 
 void GameModel::resetGame()
 {
-    this->gameStarted = false;
-    this->totalPlayTime = 0;
-    this->totalSteps = 0;
-    this->totalPlayTime = 0;
-    for (int i = 0; i < this->dimY; ++i) {
-        for (int j = 0; j < this->dimX; ++j) {
+    this->clearEverything();
+    for (size_t i = 0; i < this->dimY; ++i) {
+        for (size_t j = 0; j < this->dimX; ++j) {
             this->game[i][j]->setNodes(this->resetVector[i][j]);
         }
     }
+    emit this->onGameStatus(false);
 }
 
 void GameModel::showSolution()
 {
-    for (int i = 0; i < this->dimY; ++i) {
-        for (int j = 0; j < this->dimX; ++j) {
+    this->gameStarted = false;
+    for (size_t i = 0; i < this->dimY; ++i) {
+        for (size_t j = 0; j < this->dimX; ++j) {
             this->game[i][j]->setNodes(this->answer[i][j]);
         }
     }
+    emit this->onGameStatus(true);
 }
 

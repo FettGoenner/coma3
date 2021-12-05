@@ -3,18 +3,19 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
-NewGameDialog::NewGameDialog(QWidget *parent, int row, int col) :
+NewGameDialog::NewGameDialog(int row, int col, QString algoType, QWidget *parent) :
     QDialog(parent)
     , rows(row)
     , columns(col)
     , seed(this->getRandomValue())
-    , algoType("Depth")
+    , algoType(algoType)
     , ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
     ui->rowSpinBox->setValue(this->rows);
     ui->colSpinBox->setValue(this->columns);
     ui->seedSpinBox->setValue(this->seed);
+    ui->algoTypeComboBox->setCurrentText(this->algoType);
     //get and set row value
     connect(ui->rowSpinBox, &QSpinBox::valueChanged, this, [=]() {
         this->rows = ui->rowSpinBox->value();

@@ -4,71 +4,64 @@
 #include <QTime>
 
 #include "gameview.h"
-#include "linetile.h"
-#include "cornertile.h"
-#include "endtile.h"
-#include "junctiontile.h"
+#include "tileview.h"
+
 GameView::GameView(GameModel *gameModel, QWidget *parent) :
     QWidget(parent)
   , gameModel(gameModel)
 {
     // initialize game
-    this->initializeGame();
+    this->showGame(true);
+    connect(this->gameModel, &GameModel::onGameInitialization, this, &GameView::showGame);
+    connect(this->gameModel, &GameModel::onGameStatus, this, &GameView::changeBgc);
 }
 
-void GameView::initializeGame(QString algo)
+void GameView::showGame(bool clearStatus)
 {
-    // get initialized game with QStrings in a 2d Vector
-    QVector<QVector<QString>> game;
-    if (algo == "Depth")
-        game = this->gameModel->depthAlgo();
-    else if (algo == "Prim")
-        game = this->gameModel->primAlgo();
-    // save the correct answer
-    this->gameModel->answer = game;
-    this->gameModel->clearEverything();
-    setGameWithVector2d(game);
-}
-
-void GameView::setGameWithVector2d(QVector<QVector<QString>> &v)
-{
+    if (clearStatus)
+        this->clearLayout();
     // initialize different tiles on different positions
-    for (int i = 0; i < playGroundSizeY; ++i) {
-        for (int j = 0; j < playGroundSizeX; ++j) {
-            // get the string of the nodes on the position [i,j]
-            QString nodes = v[i][j];
-            Tile *tile;
-            if (nodes.size() == 1) {
-                tile = new EndTile(nodes, Qt::blue);
-            } else if (nodes.size() == 3) {
-                tile = new JunctionTile(nodes, Qt::blue);
-            } else {
-                int first = nodes[0].digitValue(), second = nodes[1].digitValue();
-                if (first > second) {
-                    int temp = first;
-                    first = second;
-                    second = temp;
-                }
-                if (second - first == 1 || second - first == 3)
-                    tile = new CornerTile(nodes, Qt::blue);
-
-                else
-                    tile = new LineTile(nodes, Qt::blue);
-            }
-            // rotate the tile randomly
-            //            for (int k = 0; k < getBounded(0, 3); ++k)
-            //                tile->rotate90();
-            tile->rotateWithAnimation(getBounded(0, 4) * 90);
-
+    for (size_t i = 0; i < this->gameModel->getRow(); ++i) {
+        for (size_t j = 0; j < this->gameModel->getCol(); ++j) {
+            TileView * tileView = new TileView(this->gameModel->game[i][j], Qt::blue);
             // save tile in 2d vector playGround
-            this->playGround[i][j] = tile;
-            this->resetVector[i][j] = tile->getNodeString();
-            this->gridLayout->addWidget(tile, i, j);
+            this->gridLayout->addWidget(tileView, i, j);
 
-            connect(tile, &Tile::clicked, this, &GameView::setSteps);
-            connect(tile, &Tile::clicked, this, &GameView::checkAnswer);
+            connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
+            connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
+
         }
     }
+}
+
+void GameView::clearLayout()
+{
+    if ( this->gridLayout != nullptr )
+    {
+        QLayoutItem* item;
+        while ((item = this->gridLayout->takeAt(0)) != nullptr) {
+            delete item->widget();
+            delete item;
+        }
+        delete this->gridLayout;
+        this->gridLayout = nullptr;
+    }
+    this->bgc = Qt::white;
+    this->update();
+    // create gridlayout
+    this->gridLayout = new QGridLayout(this);
+    this->gridLayout->setSpacing(0);
+    this->gridLayout->setContentsMargins(0, 0, 0, 0);
+    setLayout(this->gridLayout);
+}
+
+void GameView::changeBgc(bool connected)
+{
+    if (connected)
+        this->bgc = Qt::green;
+    else
+        this->bgc = Qt::white;
+    update();
 }
 
 void GameView::paintEvent(QPaintEvent *ev)
@@ -86,3 +79,5 @@ void GameView::paintEvent(QPaintEvent *ev)
 
     return QWidget::paintEvent(ev);
 }
+
+
