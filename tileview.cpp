@@ -1,4 +1,5 @@
 #include <QPainter>
+#include <QtMath>
 
 #include "tileview.h"
 
@@ -7,13 +8,17 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
   , tile(tile)
   , tileColor(color)
   , animationTimer(new QTimer)
+  , hintAnimationTimer(new QTimer)
 {
     setCursor(Qt::PointingHandCursor);
-    setStyleSheet("QWidget{"
-                  "border:2px solid gray;"
-                  "}");
+    this->setColor(Qt::transparent);
     this->animationTimer->setInterval(10);
+    this->hintAnimationTimer->setInterval(60);
     connect(this->animationTimer, &QTimer::timeout, this, &TileView::rotateTimeout);
+    connect(this->hintAnimationTimer, &QTimer::timeout, this, &TileView::hintAnimationTimeout);
+
+    connect(tile, &TileModel::startHint, this, &TileView::startHintAnimation);
+    connect(tile, &TileModel::endHint, this, &TileView::stopHintAnimation);
     connect(this, &TileView::nodeChange, this->tile, QOverload<int>::of(&TileModel::adjustNodes));
     connect(tile, &TileModel::nodesChanged, this, &TileView::adjustAngle);
     if (this->rotateAngle < tile->getAngel()) {
@@ -33,6 +38,27 @@ void TileView::rotateWithAnimation(int angle)
     emit this->nodeChange(angle/90);
 }
 
+void TileView::startHintAnimation()
+{
+
+    this->hintAnimationTimer->start();
+
+}
+
+void TileView::stopHintAnimation()
+{
+    this->hintAnimationTimer->stop();
+    this->alphaValueF = 0;
+    update();
+}
+
+void TileView::hintAnimationTimeout()
+{
+
+    this->alphaValueF += 0.5;
+    update();
+}
+
 void TileView::adjustAngle()
 {
     this->rotateAngle %= 360;
@@ -42,6 +68,24 @@ void TileView::adjustAngle()
         this->animationAngele += 360;
     if (this->animationAngele != 0)
         this->animationTimer->start();
+}
+
+void TileView::setColor(QColor color)
+{
+    if (color == Qt::transparent)
+        this->setStyleSheet("QWidget{"
+                            "border:2px solid gray;"
+                            "}");
+    else if (color == Qt::green)
+        this->setStyleSheet("QWidget{"
+                            "border:2px solid gray;"
+                            "background-color: rgb(0, 255, 0);"
+                            "}");
+    else if (color == Qt::yellow)
+        this->setStyleSheet("QWidget{"
+                            "border:2px solid gray;"
+                            "background-color: rgb(255, 255, 0);"
+                            "}");
 }
 
 void TileView::rotateTimeout()
@@ -58,11 +102,15 @@ void TileView::rotateTimeout()
 
 void TileView::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if (!this->animationTimer->isActive()){
+    if (!this->animationTimer->isActive() && this->canBeClicked && !this->hintAnimationTimer->isActive()) {
         this->rotateWithAnimation(90);
 
         // send signal clicked()
         emit this->clicked();
+    } else if (this->hintAnimationTimer->isActive()) {
+        this->setColor(Qt::yellow);
+        this->canBeClicked = false;
+        emit this->clickedWhileHint(this->tile);
     }
     return QWidget::mousePressEvent(ev);
 }
@@ -81,6 +129,8 @@ void TileView::paintEvent(QPaintEvent *ev)
     }
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
+    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
+
     if (type == "CornerTile") {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
         linear.setColorAt(.35, this->tileColor);
@@ -129,6 +179,7 @@ void TileView::paintEvent(QPaintEvent *ev)
             QPointF(2*width/5, height/2),
         };
         painter.drawPolygon(points, 4);
+
     } else if (type == "JunctionTile") {
         QLinearGradient linear(QPointF(width/2, 0), QPointF(width/2, height));
         linear.setColorAt(.35, this->tileColor);
@@ -168,6 +219,7 @@ void TileView::paintEvent(QPaintEvent *ev)
             QPointF(3*width/5, height),
         };
         painter.drawPolygon(points3, 4);
+
     } else if (type == "LineTile") {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
         linear.setColorAt(.35, this->tileColor);

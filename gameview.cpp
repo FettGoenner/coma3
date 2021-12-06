@@ -2,9 +2,9 @@
 #include <QStack>
 #include <QPainter>
 #include <QTime>
+#include <QObject>
 
 #include "gameview.h"
-#include "tileview.h"
 
 GameView::GameView(GameModel *gameModel, QWidget *parent) :
     QWidget(parent)
@@ -29,7 +29,7 @@ void GameView::showGame(bool clearStatus)
 
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
-
+            connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
         }
     }
 }
@@ -53,6 +53,7 @@ void GameView::clearLayout()
     this->gridLayout->setSpacing(0);
     this->gridLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(this->gridLayout);
+
 }
 
 void GameView::changeBgc(bool connected)
@@ -63,6 +64,7 @@ void GameView::changeBgc(bool connected)
         this->bgc = Qt::white;
     update();
 }
+
 
 void GameView::paintEvent(QPaintEvent *ev)
 {

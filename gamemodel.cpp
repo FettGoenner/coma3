@@ -293,3 +293,23 @@ void GameModel::showSolution()
     emit this->onGameStatus(true);
 }
 
+void GameModel::startHint()
+{
+    for (size_t i = 0; i < this->dimY; ++i) {
+        for (size_t j = 0; j < this->dimX; ++j) {
+            emit this->game[i][j]->startHint();
+        }
+    }
+}
+
+void GameModel::showSolutionOnTile(TileModel *tileModel)
+{
+    for (size_t i = 0; i < this->dimY; ++i) {
+        for (size_t j = 0; j < this->dimX; ++j) {
+            emit this->game[i][j]->endHint();
+            if (this->game[i][j] == tileModel)
+                this->game[i][j]->setNodes(this->answer[i][j]);
+        }
+    }
+}
+

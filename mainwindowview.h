@@ -14,14 +14,18 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
+    int hintCount = 0;
     QLabel *seedStatusLabel;
     QLabel *algoStatusLabel;
     QLabel *sizeStatusLabel;
     QTimer *timer;
 };
+
+static size_t HINTLIMIT = 3;
 #endif // MAINWINDOWVIEW_H

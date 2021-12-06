@@ -22,7 +22,6 @@ public:
         return this->rotateAngle;
     }
     void rotate90(); // rotate the node 90 degrees clockwise
-//    void rotateWithAnimation(int angle = 90);
 
     void clearNodes() {
         for (int i = 0; i < 4; ++i)
@@ -54,16 +53,17 @@ public:
     }
 
 private:
-//    QTimer *animationTimer; // for animation
-//    int animationAngele = 90;
+
 
 public slots:
     void adjustNodes();
     void adjustNodes(int times);
 
+
 signals:
     void nodesChanged(); // if the nodes have changed
-
+    void startHint();
+    void endHint();
 };
 
 #endif // TILEMODEL_H

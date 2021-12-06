@@ -11,25 +11,33 @@ private:
     TileModel *tile;
     QColor tileColor;
     QTimer *animationTimer; // for animation
+    QTimer *hintAnimationTimer; // for hint animation
     int animationAngele = 90;
     int rotateAngle = 0;
+    bool canBeClicked = true;
+    double alphaValueF = 0;
 public:
     explicit TileView(TileModel *tile, QColor color, QFrame *parent = nullptr);
 
     void rotate90(); // rotate the node 90 degrees clockwise
     void rotateWithAnimation(int angle = 90);
+    void startHintAnimation();
+    void stopHintAnimation();
     void adjustAngle();
+    void setColor(QColor color);
 protected:
     void paintEvent(QPaintEvent*) override;
 signals:
     void nodeChange(int times);
     void clicked();
+    void clickedWhileHint(TileModel *tileModel);
 
 protected:
     virtual void mouseReleaseEvent(QMouseEvent *ev) override;
 
 private slots:
     void rotateTimeout();
+    void hintAnimationTimeout();
 };
 
 #endif // TILEVIEW_H

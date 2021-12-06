@@ -10,6 +10,7 @@
 
 #include "tilemodel.h"
 #include "gamemodel.h"
+#include "tileview.h"
 
 class GameView : public QWidget
 {
@@ -26,7 +27,6 @@ public:
 public slots:
     void showGame(bool clearStatus = false);
     void changeBgc(bool connected);
-
 protected:
     void paintEvent(QPaintEvent*) override;
 };

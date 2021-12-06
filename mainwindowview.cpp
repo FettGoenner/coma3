@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
             //TODO
         }
     });
+
     connect(gameModel, &GameModel::gameStart, ui->pauseBtn, [=]() {
         ui->pauseBtn->setText("Pause");
     });
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Timer
     connect(gameModel, &GameModel::sendTime, ui->totalPlayTime, &QLabel::setText);
 
+    // new game
     connect(ui->newGameBtn, &QPushButton::clicked, this, [=]() {
         NewGameDialog dialog(gameModel->getRow(), gameModel->getCol(), gameModel->getAlgoType() , this);
         if (dialog.exec() == QDialog::Accepted) {
@@ -76,12 +78,19 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
     });
+
+    // reset game
     connect(ui->resetBtn, &QPushButton::clicked, this, [=]() {
         gameModel->resetGame();
         ui->totalPlayTime->setText("00:00");
         ui->totalSteps_2->setText("0");
     });
+
+    // solution
     connect(ui->solutionBtn, &QPushButton::clicked, gameModel, &GameModel::showSolution);
+
+    // Hint
+    connect(ui->hintBtn, &QPushButton::clicked, gameModel, &GameModel::startHint);
 }
 
 MainWindow::~MainWindow()

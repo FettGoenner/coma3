@@ -61,6 +61,8 @@ public slots:
     bool checkAnswer();
     void resetGame();
     void showSolution();
+    void startHint();
+    void showSolutionOnTile(TileModel *tileModel);
 };
 
 #endif // GAMEMODEL_H
