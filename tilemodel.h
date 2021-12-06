@@ -64,6 +64,7 @@ signals:
     void nodesChanged(); // if the nodes have changed
     void startHint();
     void endHint();
+    void resetTile();
 };
 
 #endif // TILEMODEL_H

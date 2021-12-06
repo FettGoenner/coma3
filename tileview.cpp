@@ -19,6 +19,9 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
 
     connect(tile, &TileModel::startHint, this, &TileView::startHintAnimation);
     connect(tile, &TileModel::endHint, this, &TileView::stopHintAnimation);
+    connect(tile, &TileModel::resetTile, this, [=]() {
+        this->setColor(Qt::transparent);
+    });
     connect(this, &TileView::nodeChange, this->tile, QOverload<int>::of(&TileModel::adjustNodes));
     connect(tile, &TileModel::nodesChanged, this, &TileView::adjustAngle);
     if (this->rotateAngle < tile->getAngel()) {

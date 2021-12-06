@@ -276,6 +276,7 @@ void GameModel::resetGame()
     this->clearEverything();
     for (size_t i = 0; i < this->dimY; ++i) {
         for (size_t j = 0; j < this->dimX; ++j) {
+            emit this->game[i][j]->resetTile();
             this->game[i][j]->setNodes(this->resetVector[i][j]);
         }
     }
@@ -287,6 +288,7 @@ void GameModel::showSolution()
     this->gameStarted = false;
     for (size_t i = 0; i < this->dimY; ++i) {
         for (size_t j = 0; j < this->dimX; ++j) {
+            emit this->game[i][j]->resetTile();
             this->game[i][j]->setNodes(this->answer[i][j]);
         }
     }
@@ -298,6 +300,15 @@ void GameModel::startHint()
     for (size_t i = 0; i < this->dimY; ++i) {
         for (size_t j = 0; j < this->dimX; ++j) {
             emit this->game[i][j]->startHint();
+        }
+    }
+}
+
+void GameModel::endHint()
+{
+    for (size_t i = 0; i < this->dimY; ++i) {
+        for (size_t j = 0; j < this->dimX; ++j) {
+            emit this->game[i][j]->endHint();
         }
     }
 }

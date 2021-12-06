@@ -20,7 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    int hintCount = 0;
+    size_t hintCount = 0;
+    bool hintBtnClicked = false;
     QLabel *seedStatusLabel;
     QLabel *algoStatusLabel;
     QLabel *sizeStatusLabel;
