@@ -8,29 +8,20 @@ class TileView
     : public QFrame
 {
     Q_OBJECT
-private:
-    TileModel *tile;
-    QColor tileColor;
-    QTimer *animationTimer; // for animation
-    int animationAngele = 90;
-    int rotateAngle = 0;
-public:
-    explicit TileView(TileModel *tile, QColor color, QFrame *parent = nullptr);
 
-    void rotate90(); // rotate the node 90 degrees clockwise
-    void rotateWithAnimation(int angle = 90);
-    void adjustAngle();
+/*** private attributes ***/
+
+    // das TileModel
+    TileModel *tile ;
+    // die Farbe
+    QColor tileColor ;
+
+public:
+    TileView(TileModel *tile, QColor color, QFrame *parent = nullptr) ;
+    void mousePressEvent(QMouseEvent * event) override;
+
 protected:
     void paintEvent(QPaintEvent*) override;
-signals:
-    void nodeChange(int times);
-    void clicked();
-
-protected:
-    virtual void mouseReleaseEvent(QMouseEvent *ev) override;
-
-private slots:
-    void rotateTimeout();
-};
+} ;
 
 #endif // TILEVIEW_H

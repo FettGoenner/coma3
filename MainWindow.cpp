@@ -1,21 +1,26 @@
 #include "MainWindow.h"
 #include "DockerWindow.h"
-#include "GameModel.h"
-#include "GameView.h"
+//#include "GameModel.h"
+//#include "GameView.h"
+#include "TileView.h"
+#include "TileModel.h"
 
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QAction>
 #include <QLabel>
+#include <QColor>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent)
 {
     // Zentrales Widget setzen
-    int seed = QRandomGenerator::global()->bounded(-999999999, 999999999);
-    GameModel * gameModel = new GameModel(7,7, seed) ;
-    GameView * gameView = new GameView(gameModel, this) ;
-    setCentralWidget(gameView) ;
+    //int seed = QRandomGenerator::global()->bounded(-999999999, 999999999);
+    //GameModel * gameModel = new GameModel(7,7, seed) ;
+    //GameView * gameView = new GameView(gameModel, this) ;
+    TileModel * tilem = new TileModel(true, true, true, false) ;
+    TileView * tilev = new TileView(tilem, QColor("green")) ;
+    setCentralWidget(tilev) ;
 
     // Titel und minimale Breite/Höhe setzen
     setWindowTitle("Main Window") ;

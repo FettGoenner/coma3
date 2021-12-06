@@ -39,9 +39,9 @@ void GameModel::initializeGame(int algo)
         for (size_t j = 0; j < this->dimX; ++j) {
             // get the string of the nodes on the position [i,j]
             QString nodes = gameAfterAlgo[i][j];
-            TileModel *tile;
+            TileModel * tile;
             if (nodes.size() == 1) {
-                tile = new EndTile(nodes);
+                tile = new TileModel(nodes);
             } else if (nodes.size() == 3) {
                 tile = new JunctionTile(nodes);
             } else {

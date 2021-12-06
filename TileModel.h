@@ -2,49 +2,63 @@
 #define TILEMODEL_H
 
 #include <QObject>
-#include <string>
 
-using namespace std ;
-
+// Die TileModel-Klasse repräsentiert die Funktionalität
+// der drehbaren Quadrate im Netzwerkpuzzle ohne Visualisierung.
 class TileModel
     : public QObject
 {
-protected:
-public:
+    Q_OBJECT
 
-    /*** public attributes ***/
+public:
+/*** public attributes ***/
+
+    // nodes
     bool north ;
     bool south ;
     bool east ;
     bool west ;
 
-    string _type ; 
-
-    size_t _rangle ;
-
     /*** constructors ***/
-    TileModel() ;
-    TileModel(bool, bool, bool, bool) ;
+    TileModel()
+        : north(false),
+          south(false),
+          east (false),
+          west (false)
+    { }
 
-    /*** setters ***/
-    void rotate() ;
+    TileModel(bool north, bool south, bool east, bool west) 
+        : north(north),
+          south(south),
+          east (east),
+          west (west)
+    { }
 
-    /*** getters ***/
-    bool detached() const ;
+    ~TileModel()
+    { }
 
-    /*** getters ***/
+/*** setters ***/
+    void rotate()
+    {
+        bool temp = north ;
+        north = west ;
+        west  = south ;
+        south = east ;
+        east  = temp ;
 
-    /* bool north(); */
-    /* bool south(); */
-    /* bool east(); */
-    /* bool west(); */
+        emit(changed()) ;
+    }
 
-    /*** setters ***/
+/*** getters ***/
+    bool detached() const
+    {
+        if (north || south || east || west)
+            return false;
+        return true ;
+    }
 
-    /* void setNorth(bool); */
-    /* void setSouth(bool); */
-    /* void setEast(bool); */
-    /* void setWest(bool); */
-};
+signals:
+    void changed() ;
+} ;
 
 #endif // TILEMODEL_H

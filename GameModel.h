@@ -48,6 +48,7 @@ signals:
     QString sendGameSeed(QString seed);
     bool onGameStatus(bool status); // true, if this is a solution
     void gameStart();
+
 public slots:
     void setSteps() {
         if (!this->gameStarted){

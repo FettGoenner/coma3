@@ -55,25 +55,17 @@ OBJECTS_DIR   = ./
 SOURCES       = main.cpp \
 		MainWindow.cpp \
 		DockerWindow.cpp \
-		GameView.cpp \
-		GameModel.cpp \
-		TileModel.cpp \
 		TileView.cpp moc_MainWindow.cpp \
 		moc_DockerWindow.cpp \
-		moc_GameView.cpp \
-		moc_GameModel.cpp \
+		moc_TileModel.cpp \
 		moc_TileView.cpp
 OBJECTS       = main.o \
 		MainWindow.o \
 		DockerWindow.o \
-		GameView.o \
-		GameModel.o \
-		TileModel.o \
 		TileView.o \
 		moc_MainWindow.o \
 		moc_DockerWindow.o \
-		moc_GameView.o \
-		moc_GameModel.o \
+		moc_TileModel.o \
 		moc_TileView.o
 DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
@@ -373,15 +365,10 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
 		make.pro MainWindow.h \
 		DockerWindow.h \
-		GameView.h \
-		GameModel.h \
 		TileModel.h \
 		TileView.h main.cpp \
 		MainWindow.cpp \
 		DockerWindow.cpp \
-		GameView.cpp \
-		GameModel.cpp \
-		TileModel.cpp \
 		TileView.cpp
 QMAKE_TARGET  = out
 DESTDIR       = 
@@ -1004,8 +991,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents MainWindow.h DockerWindow.h GameView.h GameModel.h TileModel.h TileView.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp MainWindow.cpp DockerWindow.cpp GameView.cpp GameModel.cpp TileModel.cpp TileView.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents MainWindow.h DockerWindow.h TileModel.h TileView.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp MainWindow.cpp DockerWindow.cpp TileView.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1037,9 +1024,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/qt/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/qt/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_MainWindow.cpp moc_DockerWindow.cpp moc_GameView.cpp moc_GameModel.cpp moc_TileView.cpp
+compiler_moc_header_make_all: moc_MainWindow.cpp moc_DockerWindow.cpp moc_TileModel.cpp moc_TileView.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_MainWindow.cpp moc_DockerWindow.cpp moc_GameView.cpp moc_GameModel.cpp moc_TileView.cpp
+	-$(DEL_FILE) moc_MainWindow.cpp moc_DockerWindow.cpp moc_TileModel.cpp moc_TileView.cpp
 moc_MainWindow.cpp: MainWindow.h \
 		moc_predefs.h \
 		/usr/bin/moc
@@ -1050,18 +1037,10 @@ moc_DockerWindow.cpp: DockerWindow.h \
 		/usr/bin/moc
 	/usr/bin/moc $(DEFINES) --include /home/paul/Dev/coma3-main/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/paul/Dev/coma3-main -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11.1.0 -I/usr/include/c++/11.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/11.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed -I/usr/include DockerWindow.h -o moc_DockerWindow.cpp
 
-moc_GameView.cpp: GameView.h \
-		TileModel.h \
-		GameModel.h \
+moc_TileModel.cpp: TileModel.h \
 		moc_predefs.h \
 		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/paul/Dev/coma3-main/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/paul/Dev/coma3-main -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11.1.0 -I/usr/include/c++/11.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/11.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed -I/usr/include GameView.h -o moc_GameView.cpp
-
-moc_GameModel.cpp: GameModel.h \
-		TileModel.h \
-		moc_predefs.h \
-		/usr/bin/moc
-	/usr/bin/moc $(DEFINES) --include /home/paul/Dev/coma3-main/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/paul/Dev/coma3-main -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11.1.0 -I/usr/include/c++/11.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/11.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed -I/usr/include GameModel.h -o moc_GameModel.cpp
+	/usr/bin/moc $(DEFINES) --include /home/paul/Dev/coma3-main/moc_predefs.h -I/usr/lib/qt/mkspecs/linux-g++ -I/home/paul/Dev/coma3-main -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtCore -I/usr/include/c++/11.1.0 -I/usr/include/c++/11.1.0/x86_64-pc-linux-gnu -I/usr/include/c++/11.1.0/backward -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include -I/usr/local/include -I/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed -I/usr/include TileModel.h -o moc_TileModel.cpp
 
 moc_TileView.cpp: TileView.h \
 		TileModel.h \
@@ -1090,26 +1069,12 @@ main.o: main.cpp MainWindow.h
 
 MainWindow.o: MainWindow.cpp MainWindow.h \
 		DockerWindow.h \
-		GameModel.h \
-		TileModel.h \
-		GameView.h
+		TileView.h \
+		TileModel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MainWindow.o MainWindow.cpp
 
 DockerWindow.o: DockerWindow.cpp DockerWindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DockerWindow.o DockerWindow.cpp
-
-GameView.o: GameView.cpp GameView.h \
-		TileModel.h \
-		GameModel.h \
-		TileView.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GameView.o GameView.cpp
-
-GameModel.o: GameModel.cpp GameModel.h \
-		TileModel.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GameModel.o GameModel.cpp
-
-TileModel.o: TileModel.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TileModel.o TileModel.cpp
 
 TileView.o: TileView.cpp TileView.h \
 		TileModel.h
@@ -1121,11 +1086,8 @@ moc_MainWindow.o: moc_MainWindow.cpp
 moc_DockerWindow.o: moc_DockerWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_DockerWindow.o moc_DockerWindow.cpp
 
-moc_GameView.o: moc_GameView.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GameView.o moc_GameView.cpp
-
-moc_GameModel.o: moc_GameModel.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GameModel.o moc_GameModel.cpp
+moc_TileModel.o: moc_TileModel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_TileModel.o moc_TileModel.cpp
 
 moc_TileView.o: moc_TileView.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_TileView.o moc_TileView.cpp
