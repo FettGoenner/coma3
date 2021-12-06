@@ -16,7 +16,7 @@ public:
     ~NewGameDialog();
     int rows;
     int columns;
-    int seed;
+    size_t seed;
     QString algoType;
 private:
     Ui::NewGameDialog *ui;

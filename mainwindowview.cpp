@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout;
     ui->gameWindow->setLayout(layout);
     //set statusbar
-    int gameSeed = QRandomGenerator::global()->bounded(-999999999, 999999999);
+    size_t gameSeed = QRandomGenerator::global()->bounded(0, 999999999);
     seedStatusLabel->setText(QString::number(gameSeed));
     algoStatusLabel->setText("Depth");
     sizeStatusLabel->setText("7x7");

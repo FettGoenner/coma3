@@ -7,7 +7,7 @@
 #include "cornertilemodel.h"
 #include "linetilemodel.h"
 
-GameModel::GameModel(size_t row, size_t col, int gameSeed, QObject *parent) :
+GameModel::GameModel(size_t row, size_t col, size_t gameSeed, QObject *parent) :
     QObject(parent)
   , dimX(row)
   , dimY(col)
@@ -88,7 +88,7 @@ void GameModel::setSize(int row, int col)
     this->resetVector = QVector<QVector<QString>>(this->dimY, QVector<QString>(this->dimX, ""));
 }
 
-void GameModel::setGameSeed(int seed)
+void GameModel::setGameSeed(size_t seed)
 {
     this->gen.seed(seed);
     emit this->sendGameSeed(QString::number(seed));

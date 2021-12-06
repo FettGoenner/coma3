@@ -38,12 +38,13 @@ NewGameDialog::NewGameDialog(int row, int col, QString algoType, QWidget *parent
 
 }
 
-NewGameDialog::~NewGameDialog()
-{
-    delete ui;
-}
 
 int NewGameDialog::getRandomValue()
 {
-    return QRandomGenerator::global()->bounded(-999999999, 999999999);
+    return QRandomGenerator::global()->bounded(0, 999999999);
+}
+
+NewGameDialog::~NewGameDialog()
+{
+    delete ui;
 }

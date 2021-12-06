@@ -44,17 +44,6 @@ void TileView::adjustAngle()
         this->animationTimer->start();
 }
 
-void TileView::mouseReleaseEvent(QMouseEvent *ev)
-{
-    if (!this->animationTimer->isActive()){
-        this->rotateWithAnimation(90);
-
-        // send signal clicked()
-        emit this->clicked();
-    }
-    return QWidget::mousePressEvent(ev);
-}
-
 void TileView::rotateTimeout()
 {
     this->rotateAngle += 10;
@@ -65,6 +54,17 @@ void TileView::rotateTimeout()
         this->animationAngele = 90;
         this->animationTimer->stop();
     }
+}
+
+void TileView::mouseReleaseEvent(QMouseEvent *ev)
+{
+    if (!this->animationTimer->isActive()){
+        this->rotateWithAnimation(90);
+
+        // send signal clicked()
+        emit this->clicked();
+    }
+    return QWidget::mousePressEvent(ev);
 }
 
 void TileView::paintEvent(QPaintEvent *ev)
