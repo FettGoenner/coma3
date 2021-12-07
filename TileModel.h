@@ -19,7 +19,9 @@ public:
     bool east ;
     bool west ;
 
-    /*** constructors ***/
+/*** constructors ***/
+
+    // randomized generation
     TileModel()
         : north(false),
           south(false),
@@ -50,11 +52,20 @@ public:
     }
 
 /*** getters ***/
-    bool detached() const
+
+    // amount of active nodes
+    size_t nNodes() const
     {
-        if (north || south || east || west)
-            return false;
-        return true ;
+        size_t n = 0 ;
+        if (north)
+            ++n ;
+        if (south)
+            ++n ;
+        if (east)
+            ++n ;
+        if (west)
+            ++n ;
+        return n ;
     }
 
 signals:
