@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMenu">
+    <property name="title">
+     <string>Menu</string>
+    </property>
+    <widget class="QMenu" name="menuHelp">
+     <property name="title">
+      <string>Help</string>
+     </property>
+     <addaction name="actionAbout"/>
+     <addaction name="actionAbout_At"/>
+    </widget>
+    <addaction name="actionPause"/>
+    <addaction name="actionReset"/>
+    <addaction name="actionNew_Game"/>
+    <addaction name="actionSave_Game"/>
+    <addaction name="actionHint"/>
+    <addaction name="menuHelp"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuMenu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionPause">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/video-pause-taste.png</normaloff>:/image/video-pause-taste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/zurucksetzen.png</normaloff>:/image/zurucksetzen.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionNew_Game">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/PikPng.com_game-icon-png_2023517.png</normaloff>:/image/PikPng.com_game-icon-png_2023517.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Game</string>
+   </property>
+  </action>
+  <action name="actionSave_Game">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/5QZ1xRkuHi3K9dd-Save-PNG-Image.png</normaloff>:/image/5QZ1xRkuHi3K9dd-Save-PNG-Image.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save Game</string>
+   </property>
+  </action>
+  <action name="actionHint">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/transparent-bulb-icon-creative-icon-hint-icon-5d799e33706a66.3677172115682514434605.png</normaloff>:/image/transparent-bulb-icon-creative-icon-hint-icon-5d799e33706a66.3677172115682514434605.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hint</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/ausgang.png</normaloff>:/image/ausgang.png</iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/Helping-Hands-Transparent.png</normaloff>:/image/Helping-Hands-Transparent.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionAbout_At">
+   <property name="icon">
+    <iconset resource="rec.qrc">
+     <normaloff>:/image/Helping-Hands-Transparent.png</normaloff>:/image/Helping-Hands-Transparent.png</iconset>
+   </property>
+   <property name="text">
+    <string>About At</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="rec.qrc"/>
+ </resources>
+ <connections/>
+</ui>
