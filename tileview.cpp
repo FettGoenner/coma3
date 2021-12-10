@@ -22,10 +22,10 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
     connect(tile, &TileModel::resetTile, this, [=]() {
         this->setColor(Qt::transparent);
     });
-    connect(this, &TileView::nodeChange, this->tile, QOverload<int>::of(&TileModel::adjustNodes));
+    connect(this, &TileView::nodeChange, this->tile, &TileModel::adjustNodes);
     connect(tile, &TileModel::nodesChanged, this, &TileView::adjustAngle);
-    if (this->rotateAngle < tile->getAngel()) {
-        this->animationAngele = tile->getAngel();
+    if (this->rotateAngle < tile->getAngle()) {
+        this->animationAngele = tile->getAngle();
         this->animationTimer->start();
     }
 

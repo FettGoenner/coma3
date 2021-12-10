@@ -15,7 +15,7 @@ class GameModel : public QObject
 public:
     enum GameType{Depth = 0, Prim};
 
-    explicit GameModel(size_t row = 7, size_t col = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, 999999999), QObject *parent = nullptr);
+    explicit GameModel(size_t row = 7, size_t col = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
 
     bool gameStarted = false;
     int totalPlayTime;

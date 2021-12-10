@@ -9,17 +9,14 @@ TileModel::TileModel(QObject *parent) :
 {
 }
 
-void TileModel::adjustNodes()
-{
-    bool last = this->nodes[3];
-    this->nodes.pop_back();
-    this->nodes.insert(this->nodes.cbegin(), last);
-}
-
 void TileModel::adjustNodes(int times)
 {
-    for (int i = 0; i < times; ++i)
-        this->adjustNodes();
+    for (int i = 0; i < times; ++i) {
+        bool last = this->nodes[3];
+        this->nodes.pop_back();
+        this->nodes.insert(this->nodes.cbegin(), last);
+    }
+
 }
 
 QString TileModel::getNodeString()

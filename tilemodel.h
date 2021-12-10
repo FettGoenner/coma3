@@ -18,7 +18,7 @@ public:
     int rotateAngle = 0; // the angle that this node already rotated
 
     QString getNodeString();
-    int getAngel() const {
+    int getAngle() const {
         return this->rotateAngle;
     }
     void rotate90(); // rotate the node 90 degrees clockwise
@@ -30,14 +30,6 @@ public:
 
     bool noNodes() const {
         return !(this->nodes[0] || this->nodes[1] || this->nodes[2] || this->nodes[3]);
-    }
-    bool sameNodes(QVector<int> nodesTemp) const {
-        if (nodesTemp.size() != 4)
-            return false;
-        return this->nodes[0] == nodesTemp[0] &&
-               this->nodes[1] == nodesTemp[1] &&
-               this->nodes[2] == nodesTemp[2] &&
-               this->nodes[3] == nodesTemp[3];
     }
 
     virtual void setNodes(QString nodes) {
@@ -56,8 +48,7 @@ private:
 
 
 public slots:
-    void adjustNodes();
-    void adjustNodes(int times);
+    void adjustNodes(int times = 1);
 
 
 signals:

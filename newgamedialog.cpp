@@ -12,8 +12,10 @@ NewGameDialog::NewGameDialog(int row, int col, QString algoType, QWidget *parent
     , ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
+    this->setWindowTitle("New Game");
     ui->rowSpinBox->setValue(this->rows);
     ui->colSpinBox->setValue(this->columns);
+    ui->seedSpinBox->setMaximum(INT_MAX);
     ui->seedSpinBox->setValue(this->seed);
     ui->algoTypeComboBox->setCurrentText(this->algoType);
     //get and set row value
@@ -41,7 +43,7 @@ NewGameDialog::NewGameDialog(int row, int col, QString algoType, QWidget *parent
 
 int NewGameDialog::getRandomValue()
 {
-    return QRandomGenerator::global()->bounded(0, 999999999);
+    return QRandomGenerator::global()->bounded(0, INT_MAX);
 }
 
 NewGameDialog::~NewGameDialog()
