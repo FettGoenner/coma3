@@ -29,14 +29,7 @@
             <item>
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Rows:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Columns:</string>
+               <string>Size:</string>
               </property>
              </widget>
             </item>
@@ -47,17 +40,7 @@
           <widget class="QWidget" name="widget_2" native="true">
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
-             <widget class="QSpinBox" name="rowSpinBox">
-              <property name="minimum">
-               <number>2</number>
-              </property>
-              <property name="maximum">
-               <number>50</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="colSpinBox">
+             <widget class="QSpinBox" name="sizeSpinBox">
               <property name="minimum">
                <number>2</number>
               </property>

@@ -12,13 +12,15 @@ class NewGameDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit NewGameDialog(int row = 7, int col = 7, QString algoType = "Depth", QWidget *parent = nullptr);
+    explicit NewGameDialog(size_t size = 7, QString algoType = "Depth", QWidget *parent = nullptr);
     ~NewGameDialog();
-    int rows;
-    int columns;
+    size_t getSize();
+    size_t getSeed();
+    QString getAlgoType();
+private:
+    size_t _DIM;
     size_t seed;
     QString algoType;
-private:
     Ui::NewGameDialog *ui;
     int getRandomValue();
 };

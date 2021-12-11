@@ -21,8 +21,8 @@ void GameView::showGame(bool clearStatus)
     if (clearStatus)
         this->clearLayout();
     // initialize different tiles on different positions
-    for (size_t i = 0; i < this->gameModel->getRow(); ++i) {
-        for (size_t j = 0; j < this->gameModel->getCol(); ++j) {
+    for (size_t i = 0; i < this->gameModel->getSize(); ++i) {
+        for (size_t j = 0; j < this->gameModel->getSize(); ++j) {
             TileView * tileView = new TileView(this->gameModel->game[i][j], Qt::blue);
             // save tile in 2d vector playGround
             this->gridLayout->addWidget(tileView, i, j);

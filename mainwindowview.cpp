@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(this->seedStatusLabel);
     ui->statusBar->addWidget(this->algoStatusLabel);
 
-    GameModel *gameModel = new GameModel(7, 7, gameSeed);
+    GameModel *gameModel = new GameModel(7, gameSeed);
     GameView * gameView = new GameView(gameModel, ui->gameWindow);
     connect(gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
     ui->gameWindow->layout()->addWidget(gameView);
@@ -58,23 +58,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     // new game
     connect(ui->newGameBtn, &QPushButton::clicked, this, [=]() {
-        NewGameDialog dialog(gameModel->getRow(), gameModel->getCol(), gameModel->getAlgoType() , this);
+        NewGameDialog dialog(gameModel->getSize(), gameModel->getAlgoType() , this);
         if (dialog.exec() == QDialog::Accepted) {
             int algoType = 0;
-            if (dialog.algoType == "Depth")
+            if (dialog.getAlgoType() == "Depth")
                 algoType = GameModel::Depth;
-            else if (dialog.algoType == "Prim")
+            else if (dialog.getAlgoType() == "Prim")
                 algoType = GameModel::Prim;
             else
 
                 throw "unknown game type";
-            gameModel->setSize(dialog.rows, dialog.columns);
-            gameModel->setGameSeed(dialog.seed);
+            gameModel->setSize(dialog.getSize());
+            gameModel->setGameSeed(dialog.getSeed());
             gameModel->initializeGame(algoType);
             ui->totalPlayTime->setText("00:00");
             ui->totalSteps_2->setText("0");
-            this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.rows).arg(dialog.columns));
-            this->algoStatusLabel->setText(dialog.algoType);
+            this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.getSize()).arg(dialog.getSize()));
+            this->algoStatusLabel->setText(dialog.getAlgoType());
         }
 
     });

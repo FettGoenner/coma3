@@ -11,34 +11,35 @@
 class GameModel : public QObject
 {
     Q_OBJECT
-
-public:
-    enum GameType{Depth = 0, Prim};
-
-    explicit GameModel(size_t row = 7, size_t col = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
-
-    bool gameStarted = false;
+private:
+    size_t _DIM;
     int totalPlayTime;
     int totalSteps;
-    size_t dimX;
-    size_t dimY;
     int algoType = GameModel::Depth;
     QRandomGenerator gen; // for random values
     QVector<int> startTile;
-    QVector<QVector<TileModel*>> game;
     QVector<QVector<QString>> answer;
     QVector<QVector<QString>> resetVector;
     QTimer *timer;
 
-    void initializeGame(int algo = GameModel::Depth);
-    void setSize(int row, int column);
-    void setGameSeed(size_t seed);
     void clearEverything();
-    int getBounded(int lowest, int highest);
-    size_t getRow() const;
-    size_t getCol() const;
     QVector<QVector<QString>> depthAlgo();
     QVector<QVector<QString>> primAlgo();
+
+public:
+    enum GameType{Depth = 0, Prim};
+
+    explicit GameModel(size_t size = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
+
+    bool gameStarted = false;
+    QVector<QVector<TileModel*>> game;
+    void initializeGame(int algo = GameModel::Depth);
+    void setSize(size_t size);
+    void setGameSeed(size_t seed);
+
+    int getBounded(int lowest, int highest);
+    size_t getSize() const;
+
     QString getAlgoType();
 
 signals:
