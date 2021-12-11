@@ -284,29 +284,29 @@ void GameModel::showSolution()
     emit this->onGameStatus(true);
 }
 
-void GameModel::startHint()
-{
-    for (size_t i = 0; i < this->_DIM; ++i) {
-        for (size_t j = 0; j < this->_DIM; ++j) {
-            emit this->game[i][j]->startHint();
-        }
-    }
-}
+//void GameModel::startHint()
+//{
+//    for (size_t i = 0; i < this->_DIM; ++i) {
+//        for (size_t j = 0; j < this->_DIM; ++j) {
+//            emit this->game[i][j]->startHint();
+//        }
+//    }
+//}
 
-void GameModel::endHint()
-{
-    for (size_t i = 0; i < this->_DIM; ++i) {
-        for (size_t j = 0; j < this->_DIM; ++j) {
-            emit this->game[i][j]->endHint();
-        }
-    }
-}
+//void GameModel::endHint()
+//{
+//    for (size_t i = 0; i < this->_DIM; ++i) {
+//        for (size_t j = 0; j < this->_DIM; ++j) {
+//            emit this->game[i][j]->endHint();
+//        }
+//    }
+//}
 
 void GameModel::showSolutionOnTile(TileModel *tileModel)
 {
     for (size_t i = 0; i < this->_DIM; ++i) {
         for (size_t j = 0; j < this->_DIM; ++j) {
-            emit this->game[i][j]->endHint();
+//            emit this->game[i][j]->endHint();
             if (this->game[i][j] == tileModel){
                 this->game[i][j]->setNodes(this->answer[i][j]);
                 this->checkAnswer();

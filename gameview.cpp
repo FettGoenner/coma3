@@ -30,6 +30,9 @@ void GameView::showGame(bool clearStatus)
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
             connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
+            connect(tileView, &TileView::clickedWhileHint, this, &GameView::endHint);
+            connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);
+            connect(this, &GameView::startTileHintAnimation, tileView, &TileView::startHintAnimation);
         }
     }
 }
@@ -63,6 +66,16 @@ void GameView::changeBgc(bool connected)
     else
         this->bgc = Qt::white;
     update();
+}
+
+void GameView::startHint()
+{
+    emit this->startTileHintAnimation();
+}
+
+void GameView::endHint()
+{
+    emit this->stopTileHintAnimation();
 }
 
 

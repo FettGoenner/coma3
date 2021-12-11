@@ -101,8 +101,8 @@ public slots:
 
 signals:
     void nodesChanged(); // if the nodes have changed
-    void startHint();
-    void endHint();
+//    void startHint();
+//    void endHint();
     void resetTile();
 };
 

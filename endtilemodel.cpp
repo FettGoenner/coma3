@@ -4,6 +4,7 @@
 EndTile::EndTile(QObject *parent) :
     TileModel(parent)
 {
+    // default CornerTile
     this->north = TileModel::ON;
 }
 
@@ -15,6 +16,7 @@ EndTile::EndTile(const QVector<bool>& tile, QObject *parent):
 
 void EndTile::setNodes(const QVector<bool>& tile)
 {
+    // set default nodes if tile is invalid.
     if (tile.size() == 0 ||
       !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
         this->north = TileModel::ON;
@@ -22,9 +24,8 @@ void EndTile::setNodes(const QVector<bool>& tile)
     }
     this->clearNodes();
     TileModel::setNodes(tile);
-//    if (!EndTile::isValidTile())
-//        throw "The nodes does not match to any EndTiles";
 
+    // get rotateAngle
     if (this->east)
         this->rotateAngle = 90;
     else if (this->south)
@@ -36,14 +37,5 @@ void EndTile::setNodes(const QVector<bool>& tile)
 
     emit this->nodesChanged();
 }
-
-//bool EndTile::isValidTile()
-//{
-//    QString nodeString = this->getNodeString();
-//    if (nodeString.size() == 1)
-//        return true;
-
-//    return false;
-//}
 
 

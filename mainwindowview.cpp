@@ -35,16 +35,15 @@ MainWindow::MainWindow(QWidget *parent)
     GameView * gameView = new GameView(gameModel, ui->gameWindow);
     connect(gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
     ui->gameWindow->layout()->addWidget(gameView);
+
     // Pause button
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
         if (ui->pauseBtn->text() == "Pause") {
             ui->pauseBtn->setText("Resume");
             gameModel->gameStarted = false;
-            //TODO
         } else {
             ui->pauseBtn->setText("Pause");
             gameModel->gameStarted = true;
-            //TODO
         }
     });
 
@@ -91,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->solutionBtn, &QPushButton::clicked, gameModel, &GameModel::showSolution);
 
     // Hint
-    connect(ui->hintBtn, &QPushButton::clicked, gameModel, &GameModel::startHint);
+    connect(ui->hintBtn, &QPushButton::clicked, gameView, &GameView::startHint);
 }
 
 MainWindow::~MainWindow()

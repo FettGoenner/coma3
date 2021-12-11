@@ -4,6 +4,7 @@
 LineTile::LineTile(QObject *parent) :
     TileModel(parent)
 {
+    // default CornerTile
     this->north = TileModel::ON;
     this->south = TileModel::ON;
 }
@@ -16,6 +17,7 @@ LineTile::LineTile(const QVector<bool>& tile, QObject *parent):
 
 void LineTile::setNodes(const QVector<bool>& tile)
 {
+    // set default nodes if tile is invalid.
     if (tile.size() == 0 ||
             !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
         this->north = TileModel::ON;
@@ -24,9 +26,8 @@ void LineTile::setNodes(const QVector<bool>& tile)
     }
     this->clearNodes();
     TileModel::setNodes(tile);
-//    if (!LineTile::isValidTile()) {
-//        throw "The nodes do not match to any LineTiles";
-//    }
+
+    // get rotateAngle
     if (!this->north){
         if (this->rotateAngle % 360 != 270)
             this->rotateAngle = 90;
@@ -37,16 +38,4 @@ void LineTile::setNodes(const QVector<bool>& tile)
 
     emit this->nodesChanged();
 }
-
-//bool LineTile::isValidTile()
-//{
-
-//    QString nodeString = this->getNodeString();
-//    if (nodeString.size() == 2) {
-//        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
-//        if (second - first == 2 || second - first == -2)
-//            return true;
-//    }
-//    return false;
-//}
 

@@ -24,9 +24,15 @@ private:
 public:
     explicit GameView(GameModel *gameModel, QWidget *parent = nullptr);
 
+signals:
+    void startTileHintAnimation();
+    void stopTileHintAnimation();
+
 public slots:
     void showGame(bool clearStatus = false);
     void changeBgc(bool connected);
+    void startHint();
+    void endHint();
 protected:
     void paintEvent(QPaintEvent*) override;
 };

@@ -27,11 +27,8 @@ void CornerTile::setNodes(const QVector<bool>& tile)
         return;
     }
 
-
     this->clearNodes();
     TileModel::setNodes(tile);
-//    if (!CornerTile::isValidTile())
-//        throw "The nodes does not match to any CornerTiles";
 
     // get rotateAngle
     if (this->south && this->west)
@@ -46,21 +43,5 @@ void CornerTile::setNodes(const QVector<bool>& tile)
     emit this->nodesChanged();
 }
 
-//bool CornerTile::isValidTile()
-//{
-//    QString nodeString = this->getNodeString();
-//    if (nodeString.size() == 2) {
-//        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
-//        if (first > second) {
-//            int temp = first;
-//            first = second;
-//            second = temp;
-//        }
-//        if (second - first == 1 || second - first == 3) {
-//            return true;
-//        }
-//    }
-//    return false;
-//}
 
 
