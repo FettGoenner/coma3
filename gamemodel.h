@@ -62,9 +62,9 @@ public slots:
     bool checkAnswer();
     void resetGame();
     void showSolution();
-//    void startHint();
-//    void endHint();
+
     void showSolutionOnTile(TileModel *tileModel);
+    void changeGameStarted(bool started);
 };
 
 #endif // GAMEMODEL_H

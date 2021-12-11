@@ -17,8 +17,6 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
     connect(this->animationTimer, &QTimer::timeout, this, &TileView::rotateTimeout);
     connect(this->hintAnimationTimer, &QTimer::timeout, this, &TileView::hintAnimationTimeout);
 
-//    connect(tile, &TileModel::startHint, this, &TileView::startHintAnimation);
-//    connect(tile, &TileModel::endHint, this, &TileView::stopHintAnimation);
     connect(tile, &TileModel::resetTile, this, [=]() {
         this->setColor(Qt::transparent);
     });
@@ -43,9 +41,7 @@ void TileView::rotateWithAnimation(int angle)
 
 void TileView::startHintAnimation()
 {
-
     this->hintAnimationTimer->start();
-
 }
 
 void TileView::stopHintAnimation()

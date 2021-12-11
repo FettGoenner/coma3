@@ -28,5 +28,5 @@ private:
     QTimer *timer;
 };
 
-static size_t HINTLIMIT = 3;
+
 #endif // MAINWINDOWVIEW_H

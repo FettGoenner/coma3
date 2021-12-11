@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     cornertilemodel.cpp \
+    dockwindow.cpp \
     endtilemodel.cpp \
     gamemodel.cpp \
     gameview.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 
 HEADERS += \
     cornertilemodel.h \
+    dockwindow.h \
     endtilemodel.h \
     gamemodel.h \
     gameview.h \
@@ -34,6 +36,7 @@ HEADERS += \
     tileview.h
 
 FORMS += \
+    dockwindow.ui \
     mainwindowview.ui \
     newgamedialog.ui
 

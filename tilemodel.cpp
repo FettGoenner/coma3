@@ -93,12 +93,4 @@ size_t TileModel::countNodes(const QVector<bool>& tile)
 }
 
 
-bool TileModel::operator==(const TileModel &tileModel) const
-{
-    return this->north == tileModel.north &&
-           this->east == tileModel.east &&
-           this->south == tileModel.south &&
-            this->west == tileModel.west;
-}
-
 

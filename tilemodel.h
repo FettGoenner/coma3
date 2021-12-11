@@ -70,9 +70,6 @@ public:
         return "Tile";
     }
 
-//    virtual bool isValidTile() {
-//        return true;
-//    }
 
     static QString getNodeString(const QVector<bool>& tile);
 
@@ -91,8 +88,6 @@ public:
 
     static size_t countNodes(const QVector<bool>& tile);
 
-    bool operator==(const TileModel &tileModel) const;
-
 private:
 
 
@@ -101,8 +96,7 @@ public slots:
 
 signals:
     void nodesChanged(); // if the nodes have changed
-//    void startHint();
-//    void endHint();
+
     void resetTile();
 };
 
