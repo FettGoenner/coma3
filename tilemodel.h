@@ -21,9 +21,11 @@ public:
     int rotateAngle = 0; // the angle that this node already rotated
 
     QVector<bool> getNodeVector();
+
     int getAngle() const {
         return this->rotateAngle;
     }
+
     void rotate90(); // rotate the node 90 degrees clockwise
 
     void clearNodes() {
@@ -68,9 +70,9 @@ public:
         return "Tile";
     }
 
-    virtual bool isValidTile() {
-        return true;
-    }
+//    virtual bool isValidTile() {
+//        return true;
+//    }
 
     static QString getNodeString(const QVector<bool>& tile);
 

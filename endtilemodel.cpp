@@ -22,8 +22,8 @@ void EndTile::setNodes(const QVector<bool>& tile)
     }
     this->clearNodes();
     TileModel::setNodes(tile);
-    if (!EndTile::isValidTile())
-        throw "The nodes does not match to any EndTiles";
+//    if (!EndTile::isValidTile())
+//        throw "The nodes does not match to any EndTiles";
 
     if (this->east)
         this->rotateAngle = 90;
@@ -37,13 +37,13 @@ void EndTile::setNodes(const QVector<bool>& tile)
     emit this->nodesChanged();
 }
 
-bool EndTile::isValidTile()
-{
-    QString nodeString = this->getNodeString();
-    if (nodeString.size() == 1)
-        return true;
+//bool EndTile::isValidTile()
+//{
+//    QString nodeString = this->getNodeString();
+//    if (nodeString.size() == 1)
+//        return true;
 
-    return false;
-}
+//    return false;
+//}
 
 

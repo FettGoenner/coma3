@@ -26,8 +26,8 @@ void JunctionTile::setNodes(const QVector<bool>& tile)
     }
     this->clearNodes();
     TileModel::setNodes(tile);
-    if (!JunctionTile::isValidTile())
-        throw "The nodes does not match to any JunctionTiles";
+//    if (!JunctionTile::isValidTile())
+//        throw "The nodes does not match to any JunctionTiles";
 
     if (!this->north)
         this->rotateAngle = 0;
@@ -41,11 +41,11 @@ void JunctionTile::setNodes(const QVector<bool>& tile)
     emit this->nodesChanged();
 }
 
-bool JunctionTile::isValidTile()
-{
-    QString nodeString = this->getNodeString();
-    if (nodeString.size() == 3)
-        return true;
+//bool JunctionTile::isValidTile()
+//{
+//    QString nodeString = this->getNodeString();
+//    if (nodeString.size() == 3)
+//        return true;
 
-    return false;
-}
+//    return false;
+//}

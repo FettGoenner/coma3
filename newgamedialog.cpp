@@ -13,7 +13,6 @@ NewGameDialog::NewGameDialog(size_t size, QString algoType, QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("New Game");
     ui->sizeSpinBox->setValue(this->_DIM);
-    ui->seedSpinBox->setMaximum(INT_MAX);
     ui->seedSpinBox->setValue(this->seed);
     ui->algoTypeComboBox->setCurrentText(this->algoType);
     //get and set size
@@ -33,7 +32,6 @@ NewGameDialog::NewGameDialog(size_t size, QString algoType, QWidget *parent) :
     });
 
 }
-
 
 int NewGameDialog::getRandomValue()
 {

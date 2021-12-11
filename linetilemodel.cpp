@@ -24,9 +24,9 @@ void LineTile::setNodes(const QVector<bool>& tile)
     }
     this->clearNodes();
     TileModel::setNodes(tile);
-    if (!LineTile::isValidTile()) {
-        throw "The nodes do not match to any LineTiles";
-    }
+//    if (!LineTile::isValidTile()) {
+//        throw "The nodes do not match to any LineTiles";
+//    }
     if (!this->north){
         if (this->rotateAngle % 360 != 270)
             this->rotateAngle = 90;
@@ -38,15 +38,15 @@ void LineTile::setNodes(const QVector<bool>& tile)
     emit this->nodesChanged();
 }
 
-bool LineTile::isValidTile()
-{
+//bool LineTile::isValidTile()
+//{
 
-    QString nodeString = this->getNodeString();
-    if (nodeString.size() == 2) {
-        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
-        if (second - first == 2 || second - first == -2)
-            return true;
-    }
-    return false;
-}
+//    QString nodeString = this->getNodeString();
+//    if (nodeString.size() == 2) {
+//        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
+//        if (second - first == 2 || second - first == -2)
+//            return true;
+//    }
+//    return false;
+//}
 

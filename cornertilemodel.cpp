@@ -6,6 +6,7 @@
 CornerTile::CornerTile(QObject *parent) :
     TileModel(parent)
 {
+    // default CornerTile
     this->east = TileModel::ON;
     this->south = TileModel::ON;
 }
@@ -18,17 +19,21 @@ CornerTile::CornerTile(const QVector<bool>& tile, QObject *parent):
 
 void CornerTile::setNodes(const QVector<bool>& tile)
 {
+    // set default nodes if tile is invalid.
     if (tile.size() == 0 ||
             !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
         this->east = TileModel::ON;
         this->south = TileModel::ON;
         return;
     }
+
+
     this->clearNodes();
     TileModel::setNodes(tile);
-    if (!CornerTile::isValidTile())
-        throw "The nodes does not match to any CornerTiles";
+//    if (!CornerTile::isValidTile())
+//        throw "The nodes does not match to any CornerTiles";
 
+    // get rotateAngle
     if (this->south && this->west)
         this->rotateAngle = 90;
     else if (this->west && this->north)
@@ -41,21 +46,21 @@ void CornerTile::setNodes(const QVector<bool>& tile)
     emit this->nodesChanged();
 }
 
-bool CornerTile::isValidTile()
-{
-    QString nodeString = this->getNodeString();
-    if (nodeString.size() == 2) {
-        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
-        if (first > second) {
-            int temp = first;
-            first = second;
-            second = temp;
-        }
-        if (second - first == 1 || second - first == 3) {
-            return true;
-        }
-    }
-    return false;
-}
+//bool CornerTile::isValidTile()
+//{
+//    QString nodeString = this->getNodeString();
+//    if (nodeString.size() == 2) {
+//        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
+//        if (first > second) {
+//            int temp = first;
+//            first = second;
+//            second = temp;
+//        }
+//        if (second - first == 1 || second - first == 3) {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
 
