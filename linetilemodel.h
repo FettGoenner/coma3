@@ -7,8 +7,10 @@ class LineTile : public TileModel
 {
 public:
     LineTile(QObject *parent = nullptr);
-    LineTile(QString nodes = "", QObject *parent = nullptr);
-    void setNodes(QString nodes) override;
+    LineTile(const QVector<bool>& tile = {}, QObject *parent = nullptr);
+//    void setNodes(bool north, bool east, bool south, bool west) override{};
+    void setNodes(const QVector<bool>& tile) override;
+    bool isValidTile() override;
     QString getTileType() override {
         return "LineTile";
     }

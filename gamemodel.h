@@ -18,13 +18,13 @@ private:
     int algoType = GameModel::Depth;
     QRandomGenerator gen; // for random values
     QVector<int> startTile;
-    QVector<QVector<QString>> answer;
-    QVector<QVector<QString>> resetVector;
+    QVector<QVector<QVector<bool>>> answer;
+    QVector<QVector<QVector<bool>>> resetVector;
     QTimer *timer;
 
     void clearEverything();
-    QVector<QVector<QString>> depthAlgo();
-    QVector<QVector<QString>> primAlgo();
+    QVector<QVector<QVector<bool>>> depthAlgo();
+    QVector<QVector<QVector<bool>>> primAlgo();
 
 public:
     enum GameType{Depth = 0, Prim};

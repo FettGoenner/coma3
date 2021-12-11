@@ -11,45 +11,91 @@ class TileModel : public QObject
     Q_OBJECT
 public:
     enum NodesEnum{North, East=1, South, West};
+    enum NodesSwitch{ON=true, OFF=false};
     explicit TileModel(QObject *parent = nullptr);
 
-    QVector<bool> nodes = {0, 0, 0, 0}; // shows where the ways are {top, right, bottom, left}
-
+    bool north = TileModel::OFF;
+    bool east = TileModel::OFF;
+    bool south = TileModel::OFF;
+    bool west = TileModel::OFF;
     int rotateAngle = 0; // the angle that this node already rotated
 
-    QString getNodeString();
+    QVector<bool> getNodeVector();
     int getAngle() const {
         return this->rotateAngle;
     }
     void rotate90(); // rotate the node 90 degrees clockwise
 
     void clearNodes() {
-        for (int i = 0; i < 4; ++i)
-            this->nodes[i] = false;
+        this->north = TileModel::OFF;
+        this->east = TileModel::OFF;
+        this->south = TileModel::OFF;
+        this->west = TileModel::OFF;
     }
 
     bool noNodes() const {
-        return !(this->nodes[0] || this->nodes[1] || this->nodes[2] || this->nodes[3]);
+        return !(this->north || this->east || this->south || this->west);
     }
 
-    virtual void setNodes(QString nodes) {
+    QString getNodeString();
+
+
+    virtual void setNodes(bool north, bool east, bool south, bool west) {
         this->clearNodes();
-        for (const auto &c : nodes)
-            this->nodes[c.digitValue()] = true;
-        emit this->nodesChanged();
-        return;
+        if (north)
+            this->north = TileModel::ON;
+        if (east)
+            this->east = TileModel::ON;
+        if (south)
+            this->south = TileModel::ON;
+        if (west)
+            this->west = TileModel::ON;
+    }
+
+    virtual void setNodes(const QVector<bool>& tile) {
+        this->clearNodes();
+        if (tile[TileModel::North])
+            this->north = TileModel::ON;
+        if (tile[TileModel::East])
+            this->east = TileModel::ON;
+        if (tile[TileModel::South])
+            this->south = TileModel::ON;
+        if (tile[TileModel::West])
+            this->west = TileModel::ON;
     }
 
     virtual QString getTileType() {
         return "Tile";
     }
 
+    virtual bool isValidTile() {
+        return true;
+    }
+
+    static QString getNodeString(const QVector<bool>& tile);
+
+    static QString getTileTypeByVector(const QVector<bool>& tile);
+
+    static bool noNodes(const QVector<bool>& tile) {
+                return !(tile[TileModel::North] ||
+                tile[TileModel::East] ||
+                tile[TileModel::South]||
+                tile[TileModel::West]);
+    }
+
+    static bool has3Nodes(const QVector<bool>& tile) {
+        return TileModel::countNodes(tile) == 3;
+    }
+
+    static size_t countNodes(const QVector<bool>& tile);
+
+    bool operator==(const TileModel &tileModel) const;
+
 private:
 
 
 public slots:
     void adjustNodes(int times = 1);
-
 
 signals:
     void nodesChanged(); // if the nodes have changed

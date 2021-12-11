@@ -4,37 +4,49 @@
 LineTile::LineTile(QObject *parent) :
     TileModel(parent)
 {
-    this->nodes[0] = true;
-    this->nodes[2] = true;
+    this->north = TileModel::ON;
+    this->south = TileModel::ON;
 }
 
-LineTile::LineTile(QString nodes, QObject *parent):
+LineTile::LineTile(const QVector<bool>& tile, QObject *parent):
     TileModel(parent)
 {
-    LineTile::setNodes(nodes);
+    LineTile::setNodes(tile);
 }
 
-void LineTile::setNodes(QString nodes)
+void LineTile::setNodes(const QVector<bool>& tile)
 {
+    if (tile.size() == 0 ||
+            !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
+        this->north = TileModel::ON;
+        this->south = TileModel::ON;
+        return;
+    }
     this->clearNodes();
-    if (nodes.isEmpty()) {
-        this->nodes[0] = true;
-        this->nodes[2] = true;
-    } else if (nodes.size() == 2) {
-        for (const QChar &s : nodes)
-            this->nodes[s.digitValue()] = true;
-    } else {
+    TileModel::setNodes(tile);
+    if (!LineTile::isValidTile()) {
         throw "The nodes do not match to any LineTiles";
     }
-    if (!this->nodes[0]){
+    if (!this->north){
         if (this->rotateAngle % 360 != 270)
             this->rotateAngle = 90;
-    }
-    else {
+    } else {
         if (this->rotateAngle % 360 != 180)
             this->rotateAngle = 0;
     }
 
     emit this->nodesChanged();
+}
+
+bool LineTile::isValidTile()
+{
+
+    QString nodeString = this->getNodeString();
+    if (nodeString.size() == 2) {
+        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
+        if (second - first == 2 || second - first == -2)
+            return true;
+    }
+    return false;
 }
 

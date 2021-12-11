@@ -4,28 +4,46 @@
 EndTile::EndTile(QObject *parent) :
     TileModel(parent)
 {
-    this->nodes[0] = true;
+    this->north = TileModel::ON;
 }
 
-EndTile::EndTile(QString nodes, QObject *parent):
+EndTile::EndTile(const QVector<bool>& tile, QObject *parent):
     TileModel(parent)
 {
-    EndTile::setNodes(nodes);
+    EndTile::setNodes(tile);
 }
 
-void EndTile::setNodes(QString nodes)
+void EndTile::setNodes(const QVector<bool>& tile)
 {
-    this->clearNodes();
-    if (nodes.isEmpty()) {
-        this->nodes[0] = true;
-    } else if (nodes.size() == 1) {
-        this->nodes[nodes.toInt()] = true;
-    } else {
-        throw "The nodes does not match to any EndTiles";
+    if (tile.size() == 0 ||
+      !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
+        this->north = TileModel::ON;
+        return;
     }
-    this->rotateAngle = nodes.toInt()*90;
+    this->clearNodes();
+    TileModel::setNodes(tile);
+    if (!EndTile::isValidTile())
+        throw "The nodes does not match to any EndTiles";
+
+    if (this->east)
+        this->rotateAngle = 90;
+    else if (this->south)
+        this->rotateAngle = 180;
+    else if (this->west)
+        this->rotateAngle = 270;
+    else
+        this->rotateAngle = 0;
 
     emit this->nodesChanged();
+}
+
+bool EndTile::isValidTile()
+{
+    QString nodeString = this->getNodeString();
+    if (nodeString.size() == 1)
+        return true;
+
+    return false;
 }
 
 

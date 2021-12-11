@@ -10,7 +10,7 @@
 GameModel::GameModel(size_t size, size_t gameSeed, QObject *parent) :
     QObject(parent)
   , _DIM(size)
-  , resetVector(QVector<QVector<QString>>(_DIM, QVector<QString>(_DIM, "")))
+  , resetVector(QVector<QVector<QVector<bool>>>(_DIM, QVector<QVector<bool>>(_DIM, {})))
   , timer(new QTimer)
   , game(QVector<QVector<TileModel*>>(_DIM, QVector<TileModel*>(_DIM, nullptr)))
 
@@ -26,7 +26,7 @@ void GameModel::initializeGame(int algo)
 {
     this->algoType = algo;
     // get initialized game with QStrings in a 2d Vector
-    QVector<QVector<QString>> gameAfterAlgo;
+    QVector<QVector<QVector<bool>>> gameAfterAlgo;
     if (algo == GameModel::Depth)
         gameAfterAlgo = this->depthAlgo();
     else if (algo == GameModel::Prim)
@@ -42,32 +42,27 @@ void GameModel::initializeGame(int algo)
     for (size_t i = 0; i < this->_DIM; ++i) {
         for (size_t j = 0; j < this->_DIM; ++j) {
             // get the string of the nodes on the position [i,j]
-            QString nodes = gameAfterAlgo[i][j];
+            QVector<bool> nodes = gameAfterAlgo[i][j];
             TileModel *tile;
-            if (nodes.size() == 1) {
+            QString tileType = TileModel::getTileTypeByVector(nodes);
+            if (tileType == "EndTile") {
                 tile = new EndTile(nodes);
-            } else if (nodes.size() == 3) {
+            } else if (tileType == "JunctionTile") {
                 tile = new JunctionTile(nodes);
-            } else {
-                int first = nodes[0].digitValue(), second = nodes[1].digitValue();
-                if (first > second) {
-                    int temp = first;
-                    first = second;
-                    second = temp;
-                }
-                if (second - first == 1 || second - first == 3)
-                    tile = new CornerTile(nodes);
+            } else if (tileType == "CornerTile") {
+                tile = new CornerTile(nodes);
+            } else if (tileType == "LineTile") {
+                tile = new LineTile(nodes);
+            } else
+                throw "This Tile does not match to any tile";
 
-                else
-                    tile = new LineTile(nodes);
-            }
             // rotate the tile randomly
             for (int k = 0; k < getBounded(0, 4); ++k)
                 tile->rotate90();
 
             // save tile in 2d vector playGround
             this->game[i][j] = tile;
-            this->resetVector[i][j] = tile->getNodeString();
+            this->resetVector[i][j] = tile->getNodeVector();
         }
     }
     emit this->onGameInitialization(true);
@@ -84,7 +79,7 @@ void GameModel::setSize(size_t size)
     }
     this->game = QVector<QVector<TileModel*>>(this->_DIM, QVector<TileModel*>(this->_DIM, nullptr));
 
-    this->resetVector = QVector<QVector<QString>>(this->_DIM, QVector<QString>(this->_DIM, ""));
+    this->resetVector = QVector<QVector<QVector<bool>>>(this->_DIM, QVector<QVector<bool>>(this->_DIM, {}));
 }
 
 void GameModel::setGameSeed(size_t seed)
@@ -110,10 +105,10 @@ size_t GameModel::getSize() const
     return this->_DIM;
 }
 
-QVector<QVector<QString>> GameModel::depthAlgo()
+QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
 {
     int m = this->_DIM;
-    QVector<QVector<QString>> v(m, QVector<QString>(m, ""));
+    QVector<QVector<QVector<bool>>> v(m, QVector<QVector<bool>>(m, {0, 0, 0, 0}));
     int startTileY = getBounded(0, m), startTileX = getBounded(0, m);
     QStack<QVector<int>> tileStack;
     tileStack.push({startTileY, startTileX});
@@ -130,25 +125,25 @@ QVector<QVector<QString>> GameModel::depthAlgo()
         };
         for (int i = 0; i < chooseTile.size(); ++i) {
             int y = chooseTile[i][0], x = chooseTile[i][1];
-            if (x < 0 || y < 0 || y >= m || x >= m || !v[y][x].isEmpty())
+            if (x < 0 || y < 0 || y >= m || x >= m || !TileModel::noNodes(v[y][x]))
                 chooseTile.erase(chooseTile.cbegin() + (i--));
         }
-        if (chooseTile.empty() || v[currentY][currentX].size() == 3) {
+        if (chooseTile.empty() || TileModel::has3Nodes(v[currentY][currentX])) {
             tileStack.pop();
             continue;
         }
         int selectIndex = getBounded(0, chooseTile.size());
         tileStack.push(chooseTile[selectIndex]);
-        v[currentY][currentX] += QString::number(chooseTile[selectIndex][2]);
-        v[chooseTile[selectIndex][0]][chooseTile[selectIndex][1]] +=  QString::number(chooseTile[selectIndex][3]);
+        v[currentY][currentX][chooseTile[selectIndex][2]] = TileModel::ON;
+        v[chooseTile[selectIndex][0]][chooseTile[selectIndex][1]][chooseTile[selectIndex][3]] = TileModel::ON;
     }
     return v;
 }
 
-QVector<QVector<QString>> GameModel::primAlgo()
+QVector<QVector<QVector<bool>>> GameModel::primAlgo()
 {
     int m = this->_DIM;
-    QVector<QVector<QString>> v(m, QVector<QString>(m, ""));
+    QVector<QVector<QVector<bool>>> v(m, QVector<QVector<bool>>(m, {0, 0, 0, 0}));
     QVector<QVector<bool>> usedV(m, QVector<bool>(m, false));
     int startTileY = getBounded(0, m), startTileX = getBounded(0, m);
     this->startTile = {startTileY, startTileX};
@@ -158,10 +153,10 @@ QVector<QVector<QString>> GameModel::primAlgo()
         int currentY = currentTile[0], currentX = currentTile[1];
         usedV[currentY][currentX] = true;
         QVector<QVector<int>> chooseTile{
-            {currentY - 1, currentX,     currentY, currentX, 0, 2},
-            {currentY,     currentX + 1, currentY, currentX, 1, 3},
-            {currentY + 1, currentX,     currentY, currentX, 2, 0},
-            {currentY,     currentX - 1, currentY, currentX, 3, 1},
+            {currentY - 1, currentX,     currentY, currentX, TileModel::North, TileModel::South},
+            {currentY,     currentX + 1, currentY, currentX, TileModel::East,  TileModel::West},
+            {currentY + 1, currentX,     currentY, currentX, TileModel::South, TileModel::North},
+            {currentY,     currentX - 1, currentY, currentX, TileModel::West,  TileModel::East},
         };
         for (int i = 0; i < chooseTile.size(); ++i) {
             int y = chooseTile[i][0], x = chooseTile[i][1];
@@ -170,7 +165,7 @@ QVector<QVector<QString>> GameModel::primAlgo()
                 --i;
             }
         }
-        while (v[currentY][currentX].size() + chooseTile.size() >= 4)
+        while (TileModel::countNodes(v[currentY][currentX]) + chooseTile.size() >= 4)
             chooseTile.erase(chooseTile.cbegin() + this->getBounded(0, chooseTile.size()));
 
 
@@ -182,8 +177,8 @@ QVector<QVector<QString>> GameModel::primAlgo()
         int selectIndex = getBounded(0, awaitTiles.size());
         QVector<int> selectedTile = awaitTiles[selectIndex];
         awaitTiles.erase(awaitTiles.cbegin() + selectIndex);
-        v[selectedTile[0]][selectedTile[1]] += QString::number(selectedTile[5]);
-        v[selectedTile[2]][selectedTile[3]] += QString::number(selectedTile[4]);
+        v[selectedTile[0]][selectedTile[1]][selectedTile[5]] = TileModel::ON;
+        v[selectedTile[2]][selectedTile[3]][selectedTile[4]] = TileModel::ON;
         currentTile = selectedTile;
 
     } while (!awaitTiles.empty());
@@ -218,7 +213,7 @@ bool GameModel::checkAnswer()
     QVector<QVector<QVector<bool>>> checkVecktor(m, QVector<QVector<bool>>(m, {false, false, false, false}));
     for (int i = 0; i < m; ++i)
         for (int j = 0; j < m; ++j)
-            checkVecktor[i][j] = this->game[i][j]->nodes;
+            checkVecktor[i][j] = this->game[i][j]->getNodeVector();
 
     QStack<QVector<int>> tilesStack;
     tilesStack.push(this->startTile);
@@ -250,8 +245,8 @@ bool GameModel::checkAnswer()
         }
         --countTiles;
         tilesStack.push(chooseNode[0]);
-        checkVecktor[chooseNode[0][0]][chooseNode[0][1]][chooseNode[0][3]] = false;
-        checkVecktor[currentY][currentX][chooseNode[0][2]] = false;
+        checkVecktor[chooseNode[0][0]][chooseNode[0][1]][chooseNode[0][3]] = TileModel::OFF;
+        checkVecktor[currentY][currentX][chooseNode[0][2]] = TileModel::OFF;
 
     }
     if (countTiles == 0){

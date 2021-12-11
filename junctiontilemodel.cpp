@@ -4,36 +4,48 @@
 JunctionTile::JunctionTile(QObject *parent) :
     TileModel(parent)
 {
-    this->nodes[1] = true;
-    this->nodes[2] = true;
-    this->nodes[3] = true;
+    this->east = TileModel::ON;
+    this->south = TileModel::ON;
+    this->west = TileModel::ON;
 }
 
-JunctionTile::JunctionTile(QString nodes, QObject *parent):
+JunctionTile::JunctionTile(const QVector<bool>& tile, QObject *parent):
     TileModel(parent)
 {
-    JunctionTile::setNodes(nodes);
+    JunctionTile::setNodes(tile);
 }
 
-void JunctionTile::setNodes(QString nodes)
+void JunctionTile::setNodes(const QVector<bool>& tile)
 {
+    if (tile.size() == 0 ||
+      !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
+        this->east = TileModel::ON;
+        this->south = TileModel::ON;
+        this->west = TileModel::ON;
+        return;
+    }
     this->clearNodes();
-    if (nodes.isEmpty()) {
-        this->nodes[1] = true;
-        this->nodes[2] = true;
-        this->nodes[3] = true;
-    } else if (nodes.size() == 3) {
-        for (const QChar &s : nodes)
-            this->nodes[s.digitValue()] = true;
-    } else {
+    TileModel::setNodes(tile);
+    if (!JunctionTile::isValidTile())
         throw "The nodes does not match to any JunctionTiles";
-    }
-    for (int i = 0; i < 4; ++i) {
-        if (!this->nodes[i]) {
-            this->rotateAngle = i*90;
-            break;
-        }
-    }
+
+    if (!this->north)
+        this->rotateAngle = 0;
+    else if (!this->east)
+        this->rotateAngle = 90;
+    else if (!this->south)
+        this->rotateAngle = 180;
+    else
+        this->rotateAngle = 270;
 
     emit this->nodesChanged();
+}
+
+bool JunctionTile::isValidTile()
+{
+    QString nodeString = this->getNodeString();
+    if (nodeString.size() == 3)
+        return true;
+
+    return false;
 }

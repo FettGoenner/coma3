@@ -1,55 +1,61 @@
-#include "cornertilemodel.h"
 #include <QPainter>
 #include <QTimer>
+
+#include "cornertilemodel.h"
 
 CornerTile::CornerTile(QObject *parent) :
     TileModel(parent)
 {
-    this->nodes[1] = true;
-    this->nodes[2] = true;
+    this->east = TileModel::ON;
+    this->south = TileModel::ON;
 }
 
-CornerTile::CornerTile(QString nodes, QObject *parent):
+CornerTile::CornerTile(const QVector<bool>& tile, QObject *parent):
     TileModel(parent)
 {
-    CornerTile::setNodes(nodes);
+    CornerTile::setNodes(tile);
 }
 
-void CornerTile::setNodes(QString nodes)
+void CornerTile::setNodes(const QVector<bool>& tile)
 {
+    if (tile.size() == 0 ||
+            !(tile[TileModel::North] || tile[TileModel::East] || tile[TileModel::South] || tile[TileModel::West])) {
+        this->east = TileModel::ON;
+        this->south = TileModel::ON;
+        return;
+    }
     this->clearNodes();
-    if (nodes.isEmpty()) {
-        this->nodes[1] = true;
-        this->nodes[2] = true;
-    } else if (nodes.size() == 2) {
-        int first = nodes[0].digitValue(), second = nodes[1].digitValue();
+    TileModel::setNodes(tile);
+    if (!CornerTile::isValidTile())
+        throw "The nodes does not match to any CornerTiles";
+
+    if (this->south && this->west)
+        this->rotateAngle = 90;
+    else if (this->west && this->north)
+        this->rotateAngle = 180;
+    else if (this->north && this->east)
+        this->rotateAngle = 270;
+    else
+        this->rotateAngle = 0;
+
+    emit this->nodesChanged();
+}
+
+bool CornerTile::isValidTile()
+{
+    QString nodeString = this->getNodeString();
+    if (nodeString.size() == 2) {
+        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
         if (first > second) {
             int temp = first;
             first = second;
             second = temp;
         }
         if (second - first == 1 || second - first == 3) {
-            this->nodes[first] = true;
-            this->nodes[second] = true;
-        } else
-            throw "The nodes does not match to any CornerTiles";
-
-    } else {
-        throw "The nodes does not match to any CornerTiles";
+            return true;
+        }
     }
-    int index1 = 1, index2 = 2;
-    this->rotateAngle = 0;
-    for (int i = 0; i < 4; ++i) {
-        if (this->nodes[index1] && this->nodes[index2])
-            break;
-        ++index1, ++index2;
-        this->rotateAngle += 90;
-        if (index1 == 4)
-            index1 = 0;
-        if (index2 == 4)
-            index2 = 0;
-    }
-
-    emit this->nodesChanged();
+    return false;
 }
+
 

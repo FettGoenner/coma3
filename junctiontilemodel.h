@@ -7,8 +7,10 @@ class JunctionTile : public TileModel
 {
 public:
     JunctionTile(QObject *parent = nullptr);
-    JunctionTile(QString nodes = "", QObject *parent = nullptr);
-    void setNodes(QString nodes) override;
+    JunctionTile(const QVector<bool>& tile = {}, QObject *parent = nullptr);
+//    void setNodes(bool north, bool east, bool south, bool west) override{};
+    void setNodes(const QVector<bool>& tile) override;
+    bool isValidTile() override;
     QString getTileType() override {
         return "JunctionTile";
     }
