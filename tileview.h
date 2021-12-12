@@ -19,7 +19,6 @@ private:
 public:
     explicit TileView(TileModel *tile, QColor color, QFrame *parent = nullptr);
 
-    void rotate90(); // rotate the node 90 degrees clockwise
     void rotateWithAnimation(int angle = 90);
     void startHintAnimation();
     void stopHintAnimation();

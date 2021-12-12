@@ -96,6 +96,7 @@ void TileView::rotateTimeout()
     if (this->animationAngele == 0) {
         this->animationAngele = 90;
         this->animationTimer->stop();
+
     }
 }
 
