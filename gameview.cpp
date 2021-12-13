@@ -70,14 +70,18 @@ void GameView::changeBgc(bool connected)
 
 void GameView::startHint()
 {
-    emit this->startTileHintAnimation();
+    if (!this->hintStarted) {
+        this->hintStarted = true;
+        emit this->startTileHintAnimation();
+    } else
+        this->endHint();
 }
 
 void GameView::endHint()
 {
+    this->hintStarted = false;
     emit this->stopTileHintAnimation();
 }
-
 
 void GameView::paintEvent(QPaintEvent *ev)
 {

@@ -19,6 +19,7 @@ private:
     GameModel *gameModel;
     QGridLayout *gridLayout = nullptr;
     QColor bgc = Qt::white;
+    bool hintStarted = false;
 
     void clearLayout();
 public:

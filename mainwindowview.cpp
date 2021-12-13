@@ -39,14 +39,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
     ui->gameWindow->layout()->addWidget(gameView);
 
+    // pause buttom
     connect(dockWindow, &DockWindow::changedGameStarted, gameModel, &GameModel::changeGameStarted);
 
+    // solution button
     connect(dockWindow, &DockWindow::clickedSolutionBtn, gameModel, &GameModel::showSolution);
 
+    // hint button
     connect(dockWindow, &DockWindow::clickedHintBtn, gameView, &GameView::startHint);
 
+    // reset button
     connect(dockWindow, &DockWindow::clickedResetBtn, gameModel, &GameModel::resetGame);
 
+    // send game started from GameModel
     connect(gameModel, &GameModel::gameStart, dockWindow, &DockWindow::gameStarted);
 
     // set text to totalSteps
@@ -63,7 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
             else if (dialog.getAlgoType() == "Prim")
                 algoType = GameModel::Prim;
             else
-
                 throw "unknown game type";
             gameModel->setSize(dialog.getSize());
             gameModel->setGameSeed(dialog.getSeed());
