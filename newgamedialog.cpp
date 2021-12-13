@@ -16,12 +16,12 @@ NewGameDialog::NewGameDialog(size_t size, QString algoType, QWidget *parent) :
     ui->seedSpinBox->setValue(this->seed);
     ui->algoTypeComboBox->setCurrentText(this->algoType);
     //get and set size
-    connect(ui->sizeSpinBox, &QSpinBox::valueChanged, this, [=]() {
-        this->_DIM = ui->sizeSpinBox->value();
+    connect(ui->sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, [=](int size) {
+        this->_DIM = size;
     });
     //get and set seed value
-    connect(ui->seedSpinBox, &QSpinBox::valueChanged, this, [=]() {
-        this->seed = ui->seedSpinBox->value();
+    connect(ui->seedSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, [=](int seed) {
+        this->seed = seed;
     });
 
     connect(ui->getRandomSeedBtn, &QPushButton::clicked, this, [=]() {

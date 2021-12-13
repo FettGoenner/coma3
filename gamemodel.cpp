@@ -126,7 +126,7 @@ QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
         for (int i = 0; i < chooseTile.size(); ++i) {
             int y = chooseTile[i][0], x = chooseTile[i][1];
             if (x < 0 || y < 0 || y >= m || x >= m || !TileModel::noNodes(v[y][x]))
-                chooseTile.erase(chooseTile.cbegin() + (i--));
+                chooseTile.erase(chooseTile.begin() + (i--));
         }
         if (chooseTile.empty() || TileModel::has3Nodes(v[currentY][currentX])) {
             tileStack.pop();
@@ -161,12 +161,12 @@ QVector<QVector<QVector<bool>>> GameModel::primAlgo()
         for (int i = 0; i < chooseTile.size(); ++i) {
             int y = chooseTile[i][0], x = chooseTile[i][1];
             if (x < 0 || y < 0 || y >= m || x >= m || usedV[y][x]) {
-                chooseTile.erase(chooseTile.cbegin() + i);
+                chooseTile.erase(chooseTile.begin() + i);
                 --i;
             }
         }
         while (TileModel::countNodes(v[currentY][currentX]) + chooseTile.size() >= 4)
-            chooseTile.erase(chooseTile.cbegin() + this->getBounded(0, chooseTile.size()));
+            chooseTile.erase(chooseTile.begin() + this->getBounded(0, chooseTile.size()));
 
 
         for (auto & tile : chooseTile) {
@@ -176,7 +176,7 @@ QVector<QVector<QVector<bool>>> GameModel::primAlgo()
 
         int selectIndex = getBounded(0, awaitTiles.size());
         QVector<int> selectedTile = awaitTiles[selectIndex];
-        awaitTiles.erase(awaitTiles.cbegin() + selectIndex);
+        awaitTiles.erase(awaitTiles.begin() + selectIndex);
         v[selectedTile[0]][selectedTile[1]][selectedTile[5]] = TileModel::ON;
         v[selectedTile[2]][selectedTile[3]][selectedTile[4]] = TileModel::ON;
         currentTile = selectedTile;
@@ -229,7 +229,7 @@ bool GameModel::checkAnswer()
         };
         for (int i = 0, j = 0; i < 4; ++i, ++j)
             if (!checkVecktor[currentY][currentX][i])
-                chooseNode.erase(chooseNode.cbegin() + (j--));
+                chooseNode.erase(chooseNode.begin() + (j--));
 
         if (chooseNode.empty()) {
             tilesStack.pop();

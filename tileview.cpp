@@ -53,7 +53,7 @@ void TileView::stopHintAnimation()
 void TileView::hintAnimationTimeout()
 {
 
-    this->alphaValueF += 0.5;
+    this->alphaValueF += 0.3;
     update();
 }
 
