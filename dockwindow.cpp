@@ -6,6 +6,7 @@ DockWindow::DockWindow(QWidget *parent) :
     ui(new Ui::DockWindow)
 {
     ui->setupUi(this);
+    ui->pauseBtn->setEnabled(false);
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
         if (ui->pauseBtn->text() == "Pause") {
             ui->pauseBtn->setText("Resume");
@@ -29,6 +30,7 @@ DockWindow::DockWindow(QWidget *parent) :
         ui->totalPlayTime->setText("00:00");
         ui->totalSteps->setText("0");
         ui->solutionBtn->setEnabled(true);
+        ui->pauseBtn->setEnabled(false);
         emit this->clickedResetBtn();
     });
 
@@ -46,6 +48,7 @@ void DockWindow::gameStarted()
 {
     ui->pauseBtn->setText("Pause");
     ui->solutionBtn->setEnabled(false);
+    ui->pauseBtn->setEnabled(true);
 }
 
 // set text to totalSteps
@@ -64,4 +67,5 @@ void DockWindow::newGameStarted()
     ui->totalPlayTime->setText("00:00");
     ui->totalSteps->setText("0");
     ui->solutionBtn->setEnabled(true);
+    ui->pauseBtn->setEnabled(false);
 }
