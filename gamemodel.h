@@ -13,9 +13,9 @@ class GameModel : public QObject
     Q_OBJECT
 private:
     size_t _DIM;
-    int totalPlayTime;
-    int totalSteps;
-    int algoType = GameModel::Depth;
+    size_t totalPlayTime;
+    size_t totalSteps;
+    size_t algoType = GameModel::Depth;
     QRandomGenerator gen; // for random values
     QVector<int> startTile;
     QVector<QVector<QVector<bool>>> answer;
@@ -49,9 +49,10 @@ signals:
     QString sendGameSeed(QString seed);
     bool onGameStatus(bool status); // true, if this is a solution
     void gameStart();
+    void initializedNewGame();
 public slots:
     void setSteps() {
-        if (!this->gameStarted){
+        if (!this->gameStarted) {
             this->gameStarted = true;
             emit this->gameStart();
         }

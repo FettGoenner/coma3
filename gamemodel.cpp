@@ -286,9 +286,12 @@ void GameModel::showSolution()
 
 void GameModel::showSolutionOnTile(TileModel *tileModel)
 {
+    if (!this->gameStarted){
+        this->gameStarted = true;
+        emit this->gameStart();
+    }
     for (size_t i = 0; i < this->_DIM; ++i) {
         for (size_t j = 0; j < this->_DIM; ++j) {
-//            emit this->game[i][j]->endHint();
             if (this->game[i][j] == tileModel){
                 this->game[i][j]->setNodes(this->answer[i][j]);
                 this->checkAnswer();

@@ -27,8 +27,13 @@ void GameView::showGame(bool clearStatus)
             // save tile in 2d vector playGround
             this->gridLayout->addWidget(tileView, i, j);
 
+            // set steps after clicked a tile
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
+
+            // check answer after clicked a tile
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
+
+            // show solution a this tile if clicked while hint
             connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
             connect(tileView, &TileView::clickedWhileHint, this, &GameView::endHint);
             connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);

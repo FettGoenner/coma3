@@ -30,6 +30,7 @@ public slots:
     void setStep(QString steps);
     void setTime(QString totalTime);
     void newGameStarted();
+
 };
 
 

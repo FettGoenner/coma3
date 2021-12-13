@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(gameModel, &GameModel::sendSteps, dockWindow, &DockWindow::setStep);
     // Timer
     connect(gameModel, &GameModel::sendTime, dockWindow, &DockWindow::setTime);
-//    // new game
+    // new game
     connect(dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
         NewGameDialog dialog(gameModel->getSize(), gameModel->getAlgoType() , this);
         if (dialog.exec() == QDialog::Accepted) {
@@ -78,8 +78,6 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
     });
-
-
 }
 
 MainWindow::~MainWindow()

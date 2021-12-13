@@ -26,7 +26,6 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
         this->animationAngele = tile->getAngle();
         this->animationTimer->start();
     }
-
 }
 
 void TileView::rotateWithAnimation(int angle)
@@ -71,20 +70,26 @@ void TileView::adjustAngle()
 
 void TileView::setColor(QColor color)
 {
-    if (color == Qt::transparent)
+    if (color == Qt::transparent) {
+        this->canBeClicked = true;
         this->setStyleSheet("QWidget{"
                             "border:2px solid gray;"
                             "}");
-    else if (color == Qt::green)
+    }
+    else if (color == Qt::green) {
+        this->canBeClicked = true;
         this->setStyleSheet("QWidget{"
                             "border:2px solid gray;"
                             "background-color: rgb(0, 255, 0);"
                             "}");
-    else if (color == Qt::yellow)
+    }
+    else if (color == Qt::yellow) {
+        this->canBeClicked = false;
         this->setStyleSheet("QWidget{"
                             "border:2px solid gray;"
                             "background-color: rgb(255, 255, 0);"
                             "}");
+    }
 }
 
 void TileView::rotateTimeout()
