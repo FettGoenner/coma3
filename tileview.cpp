@@ -19,6 +19,7 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
 
     connect(tile, &TileModel::resetTile, this, [=]() {
         this->setColor(Qt::transparent);
+        this->stopHintAnimation();
     });
     connect(this, &TileView::nodeChange, this->tile, &TileModel::adjustNodes);
     connect(tile, &TileModel::nodesChanged, this, &TileView::adjustAngle);
