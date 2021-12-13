@@ -14,10 +14,13 @@ class DockWindow : public QDockWidget
 public:
     explicit DockWindow(QWidget *parent = nullptr);
     ~DockWindow();
-    const static size_t HINTLIMIT = 3;
+    const static size_t HINTLIMIT = 3; // Hint limit
 private:
     Ui::DockWindow *ui;
+    size_t hintCount = 0;
 
+    void resetHint();
+    void setHintBtnText();
 signals:
     void changedGameStarted(bool started);
     void clickedSolutionBtn();
@@ -30,7 +33,7 @@ public slots:
     void setStep(QString steps);
     void setTime(QString totalTime);
     void newGameStarted();
-
+    void setHintCount();
 };
 
 

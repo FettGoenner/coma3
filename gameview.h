@@ -28,6 +28,7 @@ public:
 signals:
     void startTileHintAnimation();
     void stopTileHintAnimation();
+    void hintSucceeded();
 
 public slots:
     void showGame(bool clearStatus = false);

@@ -86,7 +86,7 @@
     <item>
      <widget class="QPushButton" name="hintBtn">
       <property name="text">
-       <string>Hint</string>
+       <string>Hint: 3</string>
       </property>
      </widget>
     </item>

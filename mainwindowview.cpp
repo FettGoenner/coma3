@@ -51,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent)
     // reset button
     connect(dockWindow, &DockWindow::clickedResetBtn, gameModel, &GameModel::resetGame);
 
+    // count how many times HINT has been used.
+    connect(gameView, &GameView::hintSucceeded, dockWindow, &DockWindow::setHintCount);
+
     // send game started from GameModel
     connect(gameModel, &GameModel::gameStart, dockWindow, &DockWindow::gameStarted);
 
@@ -62,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
         NewGameDialog dialog(gameModel->getSize(), gameModel->getAlgoType() , this);
         if (dialog.exec() == QDialog::Accepted) {
+
+            // get alto type of new game
             int algoType = 0;
             if (dialog.getAlgoType() == "Depth")
                 algoType = GameModel::Depth;
@@ -69,10 +74,20 @@ MainWindow::MainWindow(QWidget *parent)
                 algoType = GameModel::Prim;
             else
                 throw "unknown game type";
+
+            // get and set new game size
             gameModel->setSize(dialog.getSize());
+
+            // get and set new game seed
             gameModel->setGameSeed(dialog.getSeed());
+
+            // set algo type
             gameModel->initializeGame(algoType);
+
+            // set everything in dock window to default.
             dockWindow->newGameStarted();
+
+            // set game status to statusbar
             this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.getSize()).arg(dialog.getSize()));
             this->algoStatusLabel->setText(dialog.getAlgoType());
         }
