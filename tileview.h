@@ -20,23 +20,28 @@ public:
     explicit TileView(TileModel *tile, QColor color, QFrame *parent = nullptr);
 
     void rotateWithAnimation(int angle = 90);
-    void startHintAnimation();
-    void stopHintAnimation();
+
     void adjustAngle();
-    void setColor(QColor color);
+    void setBackgroundColor(QColor color);
 protected:
     void paintEvent(QPaintEvent*) override;
 signals:
     void nodeChange(int times);
     void clicked();
     void clickedWhileHint(TileModel *tileModel);
+    void rotateFinished();
 
 protected:
     virtual void mouseReleaseEvent(QMouseEvent *ev) override;
 
+public slots:
+    void startHintAnimation();
+    void stopHintAnimation();
+    void isConnected(bool connected);
+
 private slots:
-    void rotateTimeout();
-    void hintAnimationTimeout();
+    void rotateTimeout(); // for rotate animation
+    void hintAnimationTimeout(); // for hint animation
 };
 
 #endif // TILEVIEW_H

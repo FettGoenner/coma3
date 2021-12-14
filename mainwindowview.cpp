@@ -1,14 +1,9 @@
-#include <QDebug>
 #include <QTime>
 #include <QHBoxLayout>
+#include <QKeyEvent>
 
 #include "mainwindowview.h"
 #include "ui_mainwindowview.h"
-#include "gameview.h"
-#include "newgamedialog.h"
-#include "gamemodel.h"
-#include "tileview.h"
-#include "dockwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,38 +27,28 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(this->seedStatusLabel);
     ui->statusBar->addWidget(this->algoStatusLabel);
 
-    DockWindow *dockWindow = new DockWindow(this);
-    this->addDockWidget(Qt::RightDockWidgetArea, dockWindow);
-    GameModel *gameModel = new GameModel(7, gameSeed);
-    GameView * gameView = new GameView(gameModel, ui->gameWindow);
-    connect(gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
-    ui->gameWindow->layout()->addWidget(gameView);
+    this->dockWindow = new DockWindow(this);
+    this->addDockWidget(Qt::RightDockWidgetArea, this->dockWindow);
+    this->gameModel = new GameModel(7, gameSeed);
+    this->gameView = new GameView(this->gameModel, ui->gameWindow);
+    connect(this->gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
+    ui->gameWindow->layout()->addWidget(this->gameView);
 
     // pause buttom
-    connect(dockWindow, &DockWindow::changedGameStarted, gameModel, &GameModel::changeGameStarted);
+    connect(this->dockWindow, &DockWindow::changedGameStarted, this->gameModel, &GameModel::changeGameStarted);
 
     // solution button
-    connect(dockWindow, &DockWindow::clickedSolutionBtn, gameModel, &GameModel::showSolution);
+    connect(this->dockWindow, &DockWindow::clickedSolutionBtn, this->gameModel, &GameModel::showSolution);
 
     // hint button
-    connect(dockWindow, &DockWindow::clickedHintBtn, gameView, &GameView::startHint);
+    connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameView, &GameView::startHint);
 
     // reset button
-    connect(dockWindow, &DockWindow::clickedResetBtn, gameModel, &GameModel::resetGame);
+    connect(this->dockWindow, &DockWindow::clickedResetBtn, this->gameModel, &GameModel::resetGame);
 
-    // count how many times HINT has been used.
-    connect(gameView, &GameView::hintSucceeded, dockWindow, &DockWindow::setHintCount);
-
-    // send game started from GameModel
-    connect(gameModel, &GameModel::gameStart, dockWindow, &DockWindow::gameStarted);
-
-    // set text to totalSteps
-    connect(gameModel, &GameModel::sendSteps, dockWindow, &DockWindow::setStep);
-    // Timer
-    connect(gameModel, &GameModel::sendTime, dockWindow, &DockWindow::setTime);
-    // new game
-    connect(dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
-        NewGameDialog dialog(gameModel->getSize(), gameModel->getAlgoType() , this);
+    // new game button
+    connect(this->dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
+        NewGameDialog dialog(this->gameModel->getSize(), this->gameModel->getAlgoType() , this);
         if (dialog.exec() == QDialog::Accepted) {
 
             // get alto type of new game
@@ -76,24 +61,91 @@ MainWindow::MainWindow(QWidget *parent)
                 throw "unknown game type";
 
             // get and set new game size
-            gameModel->setSize(dialog.getSize());
+            this->gameModel->setSize(dialog.getSize());
 
             // get and set new game seed
-            gameModel->setGameSeed(dialog.getSeed());
+            this->gameModel->setGameSeed(dialog.getSeed());
 
             // set algo type
-            gameModel->initializeGame(algoType);
+            this->gameModel->initializeGame(algoType);
 
             // set everything in dock window to default.
-            dockWindow->newGameStarted();
+            this->dockWindow->newGameStarted();
 
             // set game status to statusbar
             this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.getSize()).arg(dialog.getSize()));
             this->algoStatusLabel->setText(dialog.getAlgoType());
         }
-
     });
+
+    // connect hint action and hint button
+    connect(this->dockWindow, &DockWindow::hintBtnEnabledChanged, ui->hintAction, &QAction::setEnabled);
+
+    // connect solution action and solution button
+    connect(this->dockWindow, &DockWindow::solutionBtnEnabledChanged, ui->solutionAction, &QAction::setEnabled);
+
+    // connect pause action and pause button
+    connect(this->dockWindow, &DockWindow::pauseBtnEnabledChanged, ui->pauseAction, &QAction::setEnabled);
+    connect(this->dockWindow, &DockWindow::pauseBtnTextChanged, ui->pauseAction, &QAction::setText);
+
+    // new game action
+    connect(ui->newGameAction, &QAction::triggered, this->dockWindow, &DockWindow::clickNewGameBtn);
+
+    // reset action
+    connect(ui->resetAction, &QAction::triggered, this->dockWindow, &DockWindow::clickResetBtn);
+
+    //hint action
+    connect(ui->hintAction, &QAction::triggered, this->dockWindow, &DockWindow::clickHintBtn);
+
+    // pause action
+    connect(ui->pauseAction, &QAction::triggered, this->dockWindow, &DockWindow::clickPauseBtn);
+
+    // solution action
+    connect(ui->solutionAction, &QAction::triggered, this->dockWindow, &DockWindow::clickSolutionBtn);
+
+    // save game action
+    // TODO
+
+    // about action
+    // TODO
+
+    // exit action
+    connect(ui->exitAction, &QAction::triggered, this, [=]() {
+        this->close();
+    });
+
+    // count how many times HINT has been used.
+    connect(gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
+
+    // send game started from GameModel
+    connect(gameModel, &GameModel::gameStart, this->dockWindow, &DockWindow::gameStarted);
+
+    // set text to totalSteps
+    connect(gameModel, &GameModel::sendSteps, this->dockWindow, &DockWindow::setStep);
+    // Timer
+    connect(gameModel, &GameModel::sendTime, this->dockWindow, &DockWindow::setTime);
+
 }
+
+
+void MainWindow::keyPressEvent(QKeyEvent *ev)
+{
+    if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_N)
+        this->dockWindow->clickNewGameBtn();
+    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_R)
+        this->dockWindow->clickResetBtn();
+    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_H)
+        this->dockWindow->clickHintBtn();
+    else if (ev->modifiers() == Qt::AltModifier && ev->key() == Qt::Key_S)
+        this->dockWindow->clickSolutionBtn();
+//    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_S)
+//        this->dockWindow->clickHintBtn();
+    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_W)
+        this->close();
+    else if (ev->key() == Qt::Key_F9)
+        this->dockWindow->clickPauseBtn();
+}
+
 
 MainWindow::~MainWindow()
 {

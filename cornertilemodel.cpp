@@ -4,7 +4,7 @@
 #include "cornertilemodel.h"
 
 CornerTile::CornerTile(QObject *parent) :
-    TileModel(parent)
+     TileModel(parent)
 {
     // default CornerTile
     this->east = TileModel::ON;

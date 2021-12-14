@@ -11,14 +11,17 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
   , hintAnimationTimer(new QTimer)
 {
     setCursor(Qt::PointingHandCursor);
-    this->setColor(Qt::transparent);
+    this->setBackgroundColor(Qt::transparent);
+
     this->animationTimer->setInterval(10);
     this->hintAnimationTimer->setInterval(60);
+
+    //
     connect(this->animationTimer, &QTimer::timeout, this, &TileView::rotateTimeout);
     connect(this->hintAnimationTimer, &QTimer::timeout, this, &TileView::hintAnimationTimeout);
 
-    connect(tile, &TileModel::resetTile, this, [=]() {
-        this->setColor(Qt::transparent);
+    connect(tile, &TileModel::resetedTile, this, [=]() {
+        this->setBackgroundColor(Qt::transparent);
         this->stopHintAnimation();
     });
     connect(this, &TileView::nodeChange, this->tile, &TileModel::adjustNodes);
@@ -51,6 +54,15 @@ void TileView::stopHintAnimation()
     update();
 }
 
+void TileView::isConnected(bool connected)
+{
+    if (connected)
+        this->tileColor = QColor(0, 200, 0);
+    else
+        this->tileColor = Qt::blue;
+    this->update();
+}
+
 void TileView::hintAnimationTimeout()
 {
 
@@ -69,7 +81,7 @@ void TileView::adjustAngle()
         this->animationTimer->start();
 }
 
-void TileView::setColor(QColor color)
+void TileView::setBackgroundColor(QColor color)
 {
     if (color == Qt::transparent) {
         this->canBeClicked = true;
@@ -102,7 +114,7 @@ void TileView::rotateTimeout()
     if (this->animationAngele == 0) {
         this->animationAngele = 90;
         this->animationTimer->stop();
-
+        emit this->rotateFinished();
     }
 }
 
@@ -114,7 +126,7 @@ void TileView::mouseReleaseEvent(QMouseEvent *ev)
         // send signal clicked()
         emit this->clicked();
     } else if (this->hintAnimationTimer->isActive()) {
-        this->setColor(Qt::yellow);
+        this->setBackgroundColor(Qt::yellow);
         this->canBeClicked = false;
         emit this->clickedWhileHint(this->tile);
     }

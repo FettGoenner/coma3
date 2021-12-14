@@ -9,40 +9,43 @@ DockWindow::DockWindow(QWidget *parent) :
     ui->setupUi(this);
 
     // pause button should be disabled by default
-    ui->pauseBtn->setEnabled(false);
-
+    this->setPauseBtnEnabled(false);
     // switch between "Pause" and "Resume"
     connect(ui->pauseBtn, &QPushButton::clicked, this, [=]() {
         if (ui->pauseBtn->text() == "Pause") {
-            ui->pauseBtn->setText("Resume");
-
+            this->setPauseBtnText("Resume");
             emit this->changedGameStarted(false);
 
             // if the game stopped, solution button would enable
-            ui->solutionBtn->setEnabled(true);
+            this->setSolutionBtnEnabled(true);
         } else {
             ui->pauseBtn->setText("Pause");
-
+            this->setPauseBtnText("Pause");
             emit this->changedGameStarted(true);
 
             // if the game resumed, solution button would disable
-            ui->solutionBtn->setEnabled(false);
+            this->setSolutionBtnEnabled(false);
         }
     });
+
+    // send signal if clicked solution button
     connect(ui->solutionBtn, &QPushButton::clicked, this, [=]() {
         emit this->clickedSolutionBtn();
     });
 
+    // send signal if clicked hint button
     connect(ui->hintBtn, &QPushButton::clicked, this, [=]() {
         emit this->clickedHintBtn();
     });
 
+    // send signal if clicked reset button
     connect(ui->resetBtn, &QPushButton::clicked, this, [=]() {
         this->newGameStarted();
 
         emit this->clickedResetBtn();
     });
 
+    // send signal if clicked new game button
     connect(ui->newGameBtn, &QPushButton::clicked, this, [=]() {
         emit this->clickedNewGameBtn();
     });
@@ -51,7 +54,7 @@ DockWindow::DockWindow(QWidget *parent) :
 
 void DockWindow::resetHint()
 {
-    ui->hintBtn->setEnabled(true);
+    this->setHintBtnEnabled(true);
     this->hintCount = 0;
     this->setHintBtnText();
 }
@@ -61,14 +64,37 @@ void DockWindow::setHintBtnText()
     ui->hintBtn->setText(QString("Hint: %1").arg(DockWindow::HINTLIMIT - this->hintCount));
 }
 
+void DockWindow::setHintBtnEnabled(bool enabled)
+{
+    ui->hintBtn->setEnabled(enabled);
+    emit this->hintBtnEnabledChanged(enabled);
+}
+
+void DockWindow::setSolutionBtnEnabled(bool enabled)
+{
+    ui->solutionBtn->setEnabled(enabled);
+    emit this->solutionBtnEnabledChanged(enabled);
+}
+
+void DockWindow::setPauseBtnEnabled(bool enabled)
+{
+    ui->pauseBtn->setEnabled(enabled);
+    emit pauseBtnEnabledChanged(enabled);
+}
+
+void DockWindow::setPauseBtnText(QString text)
+{
+    ui->pauseBtn->setText(text);
+    emit this->pauseBtnTextChanged(text);
+}
+
 void DockWindow::gameStarted()
 {
-    ui->pauseBtn->setText("Pause");
+    this->setPauseBtnText("Pause");
     // after game started, solution button will be disabled
-    ui->solutionBtn->setEnabled(false);
-
+    this->setSolutionBtnEnabled(false);
     // after game started, pause button will be enabled
-    ui->pauseBtn->setEnabled(true);
+    this->setPauseBtnEnabled(true);
 }
 
 // set text to totalSteps
@@ -89,8 +115,8 @@ void DockWindow::newGameStarted()
     ui->pauseBtn->setText("Pause");
     ui->totalPlayTime->setText("00:00");
     ui->totalSteps->setText("0");
-    ui->solutionBtn->setEnabled(true);
-    ui->pauseBtn->setEnabled(false);
+    this->setSolutionBtnEnabled(true);
+    this->setPauseBtnEnabled(false);
 
     //reset hint button
     this->resetHint();
@@ -100,9 +126,34 @@ void DockWindow::newGameStarted()
 void DockWindow::setHintCount()
 {
     if (++this->hintCount >= DockWindow::HINTLIMIT)
-        ui->hintBtn->setEnabled(false);
+        this->setHintBtnEnabled(false);
 
     this->setHintBtnText();
+}
+
+void DockWindow::clickPauseBtn()
+{
+    ui->pauseBtn->click();
+}
+
+void DockWindow::clickHintBtn()
+{
+    ui->hintBtn->click();
+}
+
+void DockWindow::clickSolutionBtn()
+{
+    ui->solutionBtn->click();
+}
+
+void DockWindow::clickNewGameBtn()
+{
+    ui->newGameBtn->click();
+}
+
+void DockWindow::clickResetBtn()
+{
+    ui->resetBtn->click();
 }
 
 

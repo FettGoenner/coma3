@@ -21,12 +21,21 @@ private:
 
     void resetHint();
     void setHintBtnText();
+    void setHintBtnEnabled(bool enabled);
+    void setSolutionBtnEnabled(bool enabled);
+    void setPauseBtnEnabled(bool enabled);
+    void setPauseBtnText(QString text = "Pause");
+
 signals:
     void changedGameStarted(bool started);
     void clickedSolutionBtn();
     void clickedHintBtn();
     void clickedResetBtn();
     void clickedNewGameBtn();
+    void hintBtnEnabledChanged(bool enabled);
+    void solutionBtnEnabledChanged(bool enabled);
+    void pauseBtnEnabledChanged(bool enabled);
+    void pauseBtnTextChanged(QString text);
 
 public slots:
     void gameStarted();
@@ -34,6 +43,11 @@ public slots:
     void setTime(QString totalTime);
     void newGameStarted();
     void setHintCount();
+    void clickPauseBtn();
+    void clickHintBtn();
+    void clickSolutionBtn();
+    void clickNewGameBtn();
+    void clickResetBtn();
 };
 
 

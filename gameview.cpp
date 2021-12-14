@@ -13,7 +13,6 @@ GameView::GameView(GameModel *gameModel, QWidget *parent) :
     // initialize game
     this->showGame(true);
     connect(this->gameModel, &GameModel::onGameInitialization, this, &GameView::showGame);
-    connect(this->gameModel, &GameModel::onGameStatus, this, &GameView::changeBgc);
 }
 
 void GameView::showGame(bool clearStatus)
@@ -31,7 +30,7 @@ void GameView::showGame(bool clearStatus)
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
 
             // check answer after clicked a tile
-            connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
+            connect(tileView, &TileView::rotateFinished, this->gameModel, &GameModel::checkAnswer);
 
             // show solution a this tile if clicked while hint
             connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
@@ -39,13 +38,16 @@ void GameView::showGame(bool clearStatus)
 
             connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);
             connect(this, &GameView::startTileHintAnimation, tileView, &TileView::startHintAnimation);
+
+            // set tile's color
+            connect(gameModel, &GameModel::onGameStatus, tileView, &TileView::isConnected);
         }
     }
 }
 
 void GameView::clearLayout()
 {
-    if ( this->gridLayout != nullptr )
+    if (this->gridLayout != nullptr)
     {
         QLayoutItem* item;
         while ((item = this->gridLayout->takeAt(0)) != nullptr) {
@@ -55,7 +57,6 @@ void GameView::clearLayout()
         delete this->gridLayout;
         this->gridLayout = nullptr;
     }
-    this->bgc = Qt::white;
     this->update();
     // create gridlayout
     this->gridLayout = new QGridLayout(this);
@@ -65,14 +66,6 @@ void GameView::clearLayout()
 
 }
 
-void GameView::changeBgc(bool connected)
-{
-    if (connected)
-        this->bgc = Qt::green;
-    else
-        this->bgc = Qt::white;
-    update();
-}
 
 void GameView::startHint()
 {
@@ -100,7 +93,7 @@ void GameView::paintEvent(QPaintEvent *ev)
 
     painter.setPen(Qt::NoPen);
     QBrush brush;
-    brush.setColor(this->bgc);
+    brush.setColor(Qt::white);
     brush.setStyle(Qt::SolidPattern);
     painter.setBrush(brush);
     painter.drawRect(0, 0, width, height);

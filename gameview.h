@@ -18,7 +18,6 @@ class GameView : public QWidget
 private:
     GameModel *gameModel;
     QGridLayout *gridLayout = nullptr;
-    QColor bgc = Qt::white;
     bool hintStarted = false;
 
     void clearLayout();
@@ -32,7 +31,6 @@ signals:
 
 public slots:
     void showGame(bool clearStatus = false);
-    void changeBgc(bool connected);
     void startHint();
     void endHint();
 protected:

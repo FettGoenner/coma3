@@ -265,11 +265,10 @@ void GameModel::resetGame()
     this->clearEverything();
     for (size_t i = 0; i < this->_DIM; ++i) {
         for (size_t j = 0; j < this->_DIM; ++j) {
-            emit this->game[i][j]->resetTile();
+            emit this->game[i][j]->resetedTile();
             this->game[i][j]->setNodes(this->resetVector[i][j]);
         }
     }
-    emit this->onGameStatus(false);
 }
 
 void GameModel::showSolution()
@@ -277,11 +276,10 @@ void GameModel::showSolution()
     this->gameStarted = false;
     for (size_t i = 0; i < this->_DIM; ++i) {
         for (size_t j = 0; j < this->_DIM; ++j) {
-            emit this->game[i][j]->resetTile();
+            emit this->game[i][j]->resetedTile();
             this->game[i][j]->setNodes(this->answer[i][j]);
         }
     }
-    emit this->onGameStatus(true);
 }
 
 void GameModel::showSolutionOnTile(TileModel *tileModel)
