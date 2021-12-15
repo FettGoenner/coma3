@@ -56,10 +56,14 @@ void TileView::stopHintAnimation()
 
 void TileView::isConnected(bool connected)
 {
-    if (connected)
+    if (connected){
         this->tileColor = QColor(0, 200, 0);
-    else
+        this->canBeClicked = false;
+    }
+    else{
         this->tileColor = Qt::blue;
+        this->canBeClicked = true;
+    }
     this->update();
 }
 
@@ -87,13 +91,6 @@ void TileView::setBackgroundColor(QColor color)
         this->canBeClicked = true;
         this->setStyleSheet("QWidget{"
                             "border:2px solid gray;"
-                            "}");
-    }
-    else if (color == Qt::green) {
-        this->canBeClicked = true;
-        this->setStyleSheet("QWidget{"
-                            "border:2px solid gray;"
-                            "background-color: rgb(0, 255, 0);"
                             "}");
     }
     else if (color == Qt::yellow) {

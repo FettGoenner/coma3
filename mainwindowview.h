@@ -10,6 +10,7 @@
 #include "gamemodel.h"
 #include "tileview.h"
 #include "dockwindow.h"
+#include "savegameview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,8 +33,18 @@ private:
     DockWindow *dockWindow;
     GameModel *gameModel;
     GameView *gameView;
+    SaveGameDialog *saveGame;
 protected:
-    virtual void keyPressEvent(QKeyEvent *ev) override;
+private slots:
+    void on_newGameAction_triggered();
+    void on_saveGameAction_triggered();
+    void on_pauseAction_triggered();
+    void on_resetAction_triggered();
+    void on_hintAction_triggered();
+    void on_aboutAction_triggered();
+    void on_exitAction_triggered();
+    void on_solutionAction_triggered();
+    void on_loadGameAction_triggered();
 };
 
 

@@ -21,7 +21,6 @@ private:
 
     void resetHint();
     void setHintBtnText();
-    void setHintBtnEnabled(bool enabled);
     void setSolutionBtnEnabled(bool enabled);
     void setPauseBtnEnabled(bool enabled);
     void setPauseBtnText(QString text = "Pause");
@@ -48,6 +47,7 @@ public slots:
     void clickSolutionBtn();
     void clickNewGameBtn();
     void clickResetBtn();
+    void setHintBtnEnabled(bool enabled);
 };
 
 

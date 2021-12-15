@@ -19,6 +19,7 @@ SOURCES += \
     main.cpp \
     mainwindowview.cpp \
     newgamedialog.cpp \
+    savegameview.cpp \
     tilemodel.cpp \
     tileview.cpp
 
@@ -32,13 +33,15 @@ HEADERS += \
     linetilemodel.h \
     mainwindowview.h \
     newgamedialog.h \
+    savegameview.h \
     tilemodel.h \
     tileview.h
 
 FORMS += \
     dockwindow.ui \
     mainwindowview.ui \
-    newgamedialog.ui
+    newgamedialog.ui \
+    savegameview.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

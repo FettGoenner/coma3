@@ -1,6 +1,7 @@
 #include <QTime>
 #include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QMessageBox>
 
 #include "mainwindowview.h"
 #include "ui_mainwindowview.h"
@@ -11,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     , seedStatusLabel(new QLabel)
     , algoStatusLabel(new QLabel)
     , sizeStatusLabel(new QLabel)
+    , dockWindow(new DockWindow(this))
+    , saveGame(new SaveGameDialog(this))
 {
     ui->setupUi(this);
 
@@ -27,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(this->seedStatusLabel);
     ui->statusBar->addWidget(this->algoStatusLabel);
 
-    this->dockWindow = new DockWindow(this);
     this->addDockWidget(Qt::RightDockWidgetArea, this->dockWindow);
     this->gameModel = new GameModel(7, gameSeed);
     this->gameView = new GameView(this->gameModel, ui->gameWindow);
@@ -88,32 +90,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->dockWindow, &DockWindow::pauseBtnEnabledChanged, ui->pauseAction, &QAction::setEnabled);
     connect(this->dockWindow, &DockWindow::pauseBtnTextChanged, ui->pauseAction, &QAction::setText);
 
-    // new game action
-    connect(ui->newGameAction, &QAction::triggered, this->dockWindow, &DockWindow::clickNewGameBtn);
-
-    // reset action
-    connect(ui->resetAction, &QAction::triggered, this->dockWindow, &DockWindow::clickResetBtn);
-
-    //hint action
-    connect(ui->hintAction, &QAction::triggered, this->dockWindow, &DockWindow::clickHintBtn);
-
-    // pause action
-    connect(ui->pauseAction, &QAction::triggered, this->dockWindow, &DockWindow::clickPauseBtn);
-
-    // solution action
-    connect(ui->solutionAction, &QAction::triggered, this->dockWindow, &DockWindow::clickSolutionBtn);
-
-    // save game action
-    // TODO
-
-    // about action
-    // TODO
-
-    // exit action
-    connect(ui->exitAction, &QAction::triggered, this, [=]() {
-        this->close();
-    });
-
     // count how many times HINT has been used.
     connect(gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
 
@@ -122,33 +98,73 @@ MainWindow::MainWindow(QWidget *parent)
 
     // set text to totalSteps
     connect(gameModel, &GameModel::sendSteps, this->dockWindow, &DockWindow::setStep);
+
     // Timer
     connect(gameModel, &GameModel::sendTime, this->dockWindow, &DockWindow::setTime);
 
+    // can not click hint button if the game has ended
+    connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
+        this->dockWindow->setHintBtnEnabled(!status);
+    });
 }
 
 
-void MainWindow::keyPressEvent(QKeyEvent *ev)
+// new game action
+void MainWindow::on_newGameAction_triggered()
 {
-    if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_N)
-        this->dockWindow->clickNewGameBtn();
-    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_R)
-        this->dockWindow->clickResetBtn();
-    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_H)
-        this->dockWindow->clickHintBtn();
-    else if (ev->modifiers() == Qt::AltModifier && ev->key() == Qt::Key_S)
-        this->dockWindow->clickSolutionBtn();
-//    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_S)
-//        this->dockWindow->clickHintBtn();
-    else if (ev->modifiers() == Qt::ControlModifier && ev->key() == Qt::Key_W)
-        this->close();
-    else if (ev->key() == Qt::Key_F9)
-        this->dockWindow->clickPauseBtn();
+    this->dockWindow->clickNewGameBtn();
 }
 
+// save game action
+void MainWindow::on_saveGameAction_triggered()
+{
+    // TODO
+    saveGame->exec();
+}
+
+// load game action
+void MainWindow::on_loadGameAction_triggered()
+{
+    // TODO
+}
+
+// pause action
+void MainWindow::on_pauseAction_triggered()
+{
+    this->dockWindow->clickPauseBtn();
+}
+
+// reset action
+void MainWindow::on_resetAction_triggered()
+{
+    this->dockWindow->clickResetBtn();
+}
+
+// hint action
+void MainWindow::on_hintAction_triggered()
+{
+    this->dockWindow->clickHintBtn();
+}
+
+// about action
+void MainWindow::on_aboutAction_triggered()
+{
+    QMessageBox::about(this, "About", "Something here");
+}
+
+// exit action
+void MainWindow::on_exitAction_triggered()
+{
+    this->close();
+}
+
+// solution action
+void MainWindow::on_solutionAction_triggered()
+{
+    this->dockWindow->clickSolutionBtn();
+}
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-

@@ -66,8 +66,14 @@ void DockWindow::setHintBtnText()
 
 void DockWindow::setHintBtnEnabled(bool enabled)
 {
-    ui->hintBtn->setEnabled(enabled);
-    emit this->hintBtnEnabledChanged(enabled);
+    // hint button can only be enabled, if remining hints > 0
+    if (DockWindow::HINTLIMIT - this->hintCount > 0){
+        ui->hintBtn->setEnabled(enabled);
+        emit this->hintBtnEnabledChanged(enabled);
+    } else {
+        ui->hintBtn->setEnabled(false);
+        emit this->hintBtnEnabledChanged(false);
+    }
 }
 
 void DockWindow::setSolutionBtnEnabled(bool enabled)

@@ -53,6 +53,7 @@
     <addaction name="solutionAction"/>
     <addaction name="separator"/>
     <addaction name="saveGameAction"/>
+    <addaction name="loadGameAction"/>
     <addaction name="separator"/>
     <addaction name="aboutAction"/>
     <addaction name="exitAction"/>
@@ -129,6 +130,14 @@
    </property>
    <property name="shortcut">
     <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="loadGameAction">
+   <property name="text">
+    <string>Load Game</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>
