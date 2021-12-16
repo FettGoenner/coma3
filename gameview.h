@@ -18,7 +18,6 @@ class GameView : public QWidget
 private:
     GameModel *gameModel;
     QGridLayout *gridLayout = nullptr;
-    bool hintStarted = false;
 
     void clearLayout();
 public:

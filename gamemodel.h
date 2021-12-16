@@ -21,6 +21,7 @@ private:
     QVector<QVector<QVector<bool>>> answer;
     QVector<QVector<QVector<bool>>> resetVector;
     QTimer *timer;
+    bool won = false;
 
     void clearEverything();
     QVector<QVector<QVector<bool>>> depthAlgo();

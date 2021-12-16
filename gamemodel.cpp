@@ -93,6 +93,7 @@ void GameModel::clearEverything()
     this->gameStarted = false;
     this->totalPlayTime = 0;
     this->totalSteps = 0;
+    this->won = false;
 }
 
 int GameModel::getBounded(int lowest, int highest)
@@ -208,6 +209,8 @@ void GameModel::setTime()
 
 bool GameModel::checkAnswer()
 {
+    if (this->won)
+        return true;
     int m = this->_DIM;
     size_t countTiles = m*m - 1;
     QVector<QVector<QVector<bool>>> checkVecktor(m, QVector<QVector<bool>>(m, {false, false, false, false}));
@@ -252,6 +255,7 @@ bool GameModel::checkAnswer()
     if (countTiles == 0){
         this->gameStarted = false;
         emit onGameStatus(true);
+        this->won = true;
         return true;
     }
     else{
@@ -284,7 +288,7 @@ void GameModel::showSolution()
 
 void GameModel::showSolutionOnTile(TileModel *tileModel)
 {
-    if (!this->gameStarted){
+    if (!this->gameStarted) {
         this->gameStarted = true;
         emit this->gameStart();
     }

@@ -35,6 +35,9 @@ void GameView::showGame(bool clearStatus)
             // show solution a this tile if clicked while hint
             connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
             connect(tileView, &TileView::clickedWhileHint, this, &GameView::endHint);
+            connect(tileView, &TileView::clickedWhileHint, this, [=]() {
+                emit this->hintSucceeded();
+            });
 
             connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);
             connect(this, &GameView::startTileHintAnimation, tileView, &TileView::startHintAnimation);
@@ -63,25 +66,16 @@ void GameView::clearLayout()
     this->gridLayout->setSpacing(0);
     this->gridLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(this->gridLayout);
-
 }
 
 
 void GameView::startHint()
 {
-    if (!this->hintStarted) {
-        this->hintStarted = true;
-        emit this->startTileHintAnimation();
-    } else {
-        this->hintStarted = false;
-        emit this->stopTileHintAnimation();
-    }
+    emit this->startTileHintAnimation();
 }
 
 void GameView::endHint()
 {
-    this->hintStarted = false;
-    emit this->hintSucceeded();
     emit this->stopTileHintAnimation();
 }
 

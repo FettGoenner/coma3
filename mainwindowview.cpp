@@ -43,7 +43,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->dockWindow, &DockWindow::clickedSolutionBtn, this->gameModel, &GameModel::showSolution);
 
     // hint button
-    connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameView, &GameView::startHint);
+    connect(this->dockWindow, &DockWindow::startHint, this->gameView, &GameView::startHint);
+
+    // hint button
+    connect(this->dockWindow, &DockWindow::endHint, this->gameView, &GameView::endHint);
 
     // reset button
     connect(this->dockWindow, &DockWindow::clickedResetBtn, this->gameModel, &GameModel::resetGame);
@@ -91,21 +94,34 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->dockWindow, &DockWindow::pauseBtnTextChanged, ui->pauseAction, &QAction::setText);
 
     // count how many times HINT has been used.
-    connect(gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
+    connect(this->gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
 
     // send game started from GameModel
-    connect(gameModel, &GameModel::gameStart, this->dockWindow, &DockWindow::gameStarted);
+    connect(this->gameModel, &GameModel::gameStart, this->dockWindow, &DockWindow::gameStarted);
 
     // set text to totalSteps
-    connect(gameModel, &GameModel::sendSteps, this->dockWindow, &DockWindow::setStep);
+    connect(this->gameModel, &GameModel::sendSteps, this->dockWindow, &DockWindow::setStep);
 
     // Timer
-    connect(gameModel, &GameModel::sendTime, this->dockWindow, &DockWindow::setTime);
+    connect(this->gameModel, &GameModel::sendTime, this->dockWindow, &DockWindow::setTime);
 
     // can not click hint button if the game has ended
     connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
-        this->dockWindow->setHintBtnEnabled(!status);
+        if (status) // if there is a solution
+            this->dockWindow->setHintBtnEnabled(!status); // set hint button to disable
     });
+
+    // can not click solution button if the game has ended
+    connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
+        if (status) // if there is a solution
+            this->dockWindow->setSolutionBtnEnabled(!status); // set solution button to disable
+    });
+    // can not click solution button if the game has ended
+    connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
+        if (status) // if there is a solution
+            this->dockWindow->setPauseBtnEnabled(!status); // set pause button to disable
+    });
+
 }
 
 

@@ -35,7 +35,14 @@ DockWindow::DockWindow(QWidget *parent) :
 
     // send signal if clicked hint button
     connect(ui->hintBtn, &QPushButton::clicked, this, [=]() {
-        emit this->clickedHintBtn();
+        if (this->hintStarted) {
+            this->hintStarted = false;
+            emit this->endHint();
+        }
+        else {
+            this->hintStarted = true;
+            emit this->startHint();
+        }
     });
 
     // send signal if clicked reset button
@@ -54,6 +61,7 @@ DockWindow::DockWindow(QWidget *parent) :
 
 void DockWindow::resetHint()
 {
+    this->hintStarted = false;
     this->setHintBtnEnabled(true);
     this->hintCount = 0;
     this->setHintBtnText();
@@ -66,14 +74,8 @@ void DockWindow::setHintBtnText()
 
 void DockWindow::setHintBtnEnabled(bool enabled)
 {
-    // hint button can only be enabled, if remining hints > 0
-    if (DockWindow::HINTLIMIT - this->hintCount > 0){
-        ui->hintBtn->setEnabled(enabled);
-        emit this->hintBtnEnabledChanged(enabled);
-    } else {
-        ui->hintBtn->setEnabled(false);
-        emit this->hintBtnEnabledChanged(false);
-    }
+    ui->hintBtn->setEnabled(enabled);
+    emit this->hintBtnEnabledChanged(enabled);
 }
 
 void DockWindow::setSolutionBtnEnabled(bool enabled)
@@ -131,6 +133,7 @@ void DockWindow::newGameStarted()
 
 void DockWindow::setHintCount()
 {
+    this->hintStarted = false;
     if (++this->hintCount >= DockWindow::HINTLIMIT)
         this->setHintBtnEnabled(false);
 
