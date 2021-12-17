@@ -37,7 +37,6 @@ void GameModel::initializeGame(int algo)
     // save the correct answer
     this->answer = gameAfterAlgo;
     this->clearEverything();
-
     // initialize different tiles on different positions
     for (size_t i = 0; i < this->_DIM; ++i) {
         for (size_t j = 0; j < this->_DIM; ++j) {
@@ -93,7 +92,6 @@ void GameModel::clearEverything()
     this->gameStarted = false;
     this->totalPlayTime = 0;
     this->totalSteps = 0;
-    this->won = false;
 }
 
 int GameModel::getBounded(int lowest, int highest)
@@ -133,7 +131,7 @@ QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
             tileStack.pop();
             continue;
         }
-        int selectIndex = getBounded(0, chooseTile.size());
+        size_t selectIndex = getBounded(0, chooseTile.size());
         tileStack.push(chooseTile[selectIndex]);
         v[currentY][currentX][chooseTile[selectIndex][2]] = TileModel::ON;
         v[chooseTile[selectIndex][0]][chooseTile[selectIndex][1]][chooseTile[selectIndex][3]] = TileModel::ON;
@@ -209,8 +207,6 @@ void GameModel::setTime()
 
 bool GameModel::checkAnswer()
 {
-    if (this->won)
-        return true;
     int m = this->_DIM;
     size_t countTiles = m*m - 1;
     QVector<QVector<QVector<bool>>> checkVecktor(m, QVector<QVector<bool>>(m, {false, false, false, false}));
@@ -255,7 +251,6 @@ bool GameModel::checkAnswer()
     if (countTiles == 0){
         this->gameStarted = false;
         emit onGameStatus(true);
-        this->won = true;
         return true;
     }
     else{
@@ -273,6 +268,7 @@ void GameModel::resetGame()
             this->game[i][j]->setNodes(this->resetVector[i][j]);
         }
     }
+    emit onGameStatus(false);
 }
 
 void GameModel::showSolution()
@@ -284,22 +280,27 @@ void GameModel::showSolution()
             this->game[i][j]->setNodes(this->answer[i][j]);
         }
     }
+    emit onGameStatus(true);
 }
 
-void GameModel::showSolutionOnTile(TileModel *tileModel)
+void GameModel::showSolutionOnRandomTile()
 {
     if (!this->gameStarted) {
         this->gameStarted = true;
         emit this->gameStart();
     }
-    for (size_t i = 0; i < this->_DIM; ++i) {
-        for (size_t j = 0; j < this->_DIM; ++j) {
-            if (this->game[i][j] == tileModel){
-                this->game[i][j]->setNodes(this->answer[i][j]);
-                this->checkAnswer();
-            }
-        }
-    }
+    QVector<QVector<size_t>> unSolvedTiles;
+
+    // set all unsolved tiles in a vector
+    for (size_t i = 0; i < this->_DIM; ++i)
+        for (size_t j = 0; j < this->_DIM; ++j)
+            if (this->game[i][j]->getNodeVector() != this->answer[i][j])
+                unSolvedTiles.push_back({i, j});
+    // get the position randomly
+    QVector<size_t> position = unSolvedTiles[this->getBounded(0, unSolvedTiles.size())];
+    this->game[position[0]][position[1]]->setNodes(this->answer[position[0]][position[1]]);
+    emit this->game[position[0]][position[1]]->rotatedByHint();
+    this->checkAnswer();
 }
 
 void GameModel::changeGameStarted(bool started)

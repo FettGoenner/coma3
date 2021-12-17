@@ -21,7 +21,6 @@ private:
     QVector<QVector<QVector<bool>>> answer;
     QVector<QVector<QVector<bool>>> resetVector;
     QTimer *timer;
-    bool won = false;
 
     void clearEverything();
     QVector<QVector<QVector<bool>>> depthAlgo();
@@ -40,7 +39,6 @@ public:
 
     int getBounded(int lowest, int highest);
     size_t getSize() const;
-
     QString getAlgoType();
 
 signals:
@@ -65,8 +63,9 @@ public slots:
     void resetGame();
     void showSolution();
 
-    void showSolutionOnTile(TileModel *tileModel);
+    void showSolutionOnRandomTile();
     void changeGameStarted(bool started);
+
 };
 
 #endif // GAMEMODEL_H

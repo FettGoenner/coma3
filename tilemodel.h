@@ -96,8 +96,8 @@ public slots:
 
 signals:
     void nodesChanged(); // if the nodes have changed
-
     void resetedTile();
+    void rotatedByHint();
 };
 
 #endif // TILEMODEL_H

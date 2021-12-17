@@ -11,11 +11,11 @@ private:
     TileModel *tile;
     QColor tileColor;
     QTimer *animationTimer; // for animation
-    QTimer *hintAnimationTimer; // for hint animation
+//    QTimer *hintAnimationTimer; // for hint animation
     int animationAngele = 90;
     int rotateAngle = 0;
     bool canBeClicked = true;
-    double alphaValueF = 0;
+//    double alphaValueF = 0;
 public:
     explicit TileView(TileModel *tile, QColor color, QFrame *parent = nullptr);
 
@@ -28,20 +28,19 @@ protected:
 signals:
     void nodeChange(int times);
     void clicked();
-    void clickedWhileHint(TileModel *tileModel);
-    void rotateFinished();
+//    void clickedWhileHint(TileModel *tileModel);
 
 protected:
     virtual void mouseReleaseEvent(QMouseEvent *ev) override;
 
 public slots:
-    void startHintAnimation();
-    void stopHintAnimation();
+//    void startHintAnimation();
+//    void stopHintAnimation();
     void isConnected(bool connected);
 
 private slots:
     void rotateTimeout(); // for rotate animation
-    void hintAnimationTimeout(); // for hint animation
+//    void hintAnimationTimeout(); // for hint animation
 };
 
 #endif // TILEVIEW_H

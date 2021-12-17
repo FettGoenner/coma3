@@ -41,13 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // solution button
     connect(this->dockWindow, &DockWindow::clickedSolutionBtn, this->gameModel, &GameModel::showSolution);
-
-    // hint button
-    connect(this->dockWindow, &DockWindow::startHint, this->gameView, &GameView::startHint);
-
-    // hint button
-    connect(this->dockWindow, &DockWindow::endHint, this->gameView, &GameView::endHint);
-
     // reset button
     connect(this->dockWindow, &DockWindow::clickedResetBtn, this->gameModel, &GameModel::resetGame);
 
@@ -83,6 +76,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
+    // hint button
+    connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameModel, &GameModel::showSolutionOnRandomTile);
+
     // connect hint action and hint button
     connect(this->dockWindow, &DockWindow::hintBtnEnabledChanged, ui->hintAction, &QAction::setEnabled);
 
@@ -93,8 +89,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->dockWindow, &DockWindow::pauseBtnEnabledChanged, ui->pauseAction, &QAction::setEnabled);
     connect(this->dockWindow, &DockWindow::pauseBtnTextChanged, ui->pauseAction, &QAction::setText);
 
-    // count how many times HINT has been used.
-    connect(this->gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
+//     count how many times HINT has been used.
+//    connect(this->gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
 
     // send game started from GameModel
     connect(this->gameModel, &GameModel::gameStart, this->dockWindow, &DockWindow::gameStarted);

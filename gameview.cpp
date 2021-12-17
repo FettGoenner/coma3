@@ -30,22 +30,23 @@ void GameView::showGame(bool clearStatus)
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
 
             // check answer after clicked a tile
-            connect(tileView, &TileView::rotateFinished, this->gameModel, &GameModel::checkAnswer);
+            connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
 
             // show solution a this tile if clicked while hint
-            connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
-            connect(tileView, &TileView::clickedWhileHint, this, &GameView::endHint);
-            connect(tileView, &TileView::clickedWhileHint, this, [=]() {
-                emit this->hintSucceeded();
-            });
+//            connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
+//            connect(tileView, &TileView::clickedWhileHint, this, &GameView::endHint);
+//            connect(tileView, &TileView::clickedWhileHint, this, [=]() {
+//                emit this->hintSucceeded();
+//            });
 
-            connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);
-            connect(this, &GameView::startTileHintAnimation, tileView, &TileView::startHintAnimation);
+//            connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);
+//            connect(this, &GameView::startTileHintAnimation, tileView, &TileView::startHintAnimation);
 
             // set tile's color
             connect(gameModel, &GameModel::onGameStatus, tileView, &TileView::isConnected);
         }
     }
+
 }
 
 void GameView::clearLayout()
@@ -68,16 +69,6 @@ void GameView::clearLayout()
     setLayout(this->gridLayout);
 }
 
-
-void GameView::startHint()
-{
-    emit this->startTileHintAnimation();
-}
-
-void GameView::endHint()
-{
-    emit this->stopTileHintAnimation();
-}
 
 void GameView::paintEvent(QPaintEvent *ev)
 {

@@ -26,12 +26,10 @@ public:
 signals:
     void startTileHintAnimation();
     void stopTileHintAnimation();
-    void hintSucceeded();
+//    void hintSucceeded();
 
 public slots:
     void showGame(bool clearStatus = false);
-    void startHint();
-    void endHint();
 protected:
     void paintEvent(QPaintEvent*) override;
 };

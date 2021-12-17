@@ -18,7 +18,6 @@ public:
 private:
     Ui::DockWindow *ui;
     size_t hintCount = 0;
-    bool hintStarted = false;
 
     void resetHint();
     void setHintBtnText();
@@ -27,14 +26,13 @@ private:
 signals:
     void changedGameStarted(bool started);
     void clickedSolutionBtn();
+    void clickedHintBtn();
     void clickedResetBtn();
     void clickedNewGameBtn();
     void hintBtnEnabledChanged(bool enabled);
     void solutionBtnEnabledChanged(bool enabled);
     void pauseBtnEnabledChanged(bool enabled);
     void pauseBtnTextChanged(QString text);
-    void startHint();
-    void endHint();
 
 public slots:
     void gameStarted();
