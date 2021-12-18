@@ -66,6 +66,9 @@
    </property>
   </widget>
   <action name="saveGameAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save Game</string>
    </property>
@@ -133,6 +136,9 @@
    </property>
   </action>
   <action name="loadGameAction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load Game</string>
    </property>
