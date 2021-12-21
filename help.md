@@ -14,9 +14,9 @@ Klicke mit der linken Maustaste auf ein Teil im Netzwerk,
 um es im Uhrzeigersinn zu drehen.
 
 ### Beispielproblem
-![1](1.png)
+![1](Help/1.png)
 ### Beispiellösung
-![10](10.png)
+![10](Help/10.png)
 
 ## Strategie
 Um es dir leichter zu machen, kannst du folgende Strategie anwenden:
@@ -25,17 +25,17 @@ Um es dir leichter zu machen, kannst du folgende Strategie anwenden:
 Kein Teil am Netzwerkrand darf zum Rand zeigen. Drehe deshalb alle
 Rand- und Eckenteile zunächst so, dass das nicht mehr der Fall ist.
 
-![2](2.png)
+![2](Help/2.png)
 
 <u>**Schritt 2** </u> \
 Nun betrachten wir die Teile, die die Randteile berühren.
 Drehe alle Teile davon so, dass sie mit den Randteilen korrekt
 verbunden werden.
 
-![3](5.png)
+![3](Help/5.png)
 <u>**Schritt 3** </u> \
 Gehe weiter so vor, indem du dich immer näher zur Netzwerkmitte
 arbeitest.
 Du wirst eventuell trotzdem ein bisschen knobeln müssen.
 
-![5](9.png)
+![5](Help/9.png)
