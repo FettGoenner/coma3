@@ -14,9 +14,9 @@ Klicke mit der linken Maustaste auf ein Teil im Netzwerk,
 um es im Uhrzeigersinn zu drehen.
 
 ### Beispielproblem
-![1](Help/1.png)
+![1](Help/new-game.png)
 ### Beispiellösung
-![10](Help/10.png)
+![10](Help/solution.png)
 
 ## Strategie
 Um es dir leichter zu machen, kannst du folgende Strategie anwenden:
