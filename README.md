@@ -24,18 +24,18 @@ Um es dir leichter zu machen, kannst du folgende Strategie anwenden:
 <u>**Schritt 1** </u> \
 Kein Teil am Netzwerkrand darf zum Rand zeigen. Drehe deshalb alle
 Rand- und Eckenteile zunächst so, dass das nicht mehr der Fall ist.
+Hier haben alle Randteile nur eine mögliche Position. Sie betrachten
+wir als **fest** (grün hinterlegt) und drehen sie nicht mehr.
 
-![2](Help/2.png)
+![2](Help/rand-gemacht.png)
 
 <u>**Schritt 2** </u> \
 Nun betrachten wir die Teile, die die Randteile berühren.
 Drehe alle Teile davon so, dass sie mit den Randteilen korrekt
-verbunden werden.
+verbunden werden. Auch hier gibt es neue **feste** Teile:
 
-![3](Help/5.png)
+![3](Help/next.png)
+
 <u>**Schritt 3** </u> \
 Gehe weiter so vor, indem du dich immer näher zur Netzwerkmitte
-arbeitest.
-Du wirst eventuell trotzdem ein bisschen knobeln müssen.
-
-![5](Help/9.png)
+arbeitest. Hier muss nur noch ein Teil gedreht werden.
