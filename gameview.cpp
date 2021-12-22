@@ -73,7 +73,7 @@ void GameView::clearLayout()
 void GameView::paintEvent(QPaintEvent *ev)
 {
     int width = this->width(), height = this->height();
-    // draw the deflaut StraightNode, from top to bottom
+    // draw the default StraightNode, from top to bottom
     QPainter painter(this);
 
     painter.setPen(Qt::NoPen);
@@ -82,6 +82,10 @@ void GameView::paintEvent(QPaintEvent *ev)
     brush.setStyle(Qt::SolidPattern);
     painter.setBrush(brush);
     painter.drawRect(0, 0, width, height);
+
+    // keep aspect ratio 1:1 (square)
+    size_t size = std::min(width, height) ;
+    resize(size, size) ;
 
     return QWidget::paintEvent(ev);
 }
