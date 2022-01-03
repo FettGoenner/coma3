@@ -62,7 +62,7 @@ void TileView::rotateWithAnimation(int angle)
 void TileView::isConnected(bool connected)
 {
     if (connected){
-        this->tileColor = QColor(0, 200, 0);
+        this->tileColor = QColor(0, 200, 0); // change tile color to green
         this->canBeClicked = false;
     }
     else{
@@ -136,7 +136,7 @@ void TileView::mouseReleaseEvent(QMouseEvent *ev)
 
 void TileView::paintEvent(QPaintEvent *ev)
 {
-    QString type = this->tile->getTileType();
+    int type = this->tile->getTileType();
     double width = this->width(), height = this->height();
     // draw the deflaut TurnNode, from right to bottom
     QPainter painter(this);
@@ -150,7 +150,7 @@ void TileView::paintEvent(QPaintEvent *ev)
     painter.translate(-width/2, -height/2);
 //    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
 
-    if (type == "CornerTile") {
+    if (type == TileModel::CornerTile) {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);
@@ -183,7 +183,7 @@ void TileView::paintEvent(QPaintEvent *ev)
         };
 
         painter.drawPolygon(points2, 4);
-    } else if (type == "EndTile") {
+    } else if (type == TileModel::EndTile) {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);
@@ -199,7 +199,7 @@ void TileView::paintEvent(QPaintEvent *ev)
         };
         painter.drawPolygon(points, 4);
 
-    } else if (type == "JunctionTile") {
+    } else if (type == TileModel::JunctionTile) {
         QLinearGradient linear(QPointF(width/2, 0), QPointF(width/2, height));
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);
@@ -239,7 +239,7 @@ void TileView::paintEvent(QPaintEvent *ev)
         };
         painter.drawPolygon(points3, 4);
 
-    } else if (type == "LineTile") {
+    } else if (type == TileModel::LineTile) {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);

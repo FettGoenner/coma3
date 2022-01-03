@@ -12,6 +12,7 @@ class TileModel : public QObject
 public:
     enum NodesEnum{North, East=1, South, West};
     enum NodesSwitch{ON=true, OFF=false};
+    enum TileType{Tile = -1, CornerTile = 0, EndTile, JunctionTile, LineTile};
     explicit TileModel(QObject *parent = nullptr);
 
     bool north = TileModel::OFF;
@@ -66,14 +67,14 @@ public:
             this->west = TileModel::ON;
     }
 
-    virtual QString getTileType() {
-        return "Tile";
+    virtual int getTileType() {
+        return TileModel::Tile;
     }
 
 
     static QString getNodeString(const QVector<bool>& tile);
 
-    static QString getTileTypeByVector(const QVector<bool>& tile);
+    static int getTileTypeByVector(const QVector<bool>& tile);
 
     static bool noNodes(const QVector<bool>& tile) {
                 return !(tile[TileModel::North] ||

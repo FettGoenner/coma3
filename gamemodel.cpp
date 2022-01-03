@@ -43,14 +43,14 @@ void GameModel::initializeGame(int algo)
             // get the string of the nodes on the position [i,j]
             QVector<bool> nodes = gameAfterAlgo[i][j];
             TileModel *tile;
-            QString tileType = TileModel::getTileTypeByVector(nodes);
-            if (tileType == "EndTile") {
+            int tileType = TileModel::getTileTypeByVector(nodes);
+            if (tileType == TileModel::EndTile) {
                 tile = new EndTile(nodes);
-            } else if (tileType == "JunctionTile") {
+            } else if (tileType == TileModel::JunctionTile) {
                 tile = new JunctionTile(nodes);
-            } else if (tileType == "CornerTile") {
+            } else if (tileType == TileModel::CornerTile) {
                 tile = new CornerTile(nodes);
-            } else if (tileType == "LineTile") {
+            } else if (tileType == TileModel::LineTile) {
                 tile = new LineTile(nodes);
             } else
                 throw "This Tile does not match to any tile";

@@ -60,13 +60,13 @@ QString TileModel::getNodeString(const QVector<bool>& tile)
 }
 
 
-QString TileModel::getTileTypeByVector(const QVector<bool>& tile)
+int TileModel::getTileTypeByVector(const QVector<bool>& tile)
 {
     QString nodeString = TileModel::getNodeString(tile);
     if (nodeString.size() == 1) {
-        return "EndTile";
+        return TileModel::EndTile;
     } else if (nodeString.size() == 3) {
-        return "JunctionTile";
+        return TileModel::JunctionTile;
     } else {
         int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
         if (first > second) {
@@ -75,12 +75,12 @@ QString TileModel::getTileTypeByVector(const QVector<bool>& tile)
             second = temp;
         }
         if (second - first == 1 || second - first == 3)
-            return "CornerTile";
+            return TileModel::CornerTile;
 
         else
-            return "LineTile";
+            return TileModel::LineTile;
     }
-    return "Tile";
+    return TileModel::Tile;
 }
 
 size_t TileModel::countNodes(const QVector<bool>& tile)
