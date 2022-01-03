@@ -34,21 +34,30 @@ MainWindow::MainWindow(QWidget *parent)
     this->gameModel = new GameModel(7, gameSeed);
     this->gameView = new GameView(this->gameModel, ui->gameWindow);
     connect(this->gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
+
+    // show the game window
+    connect(this->gameModel, &GameModel::onGameInitialization, this, &MainWindow::showGameWindow);
+    connect(this->gameModel, &GameModel::onGameStatus, this, &MainWindow::showGameWindow);
+    connect(this->gameModel, &GameModel::gameStart, this, &MainWindow::showGameWindow);
+
     ui->gameWindow->layout()->addWidget(this->gameView);
 
     // pause buttom
     connect(this->dockWindow, &DockWindow::changedGameStarted, this->gameModel, &GameModel::changeGameStarted);
     connect(this->dockWindow, &DockWindow::changedGameStarted, this, [=](bool started) {
         if (started)
-            ui->gameWindow->layout();
+            this->showGameWindow();
         else
-            ui->gameWindow->hide();
+            this->hideGameWindow();
     });
 
     // solution button
     connect(this->dockWindow, &DockWindow::clickedSolutionBtn, this->gameModel, &GameModel::showSolution);
+
+
     // reset button
     connect(this->dockWindow, &DockWindow::clickedResetBtn, this->gameModel, &GameModel::resetGame);
+
 
     // new game button
     connect(this->dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
@@ -81,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
             this->algoStatusLabel->setText(dialog.getAlgoType());
         }
     });
+
 
     // hint button
     connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameModel, &GameModel::showSolutionOnRandomTile);
@@ -126,6 +136,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
 
+void MainWindow::showGameWindow()
+{
+    ui->gameWindow->show();
+}
+
+void MainWindow::hideGameWindow()
+{
+    ui->gameWindow->hide();
+}
 
 // new game action
 void MainWindow::on_newGameAction_triggered()
@@ -186,3 +205,5 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+

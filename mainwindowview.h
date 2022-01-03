@@ -34,6 +34,9 @@ private:
     GameModel *gameModel;
     GameView *gameView;
     SaveGameDialog *saveGame;
+
+    void showGameWindow();
+    void hideGameWindow();
 protected:
 private slots:
     void on_newGameAction_triggered();
