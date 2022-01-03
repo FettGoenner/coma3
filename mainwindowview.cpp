@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->dockWindow, &DockWindow::changedGameStarted, this->gameModel, &GameModel::changeGameStarted);
     connect(this->dockWindow, &DockWindow::changedGameStarted, this, [=](bool started) {
         if (started)
-            ui->gameWindow->show();
+            ui->gameWindow->layout();
         else
             ui->gameWindow->hide();
     });

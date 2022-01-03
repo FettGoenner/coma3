@@ -154,16 +154,15 @@ void TileView::paintEvent(QPaintEvent *ev)
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
 //    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
-
+    painter.setPen(Qt::NoPen);
     if (type == TileModel::CornerTile) {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, this->tileColor);
 
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(linear);
 
+        painter.setBrush(linear);
 
         const QPointF points[4] = {
             QPointF(2*width/5, height),
@@ -193,7 +192,6 @@ void TileView::paintEvent(QPaintEvent *ev)
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, this->tileColor);
-        painter.setPen(Qt::NoPen);
         painter.setBrush(linear);
 
         const QPointF points[4] = {
@@ -210,7 +208,6 @@ void TileView::paintEvent(QPaintEvent *ev)
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, this->tileColor);
 
-        painter.setPen(Qt::NoPen);
         painter.setBrush(linear);
 
         const QPointF points[4] = {
@@ -249,7 +246,7 @@ void TileView::paintEvent(QPaintEvent *ev)
         linear.setColorAt(.35, this->tileColor);
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, this->tileColor);
-        painter.setPen(Qt::NoPen);
+
         painter.setBrush(linear);
 
         const QPointF points[4] = {
