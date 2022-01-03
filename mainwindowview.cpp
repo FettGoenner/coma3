@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 #include "mainwindowview.h"
 #include "ui_mainwindowview.h"
@@ -152,17 +153,7 @@ void MainWindow::on_resetAction_triggered()
     this->dockWindow->clickResetBtn();
 }
 
-// hint action
-void MainWindow::on_hintAction_triggered()
-{
-    this->dockWindow->clickHintBtn();
-}
 
-// about action
-void MainWindow::on_aboutAction_triggered()
-{
-    QMessageBox::about(this, "About", "Something here");
-}
 
 // exit action
 void MainWindow::on_exitAction_triggered()
@@ -170,13 +161,44 @@ void MainWindow::on_exitAction_triggered()
     this->close();
 }
 
-// solution action
+// Hint
+void MainWindow::on_hintAction_triggered()
+{
+      this->dockWindow->clickHintBtn();
+}
+
+// Solution action
+
 void MainWindow::on_solutionAction_triggered()
 {
     this->dockWindow->clickSolutionBtn();
 }
 
+// About action
+void MainWindow::on_actionAbout_2_triggered()
+{
+    QMessageBox::about(this, "About", "<b>Autoren:</b><br>  Xuatong Pan,"
+                       "Paul Matti Meinhold,"
+                       "Parfait R. Fejou,"
+                       "Erdenetuya Undral\n"
+                       "<b>Datum:</b><br> 03.01.2022");
+
+}
+
+// Help Page action
+void MainWindow::on_actionHelp_Page_triggered()
+{
+
+    QString link = "https://github.com/FettGoenner/coma3/tree/Milestone#readme";
+    QDesktopServices::openUrl(QUrl(link));
+
+}
+
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+

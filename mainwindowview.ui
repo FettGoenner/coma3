@@ -39,7 +39,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuStart">
@@ -49,16 +49,30 @@
     <addaction name="newGameAction"/>
     <addaction name="resetAction"/>
     <addaction name="pauseAction"/>
-    <addaction name="hintAction"/>
-    <addaction name="solutionAction"/>
     <addaction name="separator"/>
     <addaction name="saveGameAction"/>
     <addaction name="loadGameAction"/>
     <addaction name="separator"/>
-    <addaction name="aboutAction"/>
+    <addaction name="separator"/>
     <addaction name="exitAction"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Move</string>
+    </property>
+    <addaction name="hintAction"/>
+    <addaction name="solutionAction"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp_2">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout_2"/>
+    <addaction name="actionHelp_Page"/>
+   </widget>
    <addaction name="menuStart"/>
+   <addaction name="menuHelp"/>
+   <addaction name="menuHelp_2"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
    <property name="sizeGripEnabled">
@@ -103,36 +117,12 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="hintAction">
-   <property name="text">
-    <string>Hint</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+H</string>
-   </property>
-  </action>
-  <action name="aboutAction">
-   <property name="text">
-    <string>About</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-  </action>
   <action name="exitAction">
    <property name="text">
     <string>Exit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
-   </property>
-  </action>
-  <action name="solutionAction">
-   <property name="text">
-    <string>Solution</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+S</string>
    </property>
   </action>
   <action name="loadGameAction">
@@ -144,6 +134,38 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="hintAction">
+   <property name="text">
+    <string>Hint</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="solutionAction">
+   <property name="text">
+    <string>Solution</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
+   </property>
+  </action>
+  <action name="actionAbout_2">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionHelp_Page">
+   <property name="text">
+    <string>Help Page</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+H</string>
    </property>
   </action>
  </widget>

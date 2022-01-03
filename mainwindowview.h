@@ -40,11 +40,12 @@ private slots:
     void on_saveGameAction_triggered();
     void on_pauseAction_triggered();
     void on_resetAction_triggered();
-    void on_hintAction_triggered();
-    void on_aboutAction_triggered();
     void on_exitAction_triggered();
-    void on_solutionAction_triggered();
     void on_loadGameAction_triggered();
+    void on_actionAbout_2_triggered();
+    void on_actionHelp_Page_triggered();
+    void on_solutionAction_triggered();
+    void on_hintAction_triggered();
 };
 
 
