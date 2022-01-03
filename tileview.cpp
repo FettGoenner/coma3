@@ -82,8 +82,8 @@ void TileView::isConnected(bool connected)
 void TileView::adjustAngle()
 {
     this->rotateAngle %= 360;
-    tile->rotateAngle %= 360;
-    this->animationAngele = tile->rotateAngle - this->rotateAngle;
+    int tileRotateAngel = tile->rotateAngle % 360;
+    this->animationAngele = tileRotateAngel - this->rotateAngle;
     if (this->animationAngele < 0)
         this->animationAngele += 360;
     if (this->animationAngele != 0)
