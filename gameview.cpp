@@ -44,10 +44,12 @@ void GameView::showGame(bool clearStatus)
 
             // set tile's color
             connect(gameModel, &GameModel::onGameStatus, tileView, &TileView::isConnected);
+
         }
     }
 
 }
+
 
 void GameView::clearLayout()
 {

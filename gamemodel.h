@@ -49,6 +49,7 @@ signals:
     bool onGameStatus(bool status); // true, if this is a solution
     void gameStart();
     void initializedNewGame();
+    void gamePaused();
 public slots:
     void setSteps() {
         if (!this->gameStarted) {

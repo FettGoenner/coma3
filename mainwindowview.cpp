@@ -38,6 +38,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     // pause buttom
     connect(this->dockWindow, &DockWindow::changedGameStarted, this->gameModel, &GameModel::changeGameStarted);
+    connect(this->dockWindow, &DockWindow::changedGameStarted, this, [=](bool started) {
+        if (started)
+            ui->gameWindow->show();
+        else
+            ui->gameWindow->hide();
+    });
 
     // solution button
     connect(this->dockWindow, &DockWindow::clickedSolutionBtn, this->gameModel, &GameModel::showSolution);

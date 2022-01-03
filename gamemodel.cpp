@@ -306,5 +306,7 @@ void GameModel::showSolutionOnRandomTile()
 void GameModel::changeGameStarted(bool started)
 {
     this->gameStarted = started;
+    if (this->gameStarted == false)
+        emit this->gamePaused();
 }
 

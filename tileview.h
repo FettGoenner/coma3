@@ -23,6 +23,7 @@ public:
 
     void adjustAngle();
     void setBackgroundColor(QColor color);
+
 protected:
     void paintEvent(QPaintEvent*) override;
 signals:
@@ -37,7 +38,7 @@ public slots:
 //    void startHintAnimation();
 //    void stopHintAnimation();
     void isConnected(bool connected);
-
+    void setTileColor(QColor color);
 private slots:
     void rotateTimeout(); // for rotate animation
 //    void hintAnimationTimeout(); // for hint animation

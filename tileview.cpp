@@ -62,14 +62,13 @@ void TileView::rotateWithAnimation(int angle)
 void TileView::isConnected(bool connected)
 {
     if (connected){
-        this->tileColor = QColor(0, 200, 0); // change tile color to green
+        this->setTileColor(QColor(0, 200, 0)); // change tile color to green
         this->canBeClicked = false;
     }
-    else{
-        this->tileColor = Qt::blue;
+    else {
+        this->setTileColor(Qt::blue);
         this->canBeClicked = true;
     }
-    this->update();
 }
 
 //void TileView::hintAnimationTimeout()
@@ -105,6 +104,12 @@ void TileView::setBackgroundColor(QColor color)
                             "background-color: rgb(255, 255, 0);"
                             "}");
     }
+}
+
+void TileView::setTileColor(QColor color)
+{
+    this->tileColor = color;
+    this->update();
 }
 
 void TileView::rotateTimeout()
