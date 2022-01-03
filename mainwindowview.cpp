@@ -177,11 +177,13 @@ void MainWindow::on_solutionAction_triggered()
 // About action
 void MainWindow::on_actionAbout_2_triggered()
 {
-    QMessageBox::about(this, "About", "<b>Autoren:</b><br>  Xuatong Pan,"
-                       "Paul Matti Meinhold,"
-                       "Parfait R. Fejou,"
-                       "Erdenetuya Undral\n"
-                       "<b>Datum:</b><br> 03.01.2022");
+    QMessageBox::about(this, "About", "<h1>Netzwerkpuzzle</h1>"
+                        "A Project at BHT, 2022<br><br>"
+                        "<u><b>Autoren</b></u><br>"
+                        "Xuatong Pan<br>"
+                        "Paul Matti Meinhold<br>"
+                        "Parfait R. Fejou<br>"
+                        "Erdenetuya Undral<br>");
 
 }
 
