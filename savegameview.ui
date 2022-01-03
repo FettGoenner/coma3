@@ -24,7 +24,7 @@
        <widget class="QWidget" name="widget" native="true">
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="fileNameLineEdit"/>
          </item>
          <item>
           <widget class="QTableWidget" name="gameFileTable">

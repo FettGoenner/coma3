@@ -1,3 +1,5 @@
+#include <QTime>
+#include <QDate>
 #include "savegameview.h"
 #include "ui_savegameview.h"
 
@@ -9,7 +11,7 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
     ui->gameFileTable->setColumnCount(2);
     ui->gameFileTable->setHorizontalHeaderLabels(QStringList() << "File Name" << "Update Time");
     ui->gameFileTable->setRowCount(3);
-    ui->gameFileTable->setItem(0, 0, new QTableWidgetItem("111"));
+    ui->gameFileTable->setItem(0, 0, new QTableWidgetItem(""));
     ui->gameFileTable->setItem(1, 0, new QTableWidgetItem("222"));
     ui->gameFileTable->setItem(2, 0, new QTableWidgetItem("333"));
     // select by rows
@@ -26,14 +28,26 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
         ui->deleteBtn->setEnabled(true);
     });
     connect(ui->addBtn, &QPushButton::clicked, this, [=]() {
-        if (ui->gameFileTable->currentRow() == -1)
+        if (ui->gameFileTable->currentRow() == -1) {
             ui->gameFileTable->insertRow(ui->gameFileTable->rowCount());
-        else
+            ui->gameFileTable->setItem(ui->gameFileTable->rowCount() - 1, 0, new QTableWidgetItem(QDate::currentDate().toString("yy-MM-dd_")+QTime::currentTime().toString("hh:mm:ss")));
+            ui->gameFileTable->setCurrentCell(ui->gameFileTable->rowCount() - 1, 0);
+        }
+        else {
             ui->gameFileTable->insertRow(ui->gameFileTable->currentRow() + 1);
+            ui->gameFileTable->setItem(ui->gameFileTable->currentRow() + 1, 0, new QTableWidgetItem(QDate::currentDate().toString("yy-MM-dd_")+QTime::currentTime().toString("hh:mm:ss")));
+            ui->gameFileTable->setCurrentCell(ui->gameFileTable->currentRow() + 1, 0);
+        }
     });
 
     connect(ui->deleteBtn, &QPushButton::clicked, this, [=]() {
         ui->gameFileTable->removeRow(ui->gameFileTable->currentRow());
+    });
+    connect(ui->gameFileTable, &QTableWidget::currentCellChanged, this, [=](int currentRow, int currentColumn, int previousRow, int previousColumn) {
+        qDebug() << currentRow << currentColumn << previousRow << previousColumn;
+        ui->gameFileTable->item(currentRow, 0);
+        qDebug() << 111;
+        ui->fileNameLineEdit->setText(ui->gameFileTable->item(currentRow, 0)->text());
     });
 }
 

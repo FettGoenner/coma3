@@ -19,6 +19,7 @@ SOURCES += \
     main.cpp \
     mainwindowview.cpp \
     newgamedialog.cpp \
+    savegamemodel.cpp \
     savegameview.cpp \
     tilemodel.cpp \
     tileview.cpp
@@ -33,6 +34,7 @@ HEADERS += \
     linetilemodel.h \
     mainwindowview.h \
     newgamedialog.h \
+    savegamemodel.h \
     savegameview.h \
     tilemodel.h \
     tileview.h
