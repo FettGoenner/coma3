@@ -44,9 +44,6 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
         ui->gameFileTable->removeRow(ui->gameFileTable->currentRow());
     });
     connect(ui->gameFileTable, &QTableWidget::currentCellChanged, this, [=](int currentRow, int currentColumn, int previousRow, int previousColumn) {
-        qDebug() << currentRow << currentColumn << previousRow << previousColumn;
-        ui->gameFileTable->item(currentRow, 0);
-        qDebug() << 111;
         ui->fileNameLineEdit->setText(ui->gameFileTable->item(currentRow, 0)->text());
     });
 }

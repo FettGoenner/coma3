@@ -1,12 +1,15 @@
 #ifndef SAVEGAMEMODEL_H
 #define SAVEGAMEMODEL_H
 
+#include <QObject>
+#include <QVector>
 
-class SaveFileModel : public QObject
+class SaveGameModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit SaveFileModel(QObject *parent = nullptr);
+    explicit SaveGameModel(QObject *parent = nullptr);
+private:
 
 signals:
 

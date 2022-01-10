@@ -18,6 +18,7 @@ SOURCES += \
     linetilemodel.cpp \
     main.cpp \
     mainwindowview.cpp \
+    networkpuzzlefile.cpp \
     newgamedialog.cpp \
     savegamemodel.cpp \
     savegameview.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     junctiontilemodel.h \
     linetilemodel.h \
     mainwindowview.h \
+    networkpuzzlefile.h \
     newgamedialog.h \
     savegamemodel.h \
     savegameview.h \

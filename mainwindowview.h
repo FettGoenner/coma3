@@ -44,10 +44,11 @@ private slots:
     void on_pauseAction_triggered();
     void on_resetAction_triggered();
     void on_hintAction_triggered();
-    void on_aboutAction_triggered();
     void on_exitAction_triggered();
     void on_solutionAction_triggered();
     void on_loadGameAction_triggered();
+    void on_aboutAction_triggered();
+    void on_helpAction_triggered();
 };
 
 

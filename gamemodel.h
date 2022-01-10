@@ -16,6 +16,7 @@ private:
     size_t totalPlayTime;
     size_t totalSteps;
     size_t algoType = GameModel::Depth;
+    size_t hintCount = 0;
     QRandomGenerator gen; // for random values
     QVector<int> startTile;
     QVector<QVector<QVector<bool>>> answer;
@@ -28,7 +29,7 @@ private:
 
 public:
     enum GameType{Depth = 0, Prim};
-
+    const static size_t HINTLIMIT = 3; // Hint limit
     explicit GameModel(size_t size = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
 
     bool gameStarted = false;
@@ -50,6 +51,7 @@ signals:
     void gameStart();
     void initializedNewGame();
     void gamePaused();
+    void hintSuccessed(int remaining);
 public slots:
     void setSteps() {
         if (!this->gameStarted) {

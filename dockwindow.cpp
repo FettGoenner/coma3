@@ -35,7 +35,6 @@ DockWindow::DockWindow(QWidget *parent) :
 
     // send signal if clicked hint button
     connect(ui->hintBtn, &QPushButton::clicked, this, [=]() {
-        this->setHintCount();
         emit this->clickedHintBtn();
     });
 
@@ -52,17 +51,13 @@ DockWindow::DockWindow(QWidget *parent) :
     });
 }
 
-
-void DockWindow::resetHint()
+void DockWindow::setHintBtnText(int remaining)
 {
-    this->setHintBtnEnabled(true);
-    this->hintCount = 0;
-    this->setHintBtnText();
-}
-
-void DockWindow::setHintBtnText()
-{
-    ui->hintBtn->setText(QString("Hint: %1").arg(DockWindow::HINTLIMIT - this->hintCount));
+    if (remaining == 0)
+        this->setHintBtnEnabled(false);
+    else
+        this->setHintBtnEnabled(true);
+    ui->hintBtn->setText(QString("Hint: %1").arg(remaining));
 }
 
 void DockWindow::setHintBtnEnabled(bool enabled)
@@ -118,19 +113,8 @@ void DockWindow::newGameStarted()
     ui->totalSteps->setText("0");
     this->setSolutionBtnEnabled(true);
     this->setPauseBtnEnabled(false);
-
-    //reset hint button
-    this->resetHint();
 }
 
-
-void DockWindow::setHintCount()
-{
-    if (++this->hintCount >= DockWindow::HINTLIMIT)
-        this->setHintBtnEnabled(false);
-
-    this->setHintBtnText();
-}
 
 void DockWindow::clickPauseBtn()
 {

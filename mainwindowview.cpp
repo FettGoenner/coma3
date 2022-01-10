@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 #include "mainwindowview.h"
 #include "ui_mainwindowview.h"
@@ -94,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // hint button
     connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameModel, &GameModel::showSolutionOnRandomTile);
+    connect(this->gameModel, &GameModel::hintSuccessed, this->dockWindow, &DockWindow::setHintBtnText);
 
     // connect hint action and hint button
     connect(this->dockWindow, &DockWindow::hintBtnEnabledChanged, ui->hintAction, &QAction::setEnabled);
@@ -177,17 +179,7 @@ void MainWindow::on_resetAction_triggered()
     this->dockWindow->clickResetBtn();
 }
 
-// hint action
-void MainWindow::on_hintAction_triggered()
-{
-    this->dockWindow->clickHintBtn();
-}
 
-// about action
-void MainWindow::on_aboutAction_triggered()
-{
-    QMessageBox::about(this, "About", "Something here");
-}
 
 // exit action
 void MainWindow::on_exitAction_triggered()
@@ -195,15 +187,42 @@ void MainWindow::on_exitAction_triggered()
     this->close();
 }
 
-// solution action
+// Hint
+void MainWindow::on_hintAction_triggered()
+{
+      this->dockWindow->clickHintBtn();
+}
+
+// Solution action
+
 void MainWindow::on_solutionAction_triggered()
 {
     this->dockWindow->clickSolutionBtn();
 }
 
+void MainWindow::on_aboutAction_triggered()
+{
+    QMessageBox::about(this, "About", "<h1>Netzwerkpuzzle</h1>"
+                        "A Project at BHT, 2022<br><br>"
+                        "<u><b>Autoren</b></u><br>"
+                        "Xuantong Pan<br>"
+                        "Paul Matti Meinhold<br>"
+                        "Parfait R. Fejou<br>"
+                        "Erdenetuya Undral<br>");
+}
+
+
+void MainWindow::on_helpAction_triggered()
+{
+    QString link = "https://github.com/FettGoenner/coma3/tree/Milestone#readme";
+    QDesktopServices::openUrl(QUrl(link));
+}
+
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 

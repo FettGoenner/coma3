@@ -65,6 +65,7 @@ void GameModel::initializeGame(int algo)
         }
     }
     emit this->onGameInitialization(true);
+    emit this->hintSuccessed(GameModel::HINTLIMIT);
 }
 
 void GameModel::setSize(size_t size)
@@ -92,6 +93,7 @@ void GameModel::clearEverything()
     this->gameStarted = false;
     this->totalPlayTime = 0;
     this->totalSteps = 0;
+    this->hintCount = 0;
 }
 
 int GameModel::getBounded(int lowest, int highest)
@@ -269,6 +271,7 @@ void GameModel::resetGame()
         }
     }
     emit onGameStatus(false);
+    emit this->hintSuccessed(GameModel::HINTLIMIT);
 }
 
 void GameModel::showSolution()
@@ -285,6 +288,9 @@ void GameModel::showSolution()
 
 void GameModel::showSolutionOnRandomTile()
 {
+    if (this->hintCount >= GameModel::HINTLIMIT)
+        return;
+
     if (!this->gameStarted) {
         this->gameStarted = true;
         emit this->gameStart();
@@ -300,6 +306,7 @@ void GameModel::showSolutionOnRandomTile()
     QVector<size_t> position = unSolvedTiles[this->getBounded(0, unSolvedTiles.size())];
     this->game[position[0]][position[1]]->setNodes(this->answer[position[0]][position[1]]);
     emit this->game[position[0]][position[1]]->rotatedByHint();
+    emit this->hintSuccessed(GameModel::HINTLIMIT - ++this->hintCount);
     this->checkAnswer();
 }
 

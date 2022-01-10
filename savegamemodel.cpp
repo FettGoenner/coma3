@@ -1,6 +1,6 @@
-#include "savefilemodel.h"
+#include "savegamemodel.h"
 
-SaveFileModel::SaveFileModel(QObject *parent) : QObject(parent)
+SaveGameModel::SaveGameModel(QObject *parent) : QObject(parent)
 {
 
 }
