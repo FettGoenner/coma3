@@ -12,6 +12,7 @@ SOURCES += \
     cornertilemodel.cpp \
     dockwindow.cpp \
     endtilemodel.cpp \
+    gamecontroler.cpp \
     gamemodel.cpp \
     gameview.cpp \
     junctiontilemodel.cpp \
@@ -19,8 +20,10 @@ SOURCES += \
     main.cpp \
     mainwindowview.cpp \
     newgamedialog.cpp \
+    savegamecontroler.cpp \
     savegamemodel.cpp \
     savegameview.cpp \
+    tilecontroler.cpp \
     tilemodel.cpp \
     tileview.cpp
 
@@ -28,14 +31,17 @@ HEADERS += \
     cornertilemodel.h \
     dockwindow.h \
     endtilemodel.h \
+    gamecontroler.h \
     gamemodel.h \
     gameview.h \
     junctiontilemodel.h \
     linetilemodel.h \
     mainwindowview.h \
     newgamedialog.h \
+    savegamecontroler.h \
     savegamemodel.h \
     savegameview.h \
+    tilecontroler.h \
     tilemodel.h \
     tileview.h
 

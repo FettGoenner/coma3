@@ -1,6 +1,7 @@
 #ifndef SAVEGAMEMODEL_H
 #define SAVEGAMEMODEL_H
 
+#include <QObject>
 
 class SaveFileModel : public QObject
 {
