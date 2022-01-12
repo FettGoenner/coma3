@@ -29,7 +29,7 @@ private:
 
 public:
     enum GameType{Depth = 0, Prim};
-    const static size_t HINTLIMIT = 3; // Hint limit
+    static const size_t HINTLIMIT = 3; // Hint limit
     explicit GameModel(size_t size = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
 
     bool gameStarted = false;

@@ -33,7 +33,7 @@ private:
     DockWindow *dockWindow;
     GameModel *gameModel;
     GameView *gameView;
-    SaveGameDialog *saveGame;
+    SaveGameDialog *saveGame = nullptr;
 
     void showGameWindow();
     void hideGameWindow();

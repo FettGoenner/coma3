@@ -2,6 +2,7 @@
 #include <QDate>
 #include "savegameview.h"
 #include "ui_savegameview.h"
+#include "networkpuzzlefile.h"
 
 SaveGameDialog::SaveGameDialog(QWidget *parent) :
     QDialog(parent),
@@ -46,6 +47,8 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
     connect(ui->gameFileTable, &QTableWidget::currentCellChanged, this, [=](int currentRow, int currentColumn, int previousRow, int previousColumn) {
         ui->fileNameLineEdit->setText(ui->gameFileTable->item(currentRow, 0)->text());
     });
+
+    NetworkPuzzleFile *file = new NetworkPuzzleFile("a.json");
 }
 
 void SaveGameDialog::resizeEvent(QResizeEvent *)

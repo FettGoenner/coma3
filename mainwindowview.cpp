@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     , algoStatusLabel(new QLabel)
     , sizeStatusLabel(new QLabel)
     , dockWindow(new DockWindow(this))
-    , saveGame(new SaveGameDialog(this))
 {
     ui->setupUi(this);
 
@@ -159,7 +158,9 @@ void MainWindow::on_newGameAction_triggered()
 void MainWindow::on_saveGameAction_triggered()
 {
     // TODO
-    saveGame->exec();
+    if (this->saveGame == nullptr)
+        this->saveGame = new SaveGameDialog(this);
+    this->saveGame->exec();
 }
 
 // load game action
