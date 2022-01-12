@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Let playground has same size as ui->gameWindow
     QHBoxLayout *layout = new QHBoxLayout;
     ui->gameWindow->setLayout(layout);
+
     //set statusbar
     size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX);
 
@@ -200,6 +201,7 @@ void MainWindow::on_solutionAction_triggered()
     this->dockWindow->clickSolutionBtn();
 }
 
+// About action
 void MainWindow::on_aboutAction_triggered()
 {
     QMessageBox::about(this, "About", "<h1>Netzwerkpuzzle</h1>"
@@ -211,7 +213,7 @@ void MainWindow::on_aboutAction_triggered()
                         "Erdenetuya Undral<br>");
 }
 
-
+// Help action
 void MainWindow::on_helpAction_triggered()
 {
     QString link = "https://github.com/FettGoenner/coma3/tree/Milestone#readme";

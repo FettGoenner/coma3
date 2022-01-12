@@ -74,7 +74,7 @@ void GameView::clearLayout()
 
 void GameView::paintEvent(QPaintEvent *ev)
 {
-    int width = this->width(), height = this->height();
+    size_t width = this->width(), height = this->height();
     // draw the deflaut StraightNode, from top to bottom
     QPainter painter(this);
 
@@ -84,6 +84,14 @@ void GameView::paintEvent(QPaintEvent *ev)
     brush.setStyle(Qt::SolidPattern);
     painter.setBrush(brush);
     painter.drawRect(0, 0, width, height);
+
+    // keep aspect ratio 1:1 (square)
+    size_t size = std::min(width, height);
+    this->resize(size, size);
+
+    // keep the playground at the mid
+    if (width > height)
+        this->move((width - height)/2, 0);
 
     return QWidget::paintEvent(ev);
 }
