@@ -1,16 +1,23 @@
 #include "networkpuzzlefile.h"
+#include <QMessageBox>
 
-NetworkPuzzleFile::NetworkPuzzleFile() :QFile()
+NetworkPuzzleFile::NetworkPuzzleFile(QObject *parent) : QObject(parent)
 {
 }
 
-NetworkPuzzleFile::NetworkPuzzleFile(QFile *parent) : QFile(parent)
+NetworkPuzzleFile::NetworkPuzzleFile(QString &fileName, QObject *parent) : QObject(parent)
 {
+    this->gameFile.setFileName(fileName);
+    this->loadData();
 }
 
-NetworkPuzzleFile::NetworkPuzzleFile(QString &fileName)
-    : QFile(fileName)
+void NetworkPuzzleFile::loadData()
 {
+    if (this->gameFile.fileName().size() <= 5 || this->gameFile.fileName().right(5) != ".json")
+        emit this->failedToReadFile();
+    this->gameFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    this->gameFile.close();
+
 }
 
 
