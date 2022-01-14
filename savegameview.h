@@ -2,6 +2,10 @@
 #define SAVEGAMEVIEW_H
 
 #include <QDialog>
+#include <QTime>
+#include <QDate>
+
+#include "savegamemodel.h"
 
 namespace Ui {
 class SaveGameDialog;

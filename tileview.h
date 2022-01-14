@@ -12,7 +12,7 @@ private:
     QColor tileColor;
     QTimer *animationTimer; // for animation
 //    QTimer *hintAnimationTimer; // for hint animation
-    int animationAngele = 90;
+    int animationAngle = 90;
     int rotateAngle = 0;
     bool canBeClicked = true;
 //    double alphaValueF = 0;

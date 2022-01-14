@@ -2,6 +2,7 @@
 #define NEWGAMEDIALOG_H
 
 #include <QDialog>
+#include <QRandomGenerator>
 
 namespace Ui {
 class NewGameDialog;

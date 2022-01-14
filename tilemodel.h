@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QObject>
+#include <QTime>
 
 class TileModel : public QObject
 {
@@ -40,8 +41,7 @@ public:
         return !(this->north || this->east || this->south || this->west);
     }
 
-    QString getNodeString();
-
+    QString getNodeString() const;
 
     virtual void setNodes(bool north, bool east, bool south, bool west) {
         this->clearNodes();
@@ -55,7 +55,7 @@ public:
             this->west = TileModel::ON;
     }
 
-    virtual void setNodes(const QVector<bool>& tile) {
+    virtual void setNodes(const QVector<bool> &tile) {
         this->clearNodes();
         if (tile[TileModel::North])
             this->north = TileModel::ON;
@@ -67,10 +67,9 @@ public:
             this->west = TileModel::ON;
     }
 
-    virtual int getTileType() {
+    virtual int getTileType() const{
         return TileModel::Tile;
     }
-
 
     static QString getNodeString(const QVector<bool>& tile);
 
@@ -99,6 +98,7 @@ signals:
     void nodesChanged(); // if the nodes have changed
     void resetedTile();
     void rotatedByHint();
+    void nodesChangedByView(TileModel *tile);
 };
 
 #endif // TILEMODEL_H

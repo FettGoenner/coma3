@@ -1,8 +1,4 @@
 #include "tilemodel.h"
-#include <QPainter>
-#include <QDebug>
-#include <QTimer>
-#include <QTime>
 
 TileModel::TileModel(QObject *parent) :
     QObject(parent)
@@ -18,6 +14,7 @@ void TileModel::adjustNodes(int times)
         this->south = this->east;
         this->east  = temp;
     }
+    emit this->nodesChangedByView(this);
 }
 
 QVector<bool> TileModel::getNodeVector()
@@ -31,7 +28,7 @@ void TileModel::rotate90()
     this->rotateAngle += 90;
 }
 
-QString TileModel::getNodeString()
+QString TileModel::getNodeString() const
 {
     QString nodeString = "";
     if (this->north)
@@ -76,7 +73,6 @@ int TileModel::getTileTypeByVector(const QVector<bool>& tile)
         }
         if (second - first == 1 || second - first == 3)
             return TileModel::CornerTile;
-
         else
             return TileModel::LineTile;
     }

@@ -1,11 +1,4 @@
-#include <QStack>
-
 #include "gamemodel.h"
-#include "tilemodel.h"
-#include "endtilemodel.h"
-#include "junctiontilemodel.h"
-#include "cornertilemodel.h"
-#include "linetilemodel.h"
 
 GameModel::GameModel(size_t size, size_t gameSeed, QObject *parent) :
     QObject(parent)
@@ -62,10 +55,44 @@ void GameModel::initializeGame(int algo)
             // save tile in 2d vector playGround
             this->game[i][j] = tile;
             this->resetVector[i][j] = tile->getNodeVector();
+            connect(tile, &TileModel::nodesChangedByView, this, &GameModel::tileRotatedByView);
         }
     }
     emit this->onGameInitialization(true);
-    emit this->hintSuccessed(GameModel::HINTLIMIT);
+    emit this->hintSuccessed(GameModel::HINT_LIMIT);
+}
+
+void GameModel::loadGame(const size_t dim, const size_t seed, const QString &gameAlgo, const size_t totalPlayTime, const size_t totalSteps, const size_t hintRamaining, const QVector<QPair<size_t, size_t>> &hintedTiles, const QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> &rotatedTiles)
+{
+    this->setSize(dim);
+
+    this->setGameSeed(seed);
+
+    int algoType = gameAlgo == "Depth" ? GameModel::Depth : GameModel::Prim;
+
+    this->initializeGame(algoType);
+
+    this->setTotalTime(totalPlayTime);
+
+    this->setStep(totalSteps);
+
+    this->hintCount = GameModel::HINT_LIMIT - hintRamaining;
+    emit this->hintSuccessed(hintRamaining);
+
+    for (const auto &pos : hintedTiles) {
+        this->game[pos.first][pos.second]->setNodes(this->answer[pos.first][pos.second]);
+        emit this->game[pos.first][pos.second]->rotatedByHint();
+    }
+    this->hintedTiles = hintedTiles;
+
+    for (const auto &pair : rotatedTiles) {
+        QPair<size_t, size_t> pos = pair.first;
+        QVector<bool> nodes = pair.second;
+
+        this->game[pos.first][pos.second]->setNodes(nodes);
+    }
+    this->rotatedTiles = rotatedTiles;
+    this->checkAnswer();
 }
 
 void GameModel::setSize(size_t size)
@@ -84,6 +111,7 @@ void GameModel::setSize(size_t size)
 
 void GameModel::setGameSeed(size_t seed)
 {
+    this->gameSeed = seed;
     this->gen.seed(seed);
     emit this->sendGameSeed(QString::number(seed));
 }
@@ -94,6 +122,8 @@ void GameModel::clearEverything()
     this->totalPlayTime = 0;
     this->totalSteps = 0;
     this->hintCount = 0;
+    this->hintedTiles = QVector<QPair<size_t, size_t>>();
+    this->rotatedTiles = QVector<QPair<QPair<size_t, size_t>, QVector<bool>>>();
 }
 
 int GameModel::getBounded(int lowest, int highest)
@@ -105,6 +135,67 @@ size_t GameModel::getSize() const
 {
     return this->_DIM;
 }
+
+size_t GameModel::getGameSeed() const
+{
+    return this->gameSeed;
+}
+
+QString GameModel::getAlgoType() const
+{
+    if (this->algoType == GameModel::Depth)
+        return "Depth";
+    else if (this->algoType == GameModel::Prim)
+        return "Prim";
+    return "";
+}
+
+size_t GameModel::getTotalPlayTime() const
+{
+    return this->totalPlayTime;
+}
+
+size_t GameModel::getTotalSteps() const
+{
+    return this->totalSteps;
+}
+
+size_t GameModel::getHintRamaining() const
+{
+    return GameModel::HINT_LIMIT - this->hintCount;
+}
+
+QVector<QPair<size_t, size_t> > GameModel::getHintedTiles() const
+{
+    return this->hintedTiles;
+}
+
+QVector<QPair<QPair<size_t, size_t>, QVector<bool> > > GameModel::getRotatedTiles() const
+{
+    return this->rotatedTiles;
+}
+
+void GameModel::tileRotatedByView(TileModel *tile)
+{
+    for (size_t i = 0; i < this->_DIM; ++i) {
+        for (size_t j = 0; j < this->_DIM; ++j) {
+            if (this->game[i][j] == tile) {
+                auto it = this->rotatedTiles.begin();
+                while (it != this->rotatedTiles.end()) { // check if tile's position already in the vector
+                    QPair<size_t, size_t> pos = it->first;
+                    if (pos.first == i && pos.second == j) { // update the nodes of the tile
+                        it->second = tile->getNodeVector();
+                        break;
+                    }
+                    ++it;
+                }
+                if (it == this->rotatedTiles.end()) // if the tile not exsist in vector rotatedTiles
+                    this->rotatedTiles.push_back({{i, j}, tile->getNodeVector()});
+            }
+        }
+    }
+}
+
 
 QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
 {
@@ -187,13 +278,19 @@ QVector<QVector<QVector<bool>>> GameModel::primAlgo()
     return v;
 }
 
-QString GameModel::getAlgoType()
+void GameModel::setTotalTime(size_t totalTime)
 {
-    if (this->algoType == GameModel::Depth)
-        return "Depth";
-    else if (this->algoType == GameModel::Prim)
-        return "Prim";
-    return "";
+    this->totalPlayTime = totalTime;
+    int minute = this->totalPlayTime/60;
+    int sec = this->totalPlayTime%60;
+    QTime time(0, minute, sec);
+    emit sendTime(time.toString("mm:ss"));
+}
+
+void GameModel::setStep(size_t steps)
+{
+    this->totalSteps = steps;
+    emit sendSteps(QString::number(totalSteps));
 }
 
 void GameModel::setTime()
@@ -250,12 +347,12 @@ bool GameModel::checkAnswer()
         checkVecktor[currentY][currentX][chooseNode[0][2]] = TileModel::OFF;
 
     }
-    if (countTiles == 0){
+    if (countTiles == 0) {
         this->gameStarted = false;
         emit onGameStatus(true);
         return true;
     }
-    else{
+    else {
         emit onGameStatus(false);
         return false;
     }
@@ -271,7 +368,7 @@ void GameModel::resetGame()
         }
     }
     emit onGameStatus(false);
-    emit this->hintSuccessed(GameModel::HINTLIMIT);
+    emit this->hintSuccessed(GameModel::HINT_LIMIT);
 }
 
 void GameModel::showSolution()
@@ -288,14 +385,14 @@ void GameModel::showSolution()
 
 void GameModel::showSolutionOnRandomTile()
 {
-    if (this->hintCount >= GameModel::HINTLIMIT)
+    if (this->hintCount >= GameModel::HINT_LIMIT)
         return;
 
     if (!this->gameStarted) {
         this->gameStarted = true;
         emit this->gameStart();
     }
-    QVector<QVector<size_t>> unSolvedTiles;
+    QVector<QPair<size_t, size_t>> unSolvedTiles;
 
     // set all unsolved tiles in a vector
     for (size_t i = 0; i < this->_DIM; ++i)
@@ -303,10 +400,12 @@ void GameModel::showSolutionOnRandomTile()
             if (this->game[i][j]->getNodeVector() != this->answer[i][j])
                 unSolvedTiles.push_back({i, j});
     // get the position randomly
-    QVector<size_t> position = unSolvedTiles[this->getBounded(0, unSolvedTiles.size())];
-    this->game[position[0]][position[1]]->setNodes(this->answer[position[0]][position[1]]);
-    emit this->game[position[0]][position[1]]->rotatedByHint();
-    emit this->hintSuccessed(GameModel::HINTLIMIT - ++this->hintCount);
+    QPair<size_t, size_t> position = unSolvedTiles[this->getBounded(0, unSolvedTiles.size())];
+    this->game[position.first][position.second]->setNodes(this->answer[position.first][position.second]);
+
+    this->hintedTiles.push_back(position);
+    emit this->game[position.first][position.second]->rotatedByHint();
+    emit this->hintSuccessed(GameModel::HINT_LIMIT - ++this->hintCount);
     this->checkAnswer();
 }
 

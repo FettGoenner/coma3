@@ -4,6 +4,11 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QTimer>
+#include <QTime>
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QDesktopServices>
 
 #include "gameview.h"
 #include "newgamedialog.h"
@@ -11,6 +16,7 @@
 #include "tileview.h"
 #include "dockwindow.h"
 #include "savegameview.h"
+#include "networkpuzzlefile.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -33,7 +39,6 @@ private:
     DockWindow *dockWindow;
     GameModel *gameModel;
     GameView *gameView;
-    SaveGameDialog *saveGame = nullptr;
 
     void showGameWindow();
     void hideGameWindow();

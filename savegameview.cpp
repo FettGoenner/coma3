@@ -10,11 +10,8 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->gameFileTable->setColumnCount(2);
-    ui->gameFileTable->setHorizontalHeaderLabels(QStringList() << "File Name" << "Update Time");
-    ui->gameFileTable->setRowCount(3);
-    ui->gameFileTable->setItem(0, 0, new QTableWidgetItem(""));
-    ui->gameFileTable->setItem(1, 0, new QTableWidgetItem("222"));
-    ui->gameFileTable->setItem(2, 0, new QTableWidgetItem("333"));
+    ui->gameFileTable->setHorizontalHeaderLabels(QStringList() << "Filename" << "last modified time");
+
     // select by rows
     ui->gameFileTable->setSelectionBehavior(QTableWidget::SelectRows);
 
@@ -23,8 +20,19 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
 
     // cannot edit the cells of the table
     ui->gameFileTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->gameFileTable->setHorizontalHeaderLabels(QStringList() << "File Name" << "Create Time");
+
     ui->deleteBtn->setEnabled(false);
+
+    SaveGameModel *saveGameModel = new SaveGameModel;
+    QVector<QPair<NetworkPuzzleFile*, QDateTime>> gameFiles = saveGameModel->getFiles();
+
+    size_t gameFileSize = gameFiles.size();
+    ui->gameFileTable->setRowCount(gameFileSize);
+    for (size_t i = 0; i < gameFileSize; ++i) {
+        ui->gameFileTable->setItem(i, 0, new QTableWidgetItem(gameFiles[i].first->getFileName().left(gameFiles[i].first->getFileName().size() - 5)));
+        ui->gameFileTable->setItem(i, 1, new QTableWidgetItem(gameFiles[i].second.toString("yy-MM-dd-hh:mm:ss")));
+    }
+
     connect(ui->gameFileTable, &QTableWidget::cellClicked, this, [=]() {
         ui->deleteBtn->setEnabled(true);
     });
@@ -44,11 +52,16 @@ SaveGameDialog::SaveGameDialog(QWidget *parent) :
     connect(ui->deleteBtn, &QPushButton::clicked, this, [=]() {
         ui->gameFileTable->removeRow(ui->gameFileTable->currentRow());
     });
-    connect(ui->gameFileTable, &QTableWidget::currentCellChanged, this, [=](int currentRow, int currentColumn, int previousRow, int previousColumn) {
+    connect(ui->gameFileTable, &QTableWidget::currentCellChanged, this, [=](int currentRow) {
         ui->fileNameLineEdit->setText(ui->gameFileTable->item(currentRow, 0)->text());
+        NetworkPuzzleFile *currentFile = gameFiles[currentRow].first;
+        ui->sizeLabel->setText(QString::number(currentFile->getDim()));
+        ui->seedLabel->setText(QString::number(currentFile->getSeed()));
+        ui->algoLabel->setText(currentFile->getGameAlgo());
+        ui->totalTimeLabel->setText(QTime(0, currentFile->getTotalPlayTime()/60, currentFile->getTotalPlayTime()%60).toString("mm:ss"));
+        ui->totalStepsLabel->setText(QString::number(currentFile->getTotalSteps()));
     });
 
-    NetworkPuzzleFile *file = new NetworkPuzzleFile("a.json");
 }
 
 void SaveGameDialog::resizeEvent(QResizeEvent *)

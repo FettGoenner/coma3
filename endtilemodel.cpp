@@ -22,8 +22,13 @@ void EndTile::setNodes(const QVector<bool>& tile)
         this->north = TileModel::ON;
         return;
     }
+
     this->clearNodes();
     TileModel::setNodes(tile);
+
+    // check valid
+    if (TileModel::getTileTypeByVector(tile) != TileModel::EndTile)
+        throw "EndTile is invalid!";
 
     // get rotateAngle
     if (this->east)
@@ -37,5 +42,6 @@ void EndTile::setNodes(const QVector<bool>& tile)
 
     emit this->nodesChanged();
 }
+
 
 

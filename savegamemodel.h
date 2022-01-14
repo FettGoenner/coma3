@@ -3,14 +3,20 @@
 
 #include <QObject>
 #include <QVector>
+#include <QDir>
+#include <QPair>
+
+#include "networkpuzzlefile.h"
 
 class SaveGameModel : public QObject
 {
     Q_OBJECT
 public:
     explicit SaveGameModel(QObject *parent = nullptr);
-private:
 
+    QVector<QPair<NetworkPuzzleFile*, QDateTime>> getFiles() const;
+private:
+    QVector<QPair<NetworkPuzzleFile*, QDateTime>> fileVector;
 signals:
 
 };

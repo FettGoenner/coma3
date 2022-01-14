@@ -1,9 +1,3 @@
-#include <QTime>
-#include <QHBoxLayout>
-#include <QKeyEvent>
-#include <QMessageBox>
-#include <QDesktopServices>
-
 #include "mainwindowview.h"
 #include "ui_mainwindowview.h"
 
@@ -158,15 +152,23 @@ void MainWindow::on_newGameAction_triggered()
 void MainWindow::on_saveGameAction_triggered()
 {
     // TODO
-    if (this->saveGame == nullptr)
-        this->saveGame = new SaveGameDialog(this);
-    this->saveGame->exec();
+
+    SaveGameDialog saveGame(this);
+    if (saveGame.exec() == QDialog::Accepted) {
+        qDebug() << 1111;
+    }
+
 }
 
 // load game action
 void MainWindow::on_loadGameAction_triggered()
 {
     // TODO
+    NetworkPuzzleFile *file = new NetworkPuzzleFile("a.json");
+//    if (file->isValid())
+//        qDebug() << 111111;
+    this->gameModel->loadGame(file->getDim(), file->getSeed(), file->getGameAlgo(), file->getTotalPlayTime(), file->getTotalSteps(), file->getHintRemaining(), file->getHintedTiles(), file->getRotatedTiles());
+    delete file;
 }
 
 // pause action

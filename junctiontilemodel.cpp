@@ -29,6 +29,10 @@ void JunctionTile::setNodes(const QVector<bool>& tile)
     this->clearNodes();
     TileModel::setNodes(tile);
 
+    // check valid
+    if (TileModel::getTileTypeByVector(tile) != TileModel::JunctionTile)
+        throw "JunctionTile is invalid!";
+
     // get rotateAngle
     if (!this->north)
         this->rotateAngle = 0;
@@ -41,12 +45,3 @@ void JunctionTile::setNodes(const QVector<bool>& tile)
 
     emit this->nodesChanged();
 }
-
-//bool JunctionTile::isValidTile()
-//{
-//    QString nodeString = this->getNodeString();
-//    if (nodeString.size() == 3)
-//        return true;
-
-//    return false;
-//}

@@ -32,7 +32,7 @@ TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
     });
     connect(this->tile, &TileModel::nodesChanged, this, &TileView::adjustAngle);
     if (this->rotateAngle < tile->getAngle()) {
-        this->animationAngele = tile->getAngle();
+        this->animationAngle = tile->getAngle();
         this->animationTimer->start();
     }
 }
@@ -41,7 +41,7 @@ void TileView::rotateWithAnimation(int angle)
 {
     if (angle == 0)
         return;
-    this->animationAngele = angle;
+    this->animationAngle = angle;
 
     this->animationTimer->start();
     emit this->nodeChange(angle/90);
@@ -61,13 +61,13 @@ void TileView::rotateWithAnimation(int angle)
 
 void TileView::isConnected(bool connected)
 {
-    if (connected){
+    if (connected) {
         this->setTileColor(QColor(0, 200, 0)); // change tile color to green
         this->canBeClicked = false;
     }
     else {
         this->setTileColor(Qt::blue);
-        this->canBeClicked = true;
+//        this->canBeClicked = true;
     }
 }
 
@@ -80,12 +80,17 @@ void TileView::isConnected(bool connected)
 
 void TileView::adjustAngle()
 {
+    if (this->animationTimer->isActive())
+        QTimer::singleShot(200, [=](){
+            this->adjustAngle();
+            return;
+        });
     this->rotateAngle %= 360;
-    int tileRotateAngel = tile->rotateAngle % 360;
-    this->animationAngele = tileRotateAngel - this->rotateAngle;
-    if (this->animationAngele < 0)
-        this->animationAngele += 360;
-    if (this->animationAngele != 0)
+    int tileRotateAngel = this->tile->rotateAngle % 360;
+    this->animationAngle = tileRotateAngel - this->rotateAngle;
+    if (this->animationAngle < 0)
+        this->animationAngle += 360;
+    if (this->animationAngle > 0)
         this->animationTimer->start();
 }
 
@@ -116,12 +121,10 @@ void TileView::rotateTimeout()
 {
     this->rotateAngle += 10;
 
-    this->animationAngele -= 10;
+    this->animationAngle -= 10;
     update();
-    if (this->animationAngele == 0) {
-        this->animationAngele = 90;
+    if (this->animationAngle == 0)
         this->animationTimer->stop();
-    }
 }
 
 void TileView::mouseReleaseEvent(QMouseEvent *ev)

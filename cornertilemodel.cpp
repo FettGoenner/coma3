@@ -30,6 +30,10 @@ void CornerTile::setNodes(const QVector<bool>& tile)
     this->clearNodes();
     TileModel::setNodes(tile);
 
+    // check valid
+    if (TileModel::getTileTypeByVector(tile) != TileModel::CornerTile)
+        throw "CornerTile is invalid!";
+
     // get rotateAngle
     if (this->south && this->west)
         this->rotateAngle = 90;
@@ -42,6 +46,7 @@ void CornerTile::setNodes(const QVector<bool>& tile)
 
     emit this->nodesChanged();
 }
+
 
 
 

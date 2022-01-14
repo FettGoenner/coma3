@@ -27,6 +27,10 @@ void LineTile::setNodes(const QVector<bool>& tile)
     this->clearNodes();
     TileModel::setNodes(tile);
 
+    // check valid
+    if (TileModel::getTileTypeByVector(tile) != TileModel::LineTile)
+        throw "LineTile is invalid!";
+
     // get rotateAngle
     if (!this->north){
         if (this->rotateAngle % 360 != 270)
@@ -38,4 +42,3 @@ void LineTile::setNodes(const QVector<bool>& tile)
 
     emit this->nodesChanged();
 }
-

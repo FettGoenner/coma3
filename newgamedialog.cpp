@@ -1,7 +1,5 @@
 #include "newgamedialog.h"
 #include "ui_newgamedialog.h"
-#include <QDebug>
-#include <QRandomGenerator>
 
 NewGameDialog::NewGameDialog(size_t size, QString algoType, QWidget *parent) :
     QDialog(parent)
