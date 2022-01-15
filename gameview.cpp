@@ -32,17 +32,7 @@ void GameView::showGame(bool clearStatus)
             // check answer after clicked a tile
             connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
 
-            // show solution a this tile if clicked while hint
-//            connect(tileView, &TileView::clickedWhileHint, this->gameModel, &GameModel::showSolutionOnTile);
-//            connect(tileView, &TileView::clickedWhileHint, this, &GameView::endHint);
-//            connect(tileView, &TileView::clickedWhileHint, this, [=]() {
-//                emit this->hintSucceeded();
-//            });
-
-//            connect(this, &GameView::stopTileHintAnimation, tileView, &TileView::stopHintAnimation);
-//            connect(this, &GameView::startTileHintAnimation, tileView, &TileView::startHintAnimation);
-
-            // set tile's color
+            // set tile's color between green and blue
             connect(gameModel, &GameModel::onGameStatus, tileView, &TileView::isConnected);
 
         }

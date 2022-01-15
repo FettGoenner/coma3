@@ -24,9 +24,6 @@ public:
     explicit GameView(GameModel *gameModel, QWidget *parent = nullptr);
 
 signals:
-    void startTileHintAnimation();
-    void stopTileHintAnimation();
-//    void hintSucceeded();
 
 public slots:
     void showGame(bool clearStatus = false);
