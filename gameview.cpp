@@ -92,6 +92,8 @@ void GameView::paintEvent(QPaintEvent *ev)
     // keep the playground at the mid
     if (width > height)
         this->move((width - height)/2, 0);
+    else if (width < height)
+        this->move(0, (height - width)/2);
 
     return QWidget::paintEvent(ev);
 }
