@@ -67,23 +67,9 @@
        <widget class="QWidget" name="widget_6" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <widget class="QPushButton" name="addBtn">
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="deleteBtn">
            <property name="text">
             <string>Delete</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="overrideBtn">
-           <property name="text">
-            <string>Override</string>
            </property>
           </widget>
          </item>

@@ -129,7 +129,6 @@ MainWindow::MainWindow(QWidget *parent)
         if (status) // if there is a solution
             this->dockWindow->setPauseBtnEnabled(!status); // set pause button to disable
     });
-
 }
 
 void MainWindow::showGameWindow()
@@ -151,24 +150,52 @@ void MainWindow::on_newGameAction_triggered()
 // save game action
 void MainWindow::on_saveGameAction_triggered()
 {
-    // TODO
+    if (this->saveLoadGameModel == nullptr)
+        this->saveLoadGameModel = new SaveLoadGameModel(this->gameModel, this);
 
-    SaveGameDialog saveGame(this);
-    if (saveGame.exec() == QDialog::Accepted) {
-        qDebug() << 1111;
-    }
+    if (this->saveLoadGameView == nullptr)
+        this->saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Save, this);
+
+    if (this->gameModel->gameStarted)
+        this->dockWindow->clickPauseBtn();
+
+    if (this->saveLoadGameControler == nullptr)
+        this->saveLoadGameControler = new SaveLoadGameControler(this->saveLoadGameModel, this->saveLoadGameView, this);
+
+    delete this->saveLoadGameModel;
+    this->saveLoadGameModel = nullptr;
+
+    delete this->saveLoadGameView;
+    this->saveLoadGameView = nullptr;
+
+    delete this->saveLoadGameControler;
+    this->saveLoadGameControler = nullptr;
 
 }
 
 // load game action
 void MainWindow::on_loadGameAction_triggered()
 {
-    // TODO
-    NetworkPuzzleFile *file = new NetworkPuzzleFile("a.json");
-//    if (file->isValid())
-//        qDebug() << 111111;
-    this->gameModel->loadGame(file->getDim(), file->getSeed(), file->getGameAlgo(), file->getTotalPlayTime(), file->getTotalSteps(), file->getHintRemaining(), file->getHintedTiles(), file->getRotatedTiles());
-    delete file;
+    if (this->saveLoadGameModel == nullptr)
+        this->saveLoadGameModel = new SaveLoadGameModel(this->gameModel, this);
+
+    if (this->saveLoadGameView == nullptr)
+        this->saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Load, this);
+
+    if (this->gameModel->gameStarted)
+        this->dockWindow->clickPauseBtn();
+
+    if (this->saveLoadGameControler == nullptr)
+        this->saveLoadGameControler = new SaveLoadGameControler(this->saveLoadGameModel, this->saveLoadGameView, this);
+
+    delete this->saveLoadGameModel;
+    this->saveLoadGameModel = nullptr;
+
+    delete this->saveLoadGameView;
+    this->saveLoadGameView = nullptr;
+
+    delete this->saveLoadGameControler;
+    this->saveLoadGameControler = nullptr;
 }
 
 // pause action

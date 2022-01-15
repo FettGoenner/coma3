@@ -9,13 +9,18 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QTextBrowser>
 
 #include "gameview.h"
 #include "newgamedialog.h"
 #include "gamemodel.h"
 #include "tileview.h"
 #include "dockwindow.h"
-#include "savegameview.h"
+
+#include "saveloadgamemodel.h"
+#include "saveloadgameview.h"
+#include "saveloadgamecontroler.h"
+
 #include "networkpuzzlefile.h"
 
 QT_BEGIN_NAMESPACE
@@ -39,6 +44,10 @@ private:
     DockWindow *dockWindow;
     GameModel *gameModel;
     GameView *gameView;
+
+    SaveLoadGameModel *saveLoadGameModel = nullptr;
+    SaveLoadGameView *saveLoadGameView = nullptr;
+    SaveLoadGameControler *saveLoadGameControler = nullptr;
 
     void showGameWindow();
     void hideGameWindow();

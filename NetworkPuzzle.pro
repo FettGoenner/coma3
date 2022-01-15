@@ -20,8 +20,9 @@ SOURCES += \
     mainwindowview.cpp \
     networkpuzzlefile.cpp \
     newgamedialog.cpp \
-    savegamemodel.cpp \
-    savegameview.cpp \
+    saveloadgamecontroler.cpp \
+    saveloadgamemodel.cpp \
+    saveloadgameview.cpp \
     tilemodel.cpp \
     tileview.cpp
 
@@ -36,8 +37,9 @@ HEADERS += \
     mainwindowview.h \
     networkpuzzlefile.h \
     newgamedialog.h \
-    savegamemodel.h \
-    savegameview.h \
+    saveloadgamecontroler.h \
+    saveloadgamemodel.h \
+    saveloadgameview.h \
     tilemodel.h \
     tileview.h
 
@@ -45,9 +47,11 @@ FORMS += \
     dockwindow.ui \
     mainwindowview.ui \
     newgamedialog.ui \
-    savegameview.ui
+    saveloadgameview.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES +=

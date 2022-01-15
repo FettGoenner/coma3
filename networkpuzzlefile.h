@@ -9,6 +9,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDateTime>
+#include <QFileInfo>
 
 #include "gamemodel.h"
 
@@ -18,6 +20,8 @@ class NetworkPuzzleFile : public QObject
 private:
     QFile gameFile;
     QString fileName;
+    QJsonObject gameObj;
+
     size_t dim;
     size_t seed;
     QString gameAlgo;
@@ -27,13 +31,12 @@ private:
     bool dataValid;
     QVector<QPair<size_t, size_t>> hintedTiles; // QPair<size_t, size_t> saves the position of the tiles
     QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> rotatedTiles; // QVector<int> saves the nodes of the tiles
-
 public:
     NetworkPuzzleFile();
     explicit NetworkPuzzleFile(QObject *parent = nullptr);
-    NetworkPuzzleFile(const QString &fileName, QObject *parent = nullptr);
+    NetworkPuzzleFile(const QString &fileName = "", QObject *parent = nullptr);
     void loadData();
-    void writeData(GameModel *gameModel);
+    bool writeData();
     bool isValid();
 
     size_t getDim() const;
@@ -42,9 +45,14 @@ public:
     size_t getTotalPlayTime() const;
     size_t getTotalSteps() const;
     size_t getHintRemaining() const;
+
     QVector<QPair<size_t, size_t>> getHintedTiles() const;
     QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> getRotatedTiles() const;
     QString getFileName() const;
+    QDateTime lastModified() const;
+
+    void updateData(GameModel &gameModel, QString fileName = "");
+    void deleteFile();
 signals:
 };
 

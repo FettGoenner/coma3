@@ -8,10 +8,12 @@ NetworkPuzzleFile::NetworkPuzzleFile(const QString &fileName, QObject *parent)
     : QObject(parent),
       fileName(fileName)
 {
-    this->gameFile.setFileName("games/" + fileName);
+    if (fileName != "") {
+        this->gameFile.setFileName("games/" + fileName);
 
-    this->dataValid = this->isValid();
-    this->loadData();
+        this->dataValid = this->isValid();
+        this->loadData();
+    }
 }
 
 void NetworkPuzzleFile::loadData()
@@ -19,41 +21,34 @@ void NetworkPuzzleFile::loadData()
     if (!this->dataValid)
         return;
 
-    // read json file
-    QString gameDetail;
-    this->gameFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    gameDetail = this->gameFile.readAll();
-    this->gameFile.close();
-    QJsonObject gameObj = QJsonDocument::fromJson(gameDetail.toUtf8()).object();
-
     /* dim, seed, gameAlgo, totalPlayTime, totalSteps, hintRamaining, hintedTiles, changedTiles */
     // get data and check valid
-    QJsonValue dim = gameObj["dim"];
+    QJsonValue dim = this->gameObj["dim"];
     this->dim = size_t(dim.toInt());
 
-    QJsonValue seed = gameObj["seed"];
+    QJsonValue seed = this->gameObj["seed"];
     this->seed = size_t(seed.toInt());
 
-    QJsonValue gameAlgo = gameObj["gameAlgo"];
+    QJsonValue gameAlgo = this->gameObj["gameAlgo"];
     this->gameAlgo = gameAlgo.toString();
 
-    QJsonValue totalPlayTime = gameObj["totalPlayTime"];
+    QJsonValue totalPlayTime = this->gameObj["totalPlayTime"];
     this->totalPlayTime = size_t(totalPlayTime.toInt());
 
-    QJsonValue totalSteps = gameObj["totalSteps"];
+    QJsonValue totalSteps = this->gameObj["totalSteps"];
     this->totalSteps = size_t(totalSteps.toInt());
 
-    QJsonValue hintRemaining = gameObj["hintRemaining"];
+    QJsonValue hintRemaining = this->gameObj["hintRemaining"];
     this->hintRemaining = size_t(hintRemaining.toInt());
 
-    QJsonValue hintedTiles = gameObj["hintedTiles"];
+    QJsonValue hintedTiles = this->gameObj["hintedTiles"];
     QJsonArray hintedTilesArray = hintedTiles.toArray();
     for (const QJsonValue &value : hintedTilesArray){
         QString valueString = value.toString();
         this->hintedTiles.push_back({valueString[0].digitValue(), valueString[1].digitValue()});
     }
 
-    QJsonValue rotatedTiles = gameObj["rotatedTiles"];
+    QJsonValue rotatedTiles = this->gameObj["rotatedTiles"];
     QJsonArray changedTilesArray = rotatedTiles.toArray();
 
     for (const auto &value : changedTilesArray) {
@@ -74,16 +69,19 @@ void NetworkPuzzleFile::loadData()
     }
 }
 
-void NetworkPuzzleFile::writeData(GameModel *gameModel)
+bool NetworkPuzzleFile::writeData()
 {
-    this->dim = gameModel->getSize();
-    this->seed = gameModel->getGameSeed();
-    this->gameAlgo = gameModel->getAlgoType();
-    this->totalPlayTime = gameModel->getTotalPlayTime();
-    this->totalSteps = gameModel->getTotalSteps();
-    this->hintRemaining = gameModel->getHintRamaining();
-    this->hintedTiles = gameModel->getHintedTiles();
-    this->rotatedTiles = gameModel->getRotatedTiles();
+    if (!this->gameFile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
+
+    QJsonDocument saveDoc(this->gameObj);
+    this->gameFile.write(saveDoc.toJson());
+    this->gameFile.close();
+
+    return true;
+
 }
 
 bool NetworkPuzzleFile::isValid()
@@ -98,41 +96,41 @@ bool NetworkPuzzleFile::isValid()
     gameDetail = this->gameFile.readAll();
     this->gameFile.close();
 
-    QJsonObject gameObj = QJsonDocument::fromJson(gameDetail.toUtf8()).object();
+    this->gameObj = QJsonDocument::fromJson(gameDetail.toUtf8()).object();
 
     /* dim, seed, gameAlgo, totalPlayTime, totalSteps, hintRamaining, hintedTiles, changedTiles */
     // get data and check valid
 
 
-    QJsonValue dim = gameObj["dim"];
+    QJsonValue dim = this->gameObj["dim"];
     if (!dim.isDouble() || size_t(dim.toInt()) > GameModel::MAX_SIZE || size_t(dim.toInt()) < GameModel::MIN_SIZE)
         dataIsValid = false;
 
-    QJsonValue seed = gameObj.value("seed");
+    QJsonValue seed = this->gameObj.value("seed");
     seed.isDouble();
     seed.toInt();
     if (!seed.isDouble() || seed.toInt() > INT_MAX || seed.toInt() < 0)
         dataIsValid = false;
     // true
 
-    QJsonValue gameAlgo = gameObj["gameAlgo"];
+    QJsonValue gameAlgo = this->gameObj["gameAlgo"];
     if (!gameAlgo.isString() || (gameAlgo.toString() != "Depth" && gameAlgo.toString() != "Prim"))
         dataIsValid = false;
 
-    QJsonValue totalPlayTime = gameObj["totalPlayTime"];
+    QJsonValue totalPlayTime = this->gameObj["totalPlayTime"];
     if (!totalPlayTime.isDouble() || totalPlayTime.toInt() > INT_MAX || totalPlayTime.toInt() < 0)
         dataIsValid = false;
 
 
-    QJsonValue totalSteps = gameObj["totalSteps"];
+    QJsonValue totalSteps = this->gameObj["totalSteps"];
     if (!totalSteps.isDouble() || totalSteps.toInt() > INT_MAX || totalSteps.toInt() < 0)
         dataIsValid = false;
 
-    QJsonValue hintRemaining = gameObj["hintRemaining"];
+    QJsonValue hintRemaining = this->gameObj["hintRemaining"];
     if (!hintRemaining.isDouble() || size_t(hintRemaining.toInt()) > GameModel::HINT_LIMIT || hintRemaining.toInt() < 0)
         dataIsValid = false;
 
-    QJsonValue hintedTiles = gameObj["hintedTiles"];
+    QJsonValue hintedTiles = this->gameObj["hintedTiles"];
     if (hintedTiles.isArray()) {
         QJsonArray hintedTilesArray = hintedTiles.toArray();
         for (const QJsonValue &value : hintedTilesArray){
@@ -146,7 +144,7 @@ bool NetworkPuzzleFile::isValid()
     } else
         dataIsValid = false;
 
-    QJsonValue rotatedTiles = gameObj["rotatedTiles"];
+    QJsonValue rotatedTiles = this->gameObj["rotatedTiles"];
     if (rotatedTiles.isArray()){
         QJsonArray changedTilesArray = rotatedTiles.toArray();
         for (const auto &value : changedTilesArray){
@@ -223,6 +221,69 @@ QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> NetworkPuzzleFile::getRotat
 QString NetworkPuzzleFile::getFileName() const
 {
     return this->fileName;
+}
+
+QDateTime NetworkPuzzleFile::lastModified() const
+{
+    QFileInfo fileInfo("games/" + this->fileName);
+    return fileInfo.lastModified();
+
+}
+
+void NetworkPuzzleFile::updateData(GameModel &gameModel, QString fileName)
+{
+    this->dim = gameModel.getSize();
+    QJsonObject obj;
+    obj["dim"] = QJsonValue(static_cast<int>(this->dim));
+
+    this->seed = gameModel.getGameSeed();
+    obj["seed"] = QJsonValue(static_cast<int>(gameModel.getGameSeed()));
+
+    this->gameAlgo = gameModel.getAlgoType();
+    obj["gameAlgo"] = QJsonValue(gameAlgo);
+
+    this->totalPlayTime = gameModel.getTotalPlayTime();
+    obj["totalPlayTime"] = QJsonValue(static_cast<int>(this->totalPlayTime));
+
+    this->totalSteps = gameModel.getTotalSteps();
+    obj["totalSteps"] = QJsonValue(static_cast<int>(this->totalSteps));
+
+    this->hintRemaining = gameModel.getHintRamaining();
+    obj["hintRemaining"] = QJsonValue(static_cast<int>(this->hintRemaining));
+
+    this->hintedTiles = gameModel.getHintedTiles();
+    QJsonArray hintedTilesArray;
+    for (const auto &pair : this->hintedTiles)
+        hintedTilesArray.append(QString("%1%2").arg(pair.first).arg(pair.second));
+    obj["hintedTiles"] = hintedTilesArray;
+
+    this->rotatedTiles = gameModel.getRotatedTiles();
+     QJsonArray rotatedTilesArray;
+     for (const auto &value : this->rotatedTiles) {
+         QString position = QString("%1%2").arg(value.first.first).arg(value.first.second);
+         QString nodes("");
+         for (bool b : value.second)
+             nodes += b ? "1" : "0";
+         QJsonObject tiles;
+         tiles["position"] = QJsonValue(position);
+         tiles["nodes"] = QJsonValue(nodes);
+         rotatedTilesArray.append(tiles);
+     }
+     obj["rotatedTiles"] = rotatedTilesArray;
+
+     if (fileName != ".json") {
+         this->fileName = fileName;
+         this->gameFile.setFileName("games/" + this->fileName);
+     }
+     this->gameObj = obj;
+     this->writeData();
+     this->isValid();
+
+}
+
+void NetworkPuzzleFile::deleteFile()
+{
+    this->gameFile.remove();
 }
 
 
