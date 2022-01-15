@@ -5,7 +5,7 @@
 
 SaveLoadGameView::SaveLoadGameView(SaveLoadGameModel *model, SaveLoadGameView::SaveOrLoad status, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SaveLoadGameDialog),
+    ui(new Ui::SaveGameDialog),
     m_model(model),
     m_status(status)
 {
@@ -170,7 +170,3 @@ SaveLoadGameView::~SaveLoadGameView()
     this->clearLabels();
     delete ui;
 }
-
-
-
-

@@ -12,7 +12,7 @@
 #include "networkpuzzlefile.h"
 
 namespace Ui {
-class SaveLoadGameDialog;
+class SaveGameDialog;
 }
 
 class SaveLoadGameView : public QDialog
@@ -30,7 +30,7 @@ public:
     ~SaveLoadGameView();
 
 private:
-    Ui::SaveLoadGameDialog *ui;
+    Ui::SaveGameDialog *ui;
     SaveLoadGameModel *m_model;
     SaveLoadGameView::SaveOrLoad m_status;
     void clearLabels();
