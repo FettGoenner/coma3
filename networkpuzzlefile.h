@@ -11,6 +11,7 @@
 #include <QJsonArray>
 #include <QDateTime>
 #include <QFileInfo>
+#include <QDir>
 
 #include "gamemodel.h"
 
@@ -18,6 +19,7 @@ class NetworkPuzzleFile : public QObject
 {
     Q_OBJECT
 private:
+    inline static const QString GAME_FILE_PATH = "games/";
     QFile gameFile;
     QString fileName;
     QJsonObject gameObj;

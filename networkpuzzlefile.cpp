@@ -9,8 +9,7 @@ NetworkPuzzleFile::NetworkPuzzleFile(const QString &fileName, QObject *parent)
       fileName(fileName)
 {
     if (fileName != "") {
-        this->gameFile.setFileName("games/" + fileName);
-
+        this->gameFile.setFileName(NetworkPuzzleFile::GAME_FILE_PATH + fileName);
         this->dataValid = this->isValid();
         this->loadData();
     }
@@ -225,7 +224,7 @@ QString NetworkPuzzleFile::getFileName() const
 
 QDateTime NetworkPuzzleFile::lastModified() const
 {
-    QFileInfo fileInfo("games/" + this->fileName);
+    QFileInfo fileInfo(NetworkPuzzleFile::GAME_FILE_PATH + this->fileName);
     return fileInfo.lastModified();
 
 }
@@ -273,8 +272,9 @@ void NetworkPuzzleFile::updateData(GameModel &gameModel, QString fileName)
 
      if (fileName != ".json") {
          this->fileName = fileName;
-         this->gameFile.setFileName("games/" + this->fileName);
+         this->gameFile.setFileName(NetworkPuzzleFile::GAME_FILE_PATH + this->fileName);
      }
+
      this->gameObj = obj;
      this->writeData();
      this->isValid();

@@ -5,6 +5,9 @@ SaveLoadGameModel::SaveLoadGameModel(GameModel *gameModel, QObject *parent)
       currentGame(gameModel)
 {
     QDir dir("games/");
+    if (dir.mkpath(dir.absolutePath()))
+        qDebug() << "Game files in" << QDir::currentPath();
+
     QStringList nameFilters;
     nameFilters << "*.json";
     QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
