@@ -91,12 +91,6 @@ SaveLoadGameView::SaveLoadGameView(SaveLoadGameModel *model, SaveLoadGameView::S
     connect(ui->fileNameLineEdit, &QLineEdit::textEdited, this, [=]() {
         this->setSelectionsToDefault();
     });
-
-    connect(ui->openFolderBtn, &QPushButton::clicked, this, [=]() {
-        QDir dir(NetworkPuzzleFile::GAME_FILE_PATH);
-        QDesktopServices::openUrl(dir.absolutePath());
-    });
-
 }
 
 void SaveLoadGameView::loadFiles()
