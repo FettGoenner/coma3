@@ -158,18 +158,12 @@ void MainWindow::on_saveGameAction_triggered()
 
     if (this->gameModel->gameStarted)
         this->dockWindow->clickPauseBtn();
-
-    if (this->saveLoadGameControler == nullptr)
-        this->saveLoadGameControler = new SaveLoadGameControler(this->saveLoadGameModel, this->saveLoadGameView, this);
-
+    this->saveLoadGameView->exec();
     delete this->saveLoadGameModel;
     this->saveLoadGameModel = nullptr;
 
     delete this->saveLoadGameView;
     this->saveLoadGameView = nullptr;
-
-    delete this->saveLoadGameControler;
-    this->saveLoadGameControler = nullptr;
 
 }
 
@@ -184,18 +178,13 @@ void MainWindow::on_loadGameAction_triggered()
 
     if (this->gameModel->gameStarted)
         this->dockWindow->clickPauseBtn();
-
-    if (this->saveLoadGameControler == nullptr)
-        this->saveLoadGameControler = new SaveLoadGameControler(this->saveLoadGameModel, this->saveLoadGameView, this);
+    this->saveLoadGameView->exec();
 
     delete this->saveLoadGameModel;
     this->saveLoadGameModel = nullptr;
 
     delete this->saveLoadGameView;
     this->saveLoadGameView = nullptr;
-
-    delete this->saveLoadGameControler;
-    this->saveLoadGameControler = nullptr;
 }
 
 // pause action

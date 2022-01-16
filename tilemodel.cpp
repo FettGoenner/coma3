@@ -57,7 +57,7 @@ QString TileModel::getNodeString(const QVector<bool>& tile)
 }
 
 
-int TileModel::getTileTypeByVector(const QVector<bool>& tile)
+TileModel::TileType TileModel::getTileTypeByVector(const QVector<bool>& tile)
 {
     QString nodeString = TileModel::getNodeString(tile);
     if (nodeString.size() == 1) {

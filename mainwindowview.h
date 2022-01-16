@@ -19,7 +19,6 @@
 
 #include "saveloadgamemodel.h"
 #include "saveloadgameview.h"
-#include "saveloadgamecontroler.h"
 
 #include "networkpuzzlefile.h"
 
@@ -47,7 +46,6 @@ private:
 
     SaveLoadGameModel *saveLoadGameModel = nullptr;
     SaveLoadGameView *saveLoadGameView = nullptr;
-    SaveLoadGameControler *saveLoadGameControler = nullptr;
 
     void showGameWindow();
     void hideGameWindow();

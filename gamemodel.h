@@ -28,6 +28,7 @@ private:
     size_t m_gameSeed;
     QRandomGenerator m_gen; // for random values
     QVector<int> m_startTile;
+    QVector<QVector<TileModel*>> m_game;
     QVector<QVector<QVector<bool>>> m_answer;
     QVector<QVector<QVector<bool>>> m_resetVector;
     QTimer *m_timer;
@@ -50,7 +51,7 @@ public:
     explicit GameModel(size_t size = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
 
     bool gameStarted = false;
-    QVector<QVector<TileModel*>> game;
+
 
     // set-method
     void initializeGame(GameModel::GameType algo = GameModel::Depth);

@@ -73,7 +73,7 @@ public:
 
     static QString getNodeString(const QVector<bool>& tile);
 
-    static int getTileTypeByVector(const QVector<bool>& tile);
+    static TileModel::TileType getTileTypeByVector(const QVector<bool>& tile);
 
     static bool noNodes(const QVector<bool>& tile) {
                 return !(tile[TileModel::North] ||

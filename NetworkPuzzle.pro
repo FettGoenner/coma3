@@ -20,9 +20,9 @@ SOURCES += \
     mainwindowview.cpp \
     networkpuzzlefile.cpp \
     newgamedialog.cpp \
-    saveloadgamecontroler.cpp \
     saveloadgamemodel.cpp \
     saveloadgameview.cpp \
+    tilecontroler.cpp \
     tilemodel.cpp \
     tileview.cpp
 
@@ -37,9 +37,9 @@ HEADERS += \
     mainwindowview.h \
     networkpuzzlefile.h \
     newgamedialog.h \
-    saveloadgamecontroler.h \
     saveloadgamemodel.h \
     saveloadgameview.h \
+    tilecontroler.h \
     tilemodel.h \
     tileview.h
 

@@ -5,32 +5,27 @@
 
 TileView::TileView(TileModel *tile, QColor color, QFrame *parent) :
     QFrame(parent)
-  , tile(tile)
+  , m_model(tile)
   , tileColor(color)
   , animationTimer(new QTimer)
-//  , hintAnimationTimer(new QTimer)
 {
     setCursor(Qt::PointingHandCursor);
     this->setBackgroundColor(Qt::transparent);
 
     this->animationTimer->setInterval(7);
-//    this->hintAnimationTimer->setInterval(60);
 
-    //
     connect(this->animationTimer, &QTimer::timeout, this, &TileView::rotateTimeout);
-//    connect(this->hintAnimationTimer, &QTimer::timeout, this, &TileView::hintAnimationTimeout);
 
     connect(tile, &TileModel::resetedTile, this, [=]() {
         this->setBackgroundColor(Qt::transparent);
-//        this->stopHintAnimation();
     });
-    connect(this, &TileView::nodeChange, this->tile, &TileModel::adjustNodes);
+    connect(this, &TileView::nodeChange, this->m_model, &TileModel::adjustNodes);
 
     // set background color to yellow if the tile rotated by hint
-    connect(this->tile, &TileModel::rotatedByHint, this, [=]() {
+    connect(this->m_model, &TileModel::rotatedByHint, this, [=]() {
         this->setBackgroundColor(Qt::yellow);
     });
-    connect(this->tile, &TileModel::nodesChanged, this, &TileView::adjustAngle);
+    connect(this->m_model, &TileModel::nodesChanged, this, &TileView::adjustAngle);
     if (this->rotateAngle < tile->getAngle()) {
         this->animationAngle = tile->getAngle();
         this->animationTimer->start();
@@ -47,18 +42,6 @@ void TileView::rotateWithAnimation(int angle)
     emit this->nodeChange(angle/90);
 }
 
-//void TileView::startHintAnimation()
-//{
-//    this->hintAnimationTimer->start();
-//}
-
-//void TileView::stopHintAnimation()
-//{
-//    this->hintAnimationTimer->stop();
-//    this->alphaValueF = 0;
-//    update();
-//}
-
 void TileView::isConnected(bool connected)
 {
     if (connected) {
@@ -67,16 +50,9 @@ void TileView::isConnected(bool connected)
     }
     else {
         this->setTileColor(Qt::blue);
-//        this->canBeClicked = true;
+        //        this->canBeClicked = true;
     }
 }
-
-//void TileView::hintAnimationTimeout()
-//{
-
-//    this->alphaValueF += 0.3;
-//    update();
-//}
 
 void TileView::adjustAngle()
 {
@@ -86,7 +62,7 @@ void TileView::adjustAngle()
             return;
         });
     this->rotateAngle %= 360;
-    int tileRotateAngel = this->tile->rotateAngle % 360;
+    int tileRotateAngel = this->m_model->rotateAngle % 360;
     this->animationAngle = tileRotateAngel - this->rotateAngle;
     if (this->animationAngle < 0)
         this->animationAngle += 360;
@@ -127,24 +103,9 @@ void TileView::rotateTimeout()
         this->animationTimer->stop();
 }
 
-void TileView::mouseReleaseEvent(QMouseEvent *ev)
-{
-    if (!this->animationTimer->isActive() && this->canBeClicked/* && !this->hintAnimationTimer->isActive()*/) {
-        this->rotateWithAnimation(90);
-
-        // send signal clicked()
-        emit this->clicked();
-    } /*else if (this->hintAnimationTimer->isActive()) {
-        this->setBackgroundColor(Qt::yellow);
-        this->canBeClicked = false;
-        emit this->clickedWhileHint(this->tile);
-    }*/
-    return QWidget::mousePressEvent(ev);
-}
-
 void TileView::paintEvent(QPaintEvent *ev)
 {
-    int type = this->tile->getTileType();
+    int type = this->m_model->getTileType();
     double width = this->width(), height = this->height();
     // draw the deflaut TurnNode, from right to bottom
     QPainter painter(this);
@@ -156,7 +117,7 @@ void TileView::paintEvent(QPaintEvent *ev)
     }
     painter.rotate(this->rotateAngle);
     painter.translate(-width/2, -height/2);
-//    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
+    //    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
     painter.setPen(Qt::NoPen);
     if (type == TileModel::CornerTile) {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
