@@ -1,9 +1,3 @@
-#include <QVector>
-#include <QStack>
-#include <QPainter>
-#include <QTime>
-#include <QObject>
-
 #include "gameview.h"
 
 GameView::GameView(GameModel *gameModel, QWidget *parent) :
@@ -11,54 +5,13 @@ GameView::GameView(GameModel *gameModel, QWidget *parent) :
   , gameModel(gameModel)
 {
     // initialize game
-    this->showGame(true);
+    this->showGame();
     connect(this->gameModel, &GameModel::onGameInitialization, this, &GameView::showGame);
 }
 
-void GameView::showGame(bool clearStatus)
+void GameView::showGame()
 {
-    if (clearStatus)
-        this->clearLayout();
-    // initialize different tiles on different positions
-    for (size_t i = 0; i < this->gameModel->getSize(); ++i) {
-        for (size_t j = 0; j < this->gameModel->getSize(); ++j) {
-            TileView * tileView = new TileView(this->gameModel->game[i][j], Qt::blue);
-            // save tile in 2d vector playGround
-            this->gridLayout->addWidget(tileView, i, j);
-
-            // set steps after clicked a tile
-            connect(tileView, &TileView::clicked, this->gameModel, &GameModel::setSteps);
-
-            // check answer after clicked a tile
-            connect(tileView, &TileView::clicked, this->gameModel, &GameModel::checkAnswer);
-
-            // set tile's color between green and blue
-            connect(gameModel, &GameModel::onGameStatus, tileView, &TileView::isConnected);
-
-        }
-    }
-
-}
-
-
-void GameView::clearLayout()
-{
-    if (this->gridLayout != nullptr)
-    {
-        QLayoutItem* item;
-        while ((item = this->gridLayout->takeAt(0)) != nullptr) {
-            delete item->widget();
-            delete item;
-        }
-        delete this->gridLayout;
-        this->gridLayout = nullptr;
-    }
-    this->update();
-    // create gridlayout
-    this->gridLayout = new QGridLayout(this);
-    this->gridLayout->setSpacing(0);
-    this->gridLayout->setContentsMargins(0, 0, 0, 0);
-    setLayout(this->gridLayout);
+    this->setLayout(this->gameModel->getLayout());
 }
 
 

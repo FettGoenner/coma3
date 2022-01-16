@@ -2,15 +2,13 @@
 #define GAMEVIEW_H
 
 #include <QWidget>
-#include <QVector>
 #include <QGridLayout>
-#include <QRandomGenerator>
 #include <QTimer>
 #include <QTime>
+#include <QPainter>
 
-#include "tilemodel.h"
 #include "gamemodel.h"
-#include "tileview.h"
+#include "tilecontroler.h"
 
 class GameView : public QWidget
 {
@@ -26,7 +24,7 @@ public:
 signals:
 
 public slots:
-    void showGame(bool clearStatus = false);
+    void showGame();
 protected:
     void paintEvent(QPaintEvent*) override;
 };

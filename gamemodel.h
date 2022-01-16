@@ -6,37 +6,41 @@
 #include <QTimer>
 #include <QTime>
 #include <QStack>
+#include <QGridLayout>
 
 #include "tilemodel.h"
 #include "endtilemodel.h"
 #include "junctiontilemodel.h"
 #include "cornertilemodel.h"
 #include "linetilemodel.h"
-
+#include "tileview.h"
+#include "tilecontroler.h"
 
 class GameModel : public QObject
 {
     Q_OBJECT
 private:
-    size_t _DIM;
-    size_t totalPlayTime;
-    size_t totalSteps;
-    size_t algoType = GameModel::Depth;
-    size_t hintCount = 0;
-    size_t gameSeed;
-    QRandomGenerator gen; // for random values
-    QVector<int> startTile;
-    QVector<QVector<QVector<bool>>> answer;
-    QVector<QVector<QVector<bool>>> resetVector;
-    QTimer *timer;
-    QVector<QPair<size_t, size_t>> hintedTiles;
-    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> rotatedTiles;
+    size_t m_dim;
+    size_t m_totalPlayTime;
+    size_t m_totalSteps;
+    size_t m_algoType = GameModel::Depth;
+    size_t m_hintCount = 0;
+    size_t m_gameSeed;
+    QRandomGenerator m_gen; // for random values
+    QVector<int> m_startTile;
+    QVector<QVector<QVector<bool>>> m_answer;
+    QVector<QVector<QVector<bool>>> m_resetVector;
+    QTimer *m_timer;
+    QVector<QPair<size_t, size_t>> m_hintedTiles;
+    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> m_rotatedTiles;
+    QGridLayout *m_gridLayout = nullptr;
 
-    void clearEverything();
+    void clearEverything(bool clearLayout = false);
     QVector<QVector<QVector<bool>>> depthAlgo();
     QVector<QVector<QVector<bool>>> primAlgo();
     void setTotalTime(size_t time);
     void setStep(size_t steps);
+    void clearLayout();
 
 public:
     enum GameType{Depth = 0, Prim};
@@ -49,7 +53,7 @@ public:
     QVector<QVector<TileModel*>> game;
 
     // set-method
-    void initializeGame(int algo = GameModel::Depth);
+    void initializeGame(GameModel::GameType algo = GameModel::Depth);
     void loadGame(const size_t dim, const size_t seed, const QString &gameAlgo, const size_t totalPlayTime, const size_t totalSteps, const size_t hintRamaining, const QVector<QPair<size_t, size_t>> &hintedTiles, const QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> &rotatedTiles);
     void setSize(size_t size);
     void setGameSeed(size_t seed);
@@ -64,10 +68,10 @@ public:
     size_t getHintRamaining() const;
     QVector<QPair<size_t, size_t>> getHintedTiles() const;
     QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> getRotatedTiles() const;
-
+    QGridLayout* getLayout() const;
 
 signals:
-    void onGameInitialization(bool clearStatus = false);
+    void onGameInitialization();
     QString sendSteps(QString totalSteps);
     QString sendTime(QString totalTime);
     QString sendGameSeed(QString seed);
@@ -85,8 +89,8 @@ public slots:
             this->gameStarted = true;
             emit this->gameStart();
         }
-        ++totalSteps;
-        emit sendSteps(QString::number(totalSteps));
+        ++m_totalSteps;
+        emit sendSteps(QString::number(m_totalSteps));
     }
     void setTime();
     bool checkAnswer();

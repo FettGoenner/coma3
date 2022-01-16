@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->gameModel = new GameModel(7, gameSeed);
     this->gameView = new GameView(this->gameModel, ui->gameWindow);
     connect(this->gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
-
     // show the game window
     connect(this->gameModel, &GameModel::onGameInitialization, this, &MainWindow::showGameWindow);
     connect(this->gameModel, &GameModel::onGameStatus, this, &MainWindow::showGameWindow);
@@ -60,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (dialog.exec() == QDialog::Accepted) {
 
             // get alto type of new game
-            int algoType = 0;
+            GameModel::GameType algoType;
             if (dialog.getAlgoType() == "Depth")
                 algoType = GameModel::Depth;
             else if (dialog.getAlgoType() == "Prim")
@@ -129,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (status) // if there is a solution
             this->dockWindow->setPauseBtnEnabled(!status); // set pause button to disable
     });
+
 }
 
 void MainWindow::showGameWindow()
