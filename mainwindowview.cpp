@@ -1,8 +1,3 @@
-#include <QTime>
-#include <QHBoxLayout>
-#include <QKeyEvent>
-#include <QMessageBox>
-
 #include "mainwindowview.h"
 #include "ui_mainwindowview.h"
 
@@ -13,13 +8,13 @@ MainWindow::MainWindow(QWidget *parent)
     , algoStatusLabel(new QLabel)
     , sizeStatusLabel(new QLabel)
     , dockWindow(new DockWindow(this))
-    , saveGame(new SaveGameDialog(this))
 {
     ui->setupUi(this);
 
     // Let playground has same size as ui->gameWindow
     QHBoxLayout *layout = new QHBoxLayout;
     ui->gameWindow->setLayout(layout);
+
     //set statusbar
     size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX);
 
@@ -33,10 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     this->addDockWidget(Qt::RightDockWidgetArea, this->dockWindow);
     this->gameModel = new GameModel(7, gameSeed);
     this->gameView = new GameView(this->gameModel, ui->gameWindow);
-    connect(this->gameModel, &GameModel::sendGameSeed, this->seedStatusLabel, &QLabel::setText);
-
+    connect(this->gameModel, &GameModel::sendSeed, this->seedStatusLabel, &QLabel::setText);
     // show the game window
-    connect(this->gameModel, &GameModel::onGameInitialization, this, &MainWindow::showGameWindow);
+    connect(this->gameModel, &GameModel::onGameInit, this, &MainWindow::showGameWindow);
     connect(this->gameModel, &GameModel::onGameStatus, this, &MainWindow::showGameWindow);
     connect(this->gameModel, &GameModel::gameStart, this, &MainWindow::showGameWindow);
 
@@ -61,11 +55,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // new game button
     connect(this->dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
-        NewGameDialog dialog(this->gameModel->getSize(), this->gameModel->getAlgoType() , this);
+        NewGameDialog dialog(this->gameModel->getSize(), this->gameModel->getAlgo() , this);
         if (dialog.exec() == QDialog::Accepted) {
 
             // get alto type of new game
-            int algoType = 0;
+            GameModel::GameType algoType;
             if (dialog.getAlgoType() == "Depth")
                 algoType = GameModel::Depth;
             else if (dialog.getAlgoType() == "Prim")
@@ -77,10 +71,10 @@ MainWindow::MainWindow(QWidget *parent)
             this->gameModel->setSize(dialog.getSize());
 
             // get and set new game seed
-            this->gameModel->setGameSeed(dialog.getSeed());
+            this->gameModel->setSeed(dialog.getSeed());
 
             // set algo type
-            this->gameModel->initializeGame(algoType);
+            this->gameModel->initGame(algoType);
 
             // set everything in dock window to default.
             this->dockWindow->newGameStarted();
@@ -94,6 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // hint button
     connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameModel, &GameModel::showSolutionOnRandomTile);
+    connect(this->gameModel, &GameModel::hintSuccessed, this->dockWindow, &DockWindow::setHintBtnText);
 
     // connect hint action and hint button
     connect(this->dockWindow, &DockWindow::hintBtnEnabledChanged, ui->hintAction, &QAction::setEnabled);
@@ -155,16 +150,41 @@ void MainWindow::on_newGameAction_triggered()
 // save game action
 void MainWindow::on_saveGameAction_triggered()
 {
-    // TODO
-    saveGame->exec();
+    if (this->saveLoadGameModel == nullptr)
+    this->saveLoadGameModel = new SaveLoadGameModel(this->gameModel, this);
+
+    if (this->saveLoadGameView == nullptr)
+    this->saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Save, this);
+
+    if (this->gameModel->started())
+    this->dockWindow->clickPauseBtn();
+    this->saveLoadGameView->exec();
+    delete this->saveLoadGameModel;
+    this->saveLoadGameModel = nullptr;
+
+    delete this->saveLoadGameView;
+    this->saveLoadGameView = nullptr;
 }
 
 // load game action
 void MainWindow::on_loadGameAction_triggered()
 {
-    // TODO
-}
+    if (this->saveLoadGameModel == nullptr)
+            this->saveLoadGameModel = new SaveLoadGameModel(this->gameModel, this);
 
+        if (this->saveLoadGameView == nullptr)
+            this->saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Load, this);
+
+        if (this->gameModel->started())
+            this->dockWindow->clickPauseBtn();
+        this->saveLoadGameView->exec();
+
+        delete this->saveLoadGameModel;
+        this->saveLoadGameModel = nullptr;
+
+        delete this->saveLoadGameView;
+        this->saveLoadGameView = nullptr;
+}
 // pause action
 void MainWindow::on_pauseAction_triggered()
 {
@@ -177,17 +197,7 @@ void MainWindow::on_resetAction_triggered()
     this->dockWindow->clickResetBtn();
 }
 
-// hint action
-void MainWindow::on_hintAction_triggered()
-{
-    this->dockWindow->clickHintBtn();
-}
 
-// about action
-void MainWindow::on_aboutAction_triggered()
-{
-    QMessageBox::about(this, "About", "Something here");
-}
 
 // exit action
 void MainWindow::on_exitAction_triggered()
@@ -195,15 +205,43 @@ void MainWindow::on_exitAction_triggered()
     this->close();
 }
 
-// solution action
+// Hint
+void MainWindow::on_hintAction_triggered()
+{
+      this->dockWindow->clickHintBtn();
+}
+
+// Solution action
+
 void MainWindow::on_solutionAction_triggered()
 {
     this->dockWindow->clickSolutionBtn();
 }
 
+// About action
+void MainWindow::on_aboutAction_triggered()
+{
+    QMessageBox::about(this, "About", "<h1>Netzwerkpuzzle</h1>"
+                        "A Project at BHT, 2022<br><br>"
+                        "<u><b>Autoren</b></u><br>"
+                        "Xuantong Pan<br>"
+                        "Paul Matti Meinhold<br>"
+                        "Parfait R. Fejou<br>"
+                        "Erdenetuya Undral<br>");
+}
+
+// Help action
+void MainWindow::on_helpAction_triggered()
+{
+    QString link = "https://github.com/FettGoenner/coma3/tree/Milestone#readme";
+    QDesktopServices::openUrl(QUrl(link));
+}
+
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 

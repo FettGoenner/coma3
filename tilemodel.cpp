@@ -1,84 +1,90 @@
 #include "tilemodel.h"
-#include <QPainter>
-#include <QDebug>
-#include <QTimer>
-#include <QTime>
+#include <climits>
 
-TileModel::TileModel(QObject *parent) :
-    QObject(parent)
+QColor TileModel::connectedTileColor = QColor(0, 200, 0);
+QColor TileModel::detachedTileColor = Qt::blue;
+
+TileModel::TileModel(QObject* parent)
+    : QObject(parent),
+      _nodes(QVector<bool>(4,false)),
+      _color(Qt::blue),
+      _angle(0),
+      _clickable(true),
+      _bgdColor(Qt::transparent),
+      _timer(new QTimer(this))
 {
+    _timer->setInterval(3);
 }
 
-void TileModel::adjustNodes(int times)
+TileModel::TileModel(const QVector<bool>& nodes, QObject *parent)
+    : QObject(parent),
+      _nodes(nodes),
+      _color(Qt::blue),
+      _angle(0),
+      _clickable(true),
+      _connected(false),
+      _bgdColor(Qt::transparent),
+      _timer(new QTimer(this))
 {
-    for (int i = 0; i < times; ++i) {
-        bool temp = this->north;
-        this->north = this->west;
-        this->west  = this->south;
-        this->south = this->east;
-        this->east  = temp;
+    _timer->setInterval(3);
+}
+
+void TileModel::connected(bool connectionState){
+    if (connectionState){
+        setColor(TileModel::connectedTileColor); // change tile color to green
+        setClickState(false);
+    }
+    else {
+        setColor(TileModel::detachedTileColor);
+        setClickState(true);
+    }
+}
+void TileModel::rotate(int n){
+    if( n == 0) return;
+
+    for(size_t j = 1; j<=n; ++j){
+        bool last =  _nodes[3];
+        for (int i = 3; i > 0; i--)
+            _nodes[i] = _nodes[i - 1];
+        _nodes[0] = last;
+        //  for animation
+        for(int i = 90; i>0;--i){
+            _timer->start(3);
+            ++_angle;
+            emit tileChanged();
+        }
+        _angle &= 360;  // 0 <= _angle <= 360
     }
 }
 
-QVector<bool> TileModel::getNodeVector()
+void TileModel::setBgdColor(QColor color)
 {
-    return {this->north, this->east, this->south, this->west};
+    if (color == Qt::transparent) {
+        setClickState(true);
+        _bgdColor = "QWidget{"
+                    "border:2px solid gray;"
+                    "}";
+    }
+    else if (color == Qt::yellow) {
+        setClickState(false);
+        _bgdColor = "QWidget{"
+                    "border:2px solid gray;"
+                    "background-color: rgb(255, 255, 0);"
+                    "}";
+    }
+    emit tileChanged();
 }
 
-void TileModel::rotate90()
+int TileModel::typeByVector(const QVector<bool>& tile)
 {
-    this->adjustNodes();
-    this->rotateAngle += 90;
-}
+    if(tile.count(1) == 1) return TileModel::EndTile;
+    else if(tile.count(1) == 3) return TileModel::JunctionTile;
+    else if(tile.count(1) == 2)
+    {
 
-QString TileModel::getNodeString()
-{
-    QString nodeString = "";
-    if (this->north)
-        nodeString += "0";
-    if (this->east)
-        nodeString += "1";
-    if (this->south)
-        nodeString += "2";
-    if (this->west)
-        nodeString += "3";
-    return nodeString;
-}
-
-QString TileModel::getNodeString(const QVector<bool>& tile)
-{
-    QString nodeString = "";
-    if (tile[TileModel::North])
-        nodeString += "0";
-    if (tile[TileModel::East])
-        nodeString += "1";
-    if (tile[TileModel::South])
-        nodeString += "2";
-    if (tile[TileModel::West])
-        nodeString += "3";
-    return nodeString;
-}
-
-
-int TileModel::getTileTypeByVector(const QVector<bool>& tile)
-{
-    QString nodeString = TileModel::getNodeString(tile);
-    if (nodeString.size() == 1) {
-        return TileModel::EndTile;
-    } else if (nodeString.size() == 3) {
-        return TileModel::JunctionTile;
-    } else {
-        int first = nodeString[0].digitValue(), second = nodeString[1].digitValue();
-        if (first > second) {
-            int temp = first;
-            first = second;
-            second = temp;
-        }
-        if (second - first == 1 || second - first == 3)
-            return TileModel::CornerTile;
-
-        else
+        if((tile[0] == 1 && tile[2] == 1) || (tile[1] == 1 && tile[3] == 1))
             return TileModel::LineTile;
+        return TileModel::CornerTile;
     }
     return TileModel::Tile;
 }
@@ -91,6 +97,5 @@ size_t TileModel::countNodes(const QVector<bool>& tile)
             ++count;
     return count;
 }
-
 
 

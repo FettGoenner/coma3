@@ -1,104 +1,70 @@
 #ifndef TILEMODEL_H
 #define TILEMODEL_H
 
-#include <QVector>
+#include <QObject>
+#include <QColor>
 #include <QDebug>
 #include <QTimer>
-#include <QObject>
+#include <QVector>
+#include <QMouseEvent>
+#include <QWidget>
 
 class TileModel : public QObject
 {
+
     Q_OBJECT
+
+
+    QVector<bool> _nodes;    //  Vector representation of nodes {North,East,South,West}
+    QColor _color;
+    int _angle; // relative angle to init. state
+    bool _clickable;
+    bool _connected;
+    QString _bgdColor;
+    QTimer* _timer;  //  for animation control
+
 public:
-    enum NodesEnum{North, East=1, South, West};
-    enum NodesSwitch{ON=true, OFF=false};
-    enum TileType{Tile = -1, CornerTile = 0, EndTile, JunctionTile, LineTile};
-    explicit TileModel(QObject *parent = nullptr);
+    static QColor connectedTileColor;
+    static QColor detachedTileColor;
+    enum NodeState{ON=true,OFF=false};
+    enum NodesEnum{North,East=1,South,West};
+    enum TileNames{LineTile,CornerTile,JunctionTile,EndTile,Tile};
+    explicit TileModel(QObject*);
+    explicit TileModel( const QVector<bool>&, QObject *parent = nullptr );
 
-    bool north = TileModel::OFF;
-    bool east = TileModel::OFF;
-    bool south = TileModel::OFF;
-    bool west = TileModel::OFF;
-    int rotateAngle = 0; // the angle that this node already rotated
-
-    QVector<bool> getNodeVector();
-
-    int getAngle() const {
-        return this->rotateAngle;
-    }
-
-    void rotate90(); // rotate the node 90 degrees clockwise
-
-    void clearNodes() {
-        this->north = TileModel::OFF;
-        this->east = TileModel::OFF;
-        this->south = TileModel::OFF;
-        this->west = TileModel::OFF;
-    }
-
-    bool noNodes() const {
-        return !(this->north || this->east || this->south || this->west);
-    }
-
-    QString getNodeString();
-
-
-    virtual void setNodes(bool north, bool east, bool south, bool west) {
-        this->clearNodes();
-        if (north)
-            this->north = TileModel::ON;
-        if (east)
-            this->east = TileModel::ON;
-        if (south)
-            this->south = TileModel::ON;
-        if (west)
-            this->west = TileModel::ON;
-    }
-
-    virtual void setNodes(const QVector<bool>& tile) {
-        this->clearNodes();
-        if (tile[TileModel::North])
-            this->north = TileModel::ON;
-        if (tile[TileModel::East])
-            this->east = TileModel::ON;
-        if (tile[TileModel::South])
-            this->south = TileModel::ON;
-        if (tile[TileModel::West])
-            this->west = TileModel::ON;
-    }
-
-    virtual int getTileType() {
-        return TileModel::Tile;
-    }
-
-
-    static QString getNodeString(const QVector<bool>& tile);
-
-    static int getTileTypeByVector(const QVector<bool>& tile);
-
-    static bool noNodes(const QVector<bool>& tile) {
-                return !(tile[TileModel::North] ||
-                tile[TileModel::East] ||
-                tile[TileModel::South]||
-                tile[TileModel::West]);
-    }
-
+    //  GETTERS
+    static bool noNodes(const QVector<bool>& nodes)  { return !(nodes[0] || nodes[1] || nodes[2] || nodes[3]); }
     static bool has3Nodes(const QVector<bool>& tile) {
-        return TileModel::countNodes(tile) == 3;
+    return TileModel::countNodes(tile) == 3;
     }
-
     static size_t countNodes(const QVector<bool>& tile);
+    QVector<bool>& nodes(){ return _nodes; } const
+    QColor& color(){ return _color; } const
+    int& angle(){ return _angle; } const
+    bool& clickable(){return _clickable; } const
 
-private:
+    QString& bgdColor(){ return _bgdColor; } const
+    QTimer* timer(){ return _timer; } const
+    virtual int type() = 0;
+    static int typeByVector(const QVector<bool>&);
+    size_t countNodes();    // returns number of nodes
 
+    //SETERS
+    void setNodes(QVector<bool> nodes){ _nodes = nodes; emit tileChanged(); }   //  {north,east,south,west}
+    void rotate( int n = 1 ); //  rotates tile n times
+    void setClickState( bool clickState ){ _clickable = clickState; emit tileChanged(); }
+    void setBgdColor( QColor);
 
-public slots:
-    void adjustNodes(int times = 1);
-
+protected:
 signals:
-    void nodesChanged(); // if the nodes have changed
+    void tileChanged();
+    void clicked(TileModel*);
     void resetedTile();
     void rotatedByHint();
-};
 
+public slots:
+    void connected(bool);
+    void setColor( QColor color ){ _color = color; emit tileChanged(); }
+
+};
 #endif // TILEMODEL_H

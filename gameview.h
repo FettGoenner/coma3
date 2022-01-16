@@ -3,35 +3,31 @@
 
 #include <QWidget>
 #include <QVector>
-#include <QGridLayout>
+
 #include <QRandomGenerator>
 #include <QTimer>
 #include <QTime>
-
+#include <QPainter>
 #include "tilemodel.h"
 #include "gamemodel.h"
 #include "tileview.h"
-
 class GameView : public QWidget
 {
     Q_OBJECT
-private:
-    GameModel *gameModel;
-    QGridLayout *gridLayout = nullptr;
 
-    void clearLayout();
+    GameModel *_model;
+
 public:
-    explicit GameView(GameModel *gameModel, QWidget *parent = nullptr);
+    explicit GameView(GameModel*, QWidget *parent = nullptr);
 
-signals:
-    void startTileHintAnimation();
-    void stopTileHintAnimation();
-//    void hintSucceeded();
-
-public slots:
-    void showGame(bool clearStatus = false);
 protected:
     void paintEvent(QPaintEvent*) override;
+
+signals:
+
+public slots:
+    void showGame();
+
 };
 
 #endif // GAMEVIEW_H

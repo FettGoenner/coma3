@@ -5,59 +5,106 @@
 #include <QRandomGenerator>
 #include <QTimer>
 #include <QTime>
-
+#include <QGridLayout>
 #include "tilemodel.h"
+
 
 class GameModel : public QObject
 {
     Q_OBJECT
-private:
-    size_t _DIM;
-    size_t totalPlayTime;
-    size_t totalSteps;
-    size_t algoType = GameModel::Depth;
-    QRandomGenerator gen; // for random values
-    QVector<int> startTile;
-    QVector<QVector<QVector<bool>>> answer;
-    QVector<QVector<QVector<bool>>> resetVector;
-    QTimer *timer;
 
-    void clearEverything();
+    size_t _DIM;
+    size_t _totalTime;
+    size_t _totalSteps;
+    size_t _gameSeed;
+    size_t _algo = GameModel::Depth;
+    size_t _hintCount = 0;
+    QRandomGenerator gen; // for random values
+    QVector<int> _startTile;
+    QVector<QVector<QVector<bool>>> _answer; // 2D array of tiles
+    QVector<QVector<QVector<bool>>> _resetVector;    //  2D array of tiles
+    QTimer *_timer;
+    QGridLayout *gridLayout;
+    QVector<QPair<size_t, size_t>> _hintedTiles;
+    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> _rotatedTiles;
+
+
+
+    void clearEverything(bool clearLayout = false);
     QVector<QVector<QVector<bool>>> depthAlgo();
     QVector<QVector<QVector<bool>>> primAlgo();
 
+    // following where public
+    bool _started = false;
+    QVector<QVector<TileModel*>> _game;
+
+    void clear();
+
 public:
+    static const size_t MAX_SIZE = 30;
+    static const size_t MIN_SIZE = 2;
     enum GameType{Depth = 0, Prim};
-
+    static const size_t HINTLIMIT = 3;
     explicit GameModel(size_t size = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
-
-    bool gameStarted = false;
-    QVector<QVector<TileModel*>> game;
-    void initializeGame(int algo = GameModel::Depth);
+    void loadGame(const size_t, const size_t, const QString&, const size_t, const size_t, const size_t, const QVector<QPair<size_t, size_t>>&, const QVector<QPair<QPair<size_t, size_t>, QVector<bool>>>&);
+    //  GETERS
+    QGridLayout* getLayout(){ return gridLayout; } const
+    size_t getHintRamaining() const{return GameModel::HINTLIMIT - this->_hintCount;}
+    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> getRotatedTiles() const{return this->_rotatedTiles;}
+    QVector<QPair<size_t, size_t> > getHintedTiles() const{return this->_hintedTiles;}
+    size_t& getTotalPlayTime() {return _totalTime; } const
+    bool& started(){ return _started; }const
+    size_t& getTotalSteps(){ return _totalSteps; } const
+    size_t& getSeed() {return _gameSeed; } const
+    QVector<QVector<TileModel*>>& game() { return _game; }
+    //  SETERS
+    void setStep(size_t steps)
+    {
+        _totalSteps = steps;
+        emit sendSteps(QString::number(_totalSteps));
+    }
+    void initGame( int algo=Depth );
     void setSize(size_t size);
-    void setGameSeed(size_t seed);
+    void setSeed(size_t seed)
+    {
+        _gameSeed = seed;
+        gen.seed(seed);
+        emit sendSeed(QString::number(seed));
+    }
+    void setTotalTime(size_t totTime){
+        _totalTime = totTime;
+        int minute = _totalTime/60;
+        int sec = _totalTime%60;
+        QTime time(0, minute, sec);
+        emit sendTime(time.toString("mm:ss"));
+    }
 
-    int getBounded(int lowest, int highest);
-    size_t getSize() const;
-    QString getAlgoType();
+    int getBounded(int lowest, int highest){ return gen.bounded(lowest, highest); }
+    size_t getSize() const{ return _DIM; }
+    QString getAlgo();
 
 signals:
-    void onGameInitialization(bool clearStatus = false);
+    void onGameInit(bool clearStatus = false);
     QString sendSteps(QString totalSteps);
     QString sendTime(QString totalTime);
-    QString sendGameSeed(QString seed);
+    QString sendSeed(QString seed);
     bool onGameStatus(bool status); // true, if this is a solution
     void gameStart();
     void initializedNewGame();
-    void gamePaused();
+    void paused();
+    void hintSuccessed(int remaining);
+
+private slots:
+    void tileRotatedByView(TileModel *tile);
+
 public slots:
     void setSteps() {
-        if (!this->gameStarted) {
-            this->gameStarted = true;
-            emit this->gameStart();
+        if (!_started) {
+            _started = true;
+            emit gameStart();
         }
-        ++totalSteps;
-        emit sendSteps(QString::number(totalSteps));
+        ++_totalSteps;
+        emit sendSteps(QString::number(_totalSteps));
     }
     void setTime();
     bool checkAnswer();
