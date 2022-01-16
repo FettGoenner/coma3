@@ -11,6 +11,11 @@ SaveLoadGameView::SaveLoadGameView(SaveLoadGameModel *model, SaveLoadGameView::S
 {
     ui->setupUi(this);
 
+
+    connect(this, &SaveLoadGameView::deleteFile, this->m_model, &SaveLoadGameModel::deleteFile);
+    connect(this, &SaveLoadGameView::saveBtnClicked, this->m_model, &SaveLoadGameModel::saveFile);
+    connect(this, &SaveLoadGameView::loadBtnClicked, this->m_model, &SaveLoadGameModel::loadFile);
+
     if (status == SaveLoadGameView::Save){
         this->setWindowTitle("Save Game");
         ui->fileNameLineEdit->show();
@@ -85,6 +90,11 @@ SaveLoadGameView::SaveLoadGameView(SaveLoadGameModel *model, SaveLoadGameView::S
     // set current row to -1 if the text from fileNameLineEdit changed.
     connect(ui->fileNameLineEdit, &QLineEdit::textEdited, this, [=]() {
         this->setSelectionsToDefault();
+    });
+
+    connect(ui->openFolderBtn, &QPushButton::clicked, this, [=]() {
+        QDir dir(NetworkPuzzleFile::GAME_FILE_PATH);
+        QDesktopServices::openUrl(dir.absolutePath());
     });
 
 }

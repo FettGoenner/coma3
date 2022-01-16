@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QDate>
+#include <QDesktopServices>
 
 #include "saveloadgamemodel.h"
 #include "networkpuzzlefile.h"

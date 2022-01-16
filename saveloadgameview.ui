@@ -35,7 +35,7 @@
             <number>0</number>
            </property>
            <attribute name="horizontalHeaderVisible">
-            <bool>true</bool>
+            <bool>false</bool>
            </attribute>
            <attribute name="horizontalHeaderCascadingSectionResizes">
             <bool>false</bool>
@@ -70,6 +70,13 @@
           <widget class="QPushButton" name="deleteBtn">
            <property name="text">
             <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="openFolderBtn">
+           <property name="text">
+            <string>Open Folder</string>
            </property>
           </widget>
          </item>

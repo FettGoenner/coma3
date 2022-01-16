@@ -4,7 +4,7 @@ SaveLoadGameModel::SaveLoadGameModel(GameModel *gameModel, QObject *parent)
     : QObject(parent),
       currentGame(gameModel)
 {
-    QDir dir("games/");
+    QDir dir(NetworkPuzzleFile::GAME_FILE_PATH);
     dir.mkpath(dir.absolutePath()); // create folder games
 
     QStringList nameFilters;
