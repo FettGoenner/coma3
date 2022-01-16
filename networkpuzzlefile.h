@@ -19,7 +19,6 @@ class NetworkPuzzleFile : public QObject
 {
     Q_OBJECT
 private:
-    inline static const QString GAME_FILE_PATH = "games/";
     QFile gameFile;
     QString fileName;
     QJsonObject gameObj;
@@ -34,6 +33,8 @@ private:
     QVector<QPair<size_t, size_t>> hintedTiles; // QPair<size_t, size_t> saves the position of the tiles
     QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> rotatedTiles; // QVector<int> saves the nodes of the tiles
 public:
+    inline static const QString GAME_FILE_PATH = "games/";
+
     NetworkPuzzleFile();
     explicit NetworkPuzzleFile(QObject *parent = nullptr);
     NetworkPuzzleFile(const QString &fileName = "", QObject *parent = nullptr);
