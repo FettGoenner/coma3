@@ -38,7 +38,7 @@ bool TileControler::eventFilter(QObject*, QEvent* event)
     {
         // relevante Ereignistypen behandeln:
         // cast auf speziellen Typ durchfuehren und die speziellen Event-Methoden aufrufen
-    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
         mouseReleaseEvent(static_cast<QMouseEvent*>(event));
         break;
     default:
