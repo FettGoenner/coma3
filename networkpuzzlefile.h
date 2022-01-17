@@ -35,7 +35,6 @@ private:
 public:
     static const QString GAME_FILE_PATH;
 
-    NetworkPuzzleFile();
     explicit NetworkPuzzleFile(QObject *parent = nullptr);
     NetworkPuzzleFile(const QString &fileName = "", QObject *parent = nullptr);
     void loadData();
