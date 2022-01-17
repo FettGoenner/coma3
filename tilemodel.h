@@ -34,7 +34,7 @@ public:
     //  GETTERS
     static bool noNodes(const QVector<bool>& nodes)  { return !(nodes[0] || nodes[1] || nodes[2] || nodes[3]); }
     static bool has3Nodes(const QVector<bool>& tile) {
-    return TileModel::countNodes(tile) == 3;
+        return TileModel::countNodes(tile) == 3;
     }
     static size_t countNodes(const QVector<bool>& tile);
     QVector<bool> nodes()const{ return _nodes; }

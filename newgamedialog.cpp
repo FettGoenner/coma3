@@ -5,30 +5,30 @@
 
 NewGameDialog::NewGameDialog(size_t size, QString algoType, QWidget *parent) :
     QDialog(parent)
-    , _DIM(size)
-    , seed(this->getRandomValue())
-    , algoType(algoType)
-    , ui(new Ui::NewGameDialog)
+  , _dim(size)
+  , _seed(getRandomValue())
+  , _algoType(algoType)
+  , ui(new Ui::NewGameDialog)
 {
     ui->setupUi(this);
-    this->setWindowTitle("New Game");
-    ui->sizeSpinBox->setValue(this->_DIM);
-    ui->seedSpinBox->setValue(this->seed);
-    ui->algoTypeComboBox->setCurrentText(this->algoType);
+    setWindowTitle("New Game");
+    ui->sizeSpinBox->setValue(_dim);
+    ui->seedSpinBox->setValue(_seed);
+    ui->algoTypeComboBox->setCurrentText(algoType);
     //get and set size
     connect(ui->sizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, [=](int size) {
-        this->_DIM = size;
+        _dim = size;
     });
     //get and set seed value
     connect(ui->seedSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, [=](int seed) {
-        this->seed = seed;
+        _seed = seed;
     });
 
     connect(ui->getRandomSeedBtn, &QPushButton::clicked, this, [=]() {
-        ui->seedSpinBox->setValue(this->getRandomValue());
+        ui->seedSpinBox->setValue(getRandomValue());
     });
     connect(ui->algoTypeComboBox, &QComboBox::currentTextChanged, this, [=]() {
-        this->algoType = ui->algoTypeComboBox->currentText();
+        _algoType = ui->algoTypeComboBox->currentText();
     });
 
 }
@@ -45,15 +45,15 @@ NewGameDialog::~NewGameDialog()
 
 size_t NewGameDialog::getSize()
 {
-    return this->_DIM;
+    return _dim;
 }
 
 size_t NewGameDialog::getSeed()
 {
-    return this->seed;
+    return _seed;
 }
 
 QString NewGameDialog::getAlgoType()
 {
-    return this->algoType;
+    return _algoType;
 }

@@ -21,44 +21,44 @@ MainWindow::MainWindow(QWidget *parent)
     seedStatusLabel->setText(QString::number(gameSeed));
     algoStatusLabel->setText("Depth");
     sizeStatusLabel->setText("7x7");
-    ui->statusBar->addWidget(this->sizeStatusLabel);
-    ui->statusBar->addWidget(this->seedStatusLabel);
-    ui->statusBar->addWidget(this->algoStatusLabel);
+    ui->statusBar->addWidget(sizeStatusLabel);
+    ui->statusBar->addWidget(seedStatusLabel);
+    ui->statusBar->addWidget(algoStatusLabel);
 
-    this->addDockWidget(Qt::RightDockWidgetArea, this->dockWindow);
-    this->gameModel = new GameModel(7, gameSeed);
-    this->gameView = new GameView(this->gameModel, ui->gameWindow);
-    connect(this->gameModel, &GameModel::sendSeed, this->seedStatusLabel, &QLabel::setText);
+    addDockWidget(Qt::RightDockWidgetArea, dockWindow);
+    gameModel = new GameModel(7, gameSeed);
+    gameView = new GameView(gameModel, ui->gameWindow);
+    connect(gameModel, &GameModel::sendSeed, seedStatusLabel, &QLabel::setText);
     // show the game window
-    connect(this->gameModel, &GameModel::onGameInit, this, &MainWindow::showGameWindow);
-    connect(this->gameModel, &GameModel::onGameInit, this, [=]() {
-        this->dockWindow->setSolutionBtnEnabled(true); // set solution button to disable
+    connect(gameModel, &GameModel::onGameInit, this, &MainWindow::showGameWindow);
+    connect(gameModel, &GameModel::onGameInit, this, [=]() {
+        dockWindow->setSolutionBtnEnabled(true); // set solution button to disable
     });
-    connect(this->gameModel, &GameModel::onGameStatus, this, &MainWindow::showGameWindow);
-    connect(this->gameModel, &GameModel::gameStart, this, &MainWindow::showGameWindow);
+    connect(gameModel, &GameModel::onGameStatus, this, &MainWindow::showGameWindow);
+    connect(gameModel, &GameModel::gameStart, this, &MainWindow::showGameWindow);
 
-    ui->gameWindow->layout()->addWidget(this->gameView);
+    ui->gameWindow->layout()->addWidget(gameView);
 
     // pause buttom
-    connect(this->dockWindow, &DockWindow::changedGameStarted, this->gameModel, &GameModel::changeGameStarted);
-    connect(this->dockWindow, &DockWindow::changedGameStarted, this, [=](bool started) {
+    connect(dockWindow, &DockWindow::changedGameStarted, gameModel, &GameModel::changeGameStarted);
+    connect(dockWindow, &DockWindow::changedGameStarted, this, [=](bool started) {
         if (started)
-            this->showGameWindow();
+            showGameWindow();
         else
-            this->hideGameWindow();
+            hideGameWindow();
     });
 
     // solution button
-    connect(this->dockWindow, &DockWindow::clickedSolutionBtn, this->gameModel, &GameModel::showSolution);
+    connect(dockWindow, &DockWindow::clickedSolutionBtn, gameModel, &GameModel::showSolution);
 
 
     // reset button
-    connect(this->dockWindow, &DockWindow::clickedResetBtn, this->gameModel, &GameModel::resetGame);
+    connect(dockWindow, &DockWindow::clickedResetBtn, gameModel, &GameModel::resetGame);
 
 
     // new game button
-    connect(this->dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
-        NewGameDialog dialog(this->gameModel->getSize(), this->gameModel->getAlgo() , this);
+    connect(dockWindow, &DockWindow::clickedNewGameBtn, this, [=]() {
+        NewGameDialog dialog(gameModel->getSize(), gameModel->getAlgo() , this);
         if (dialog.exec() == QDialog::Accepted) {
 
             // get alto type of new game
@@ -71,65 +71,65 @@ MainWindow::MainWindow(QWidget *parent)
                 throw "unknown game type";
 
             // get and set new game size
-            this->gameModel->setSize(dialog.getSize());
+            gameModel->setSize(dialog.getSize());
 
             // get and set new game seed
-            this->gameModel->setSeed(dialog.getSeed());
+            gameModel->setSeed(dialog.getSeed());
 
             // set algo type
-            this->gameModel->initGame(algoType);
+            gameModel->initGame(algoType);
 
             // set everything in dock window to default.
-            this->dockWindow->newGameStarted();
+            dockWindow->newGameStarted();
 
             // set game status to statusbar
-            this->sizeStatusLabel->setText(QString("%1x%2").arg(dialog.getSize()).arg(dialog.getSize()));
-            this->algoStatusLabel->setText(dialog.getAlgoType());
+            sizeStatusLabel->setText(QString("%1x%2").arg(dialog.getSize()).arg(dialog.getSize()));
+            algoStatusLabel->setText(dialog.getAlgoType());
         }
     });
 
 
     // hint button
-    connect(this->dockWindow, &DockWindow::clickedHintBtn, this->gameModel, &GameModel::showSolutionOnRandomTile);
-    connect(this->gameModel, &GameModel::hintSuccessed, this->dockWindow, &DockWindow::setHintBtnText);
+    connect(dockWindow, &DockWindow::clickedHintBtn, gameModel, &GameModel::showSolutionOnRandomTile);
+    connect(gameModel, &GameModel::hintSuccessed, dockWindow, &DockWindow::setHintBtnText);
 
     // connect hint action and hint button
-    connect(this->dockWindow, &DockWindow::hintBtnEnabledChanged, ui->hintAction, &QAction::setEnabled);
+    connect(dockWindow, &DockWindow::hintBtnEnabledChanged, ui->hintAction, &QAction::setEnabled);
 
     // connect solution action and solution button
-    connect(this->dockWindow, &DockWindow::solutionBtnEnabledChanged, ui->solutionAction, &QAction::setEnabled);
+    connect(dockWindow, &DockWindow::solutionBtnEnabledChanged, ui->solutionAction, &QAction::setEnabled);
 
     // connect pause action and pause button
-    connect(this->dockWindow, &DockWindow::pauseBtnEnabledChanged, ui->pauseAction, &QAction::setEnabled);
-    connect(this->dockWindow, &DockWindow::pauseBtnTextChanged, ui->pauseAction, &QAction::setText);
+    connect(dockWindow, &DockWindow::pauseBtnEnabledChanged, ui->pauseAction, &QAction::setEnabled);
+    connect(dockWindow, &DockWindow::pauseBtnTextChanged, ui->pauseAction, &QAction::setText);
 
-//     count how many times HINT has been used.
-//    connect(this->gameView, &GameView::hintSucceeded, this->dockWindow, &DockWindow::setHintCount);
+    //     count how many times HINT has been used.
+    //    connect(gameView, &GameView::hintSucceeded, dockWindow, &DockWindow::setHintCount);
 
     // send game started from GameModel
-    connect(this->gameModel, &GameModel::gameStart, this->dockWindow, &DockWindow::gameStarted);
+    connect(gameModel, &GameModel::gameStart, dockWindow, &DockWindow::gameStarted);
 
     // set text to totalSteps
-    connect(this->gameModel, &GameModel::sendSteps, this->dockWindow, &DockWindow::setStep);
+    connect(gameModel, &GameModel::sendSteps, dockWindow, &DockWindow::setStep);
 
     // Timer
-    connect(this->gameModel, &GameModel::sendTime, this->dockWindow, &DockWindow::setTime);
+    connect(gameModel, &GameModel::sendTime, dockWindow, &DockWindow::setTime);
 
     // can not click hint button if the game has ended
-    connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
+    connect(gameModel, &GameModel::onGameStatus, this, [=](bool status) {
         if (status) // if there is a solution
-            this->dockWindow->setHintBtnEnabled(!status); // set hint button to disable
+            dockWindow->setHintBtnEnabled(!status); // set hint button to disable
     });
 
     // can not click solution button if the game has ended
-    connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
+    connect(gameModel, &GameModel::onGameStatus, this, [=](bool status) {
         if (status) // if there is a solution
-            this->dockWindow->setSolutionBtnEnabled(!status); // set solution button to disable
+            dockWindow->setSolutionBtnEnabled(!status); // set solution button to disable
     });
     // can not click solution button if the game has ended
-    connect(this->gameModel, &GameModel::onGameStatus, this, [=](bool status) {
+    connect(gameModel, &GameModel::onGameStatus, this, [=](bool status) {
         if (status) // if there is a solution
-            this->dockWindow->setPauseBtnEnabled(!status); // set pause button to disable
+            dockWindow->setPauseBtnEnabled(!status); // set pause button to disable
     });
 
 }
@@ -147,57 +147,58 @@ void MainWindow::hideGameWindow()
 // new game action
 void MainWindow::on_newGameAction_triggered()
 {
-    this->dockWindow->clickNewGameBtn();
+    dockWindow->clickNewGameBtn();
 }
 
 // save game action
 void MainWindow::on_saveGameAction_triggered()
 {
-    if (this->saveLoadGameModel == nullptr)
-    this->saveLoadGameModel = new SaveLoadGameModel(this->gameModel, this);
+    if (saveLoadGameModel == nullptr)
+        saveLoadGameModel = new SaveLoadGameModel(gameModel, this);
 
-    if (this->saveLoadGameView == nullptr)
-    this->saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Save, this);
+    if (saveLoadGameView == nullptr)
+        saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Save, this);
 
-    if (this->gameModel->started())
-    this->dockWindow->clickPauseBtn();
-    this->saveLoadGameView->exec();
-    delete this->saveLoadGameModel;
-    this->saveLoadGameModel = nullptr;
+    if (gameModel->started())
+        dockWindow->clickPauseBtn();
 
-    delete this->saveLoadGameView;
-    this->saveLoadGameView = nullptr;
+    saveLoadGameView->exec();
+    delete saveLoadGameModel;
+    saveLoadGameModel = nullptr;
+
+    delete saveLoadGameView;
+    saveLoadGameView = nullptr;
 }
 
 // load game action
 void MainWindow::on_loadGameAction_triggered()
 {
-    if (this->saveLoadGameModel == nullptr)
-            this->saveLoadGameModel = new SaveLoadGameModel(this->gameModel, this);
+    if (saveLoadGameModel == nullptr)
+        saveLoadGameModel = new SaveLoadGameModel(gameModel, this);
 
-        if (this->saveLoadGameView == nullptr)
-            this->saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Load, this);
+    if (saveLoadGameView == nullptr)
+        saveLoadGameView = new SaveLoadGameView(saveLoadGameModel, SaveLoadGameView::Load, this);
 
-        if (this->gameModel->started())
-            this->dockWindow->clickPauseBtn();
-        this->saveLoadGameView->exec();
+    if (gameModel->started())
+        dockWindow->clickPauseBtn();
+    saveLoadGameView->exec();
 
-        delete this->saveLoadGameModel;
-        this->saveLoadGameModel = nullptr;
+    delete saveLoadGameModel;
+    saveLoadGameModel = nullptr;
 
-        delete this->saveLoadGameView;
-        this->saveLoadGameView = nullptr;
+    delete saveLoadGameView;
+    saveLoadGameView = nullptr;
 }
 // pause action
 void MainWindow::on_pauseAction_triggered()
 {
-    this->dockWindow->clickPauseBtn();
+    dockWindow->clickPauseBtn();
 }
 
 // reset action
 void MainWindow::on_resetAction_triggered()
 {
-    this->dockWindow->clickResetBtn();
+    dockWindow->clickResetBtn();
 }
 
 
@@ -205,32 +206,32 @@ void MainWindow::on_resetAction_triggered()
 // exit action
 void MainWindow::on_exitAction_triggered()
 {
-    this->close();
+    close();
 }
 
 // Hint
 void MainWindow::on_hintAction_triggered()
 {
-      this->dockWindow->clickHintBtn();
+    dockWindow->clickHintBtn();
 }
 
 // Solution action
 
 void MainWindow::on_solutionAction_triggered()
 {
-    this->dockWindow->clickSolutionBtn();
+    dockWindow->clickSolutionBtn();
 }
 
 // About action
 void MainWindow::on_aboutAction_triggered()
 {
     QMessageBox::about(this, "About", "<h1>Netzwerkpuzzle</h1>"
-                        "A Project at BHT, 2022<br><br>"
-                        "<u><b>Autoren</b></u><br>"
-                        "Xuantong Pan<br>"
-                        "Paul Matti Meinhold<br>"
-                        "Parfait R. Fejou<br>"
-                        "Erdenetuya Undral<br>");
+                                      "A Project at BHT, 2022<br><br>"
+                                      "<u><b>Autoren</b></u><br>"
+                                      "Xuantong Pan<br>"
+                                      "Paul Matti Meinhold<br>"
+                                      "Parfait R. Fejou<br>"
+                                      "Erdenetuya Undral<br>");
 }
 
 // Help action

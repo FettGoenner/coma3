@@ -18,9 +18,9 @@ public:
     size_t getSeed();
     QString getAlgoType();
 private:
-    size_t _DIM;
-    size_t seed;
-    QString algoType;
+    size_t _dim;
+    size_t _seed;
+    QString _algoType;
     Ui::NewGameDialog *ui;
     int getRandomValue();
 };

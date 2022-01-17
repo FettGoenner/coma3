@@ -19,19 +19,19 @@ class NetworkPuzzleFile : public QObject
 {
     Q_OBJECT
 private:
-    QFile gameFile;
-    QString fileName;
-    QJsonObject gameObj;
+    QFile _gameFile;
+    QString _fileName;
+    QJsonObject _gameObj;
 
-    size_t dim;
-    size_t seed;
-    QString gameAlgo;
-    size_t totalPlayTime;
-    size_t totalSteps;
-    size_t hintRemaining;
-    bool dataValid;
-    QVector<QPair<size_t, size_t>> hintedTiles; // QPair<size_t, size_t> saves the position of the tiles
-    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> rotatedTiles; // QVector<int> saves the nodes of the tiles
+    size_t _dim;
+    size_t _seed;
+    QString _gameAlgo;
+    size_t _totalPlayTime;
+    size_t _totalSteps;
+    size_t _hintRemaining;
+    bool _dataValid;
+    QVector<QPair<size_t, size_t>> _hintedTiles; // QPair<size_t, size_t> saves the position of the tiles
+    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> _rotatedTiles; // QVector<int> saves the nodes of the tiles
 public:
     static const QString GAME_FILE_PATH;
 

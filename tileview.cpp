@@ -14,7 +14,7 @@ TileView::TileView( TileModel* model, QColor color, QFrame* parent )
 
     setCursor(Qt::PointingHandCursor);
     _model->setBgdColor(Qt::transparent);
-    this->setStyleSheet(_model->bgdColor());  
+    setStyleSheet(_model->bgdColor());
 
     connect(_model, &TileModel::tileChanged, this, QOverload<>::of(&TileView::update));
     connect(_model, &TileModel::bgcChanged, this, [=]() {
@@ -26,21 +26,21 @@ TileView::TileView( TileModel* model, QColor color, QFrame* parent )
 void TileView::paintEvent( QPaintEvent *ev)
 {
     auto type = _model->type();
-    double width = this->width(), height = this->height();
+    double w = width(), h = height();
     // draw the deflaut TurnNode, from right to bottom
     QPainter painter(this);
-    painter.translate(width/2, height/2);
+    painter.translate(w/2, h/2);
     if (_model->angle() % 180 != 0) {
-        double temp = width;
-        width = height;
-        height = temp;
+        double temp = w;
+        w = h;
+        h = temp;
     }
     painter.rotate(_model->angle());
-    painter.translate(-width/2, -height/2);
-    //    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
+    painter.translate(-w/2, -h/2);
+    //    tileColor.setAlphaF((qCos(alphaValueF) + 1.5)/2.5);
     painter.setPen(Qt::NoPen);
     if (type == TileModel::CornerTile) {
-        QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
+        QLinearGradient linear(QPointF(0, h/2), QPointF(w, h/2));
         linear.setColorAt(.35, _model->color());
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, _model->color());
@@ -49,14 +49,14 @@ void TileView::paintEvent( QPaintEvent *ev)
         painter.setBrush(linear);
 
         const QPointF points[4] = {
-            QPointF(2*width/5, height),
-            QPointF(2*width/5, 2*height/5),
-            QPointF(3*width/5, 3*height/5),
-            QPointF(3*width/5, height),
+            QPointF(2*w/5, h),
+            QPointF(2*w/5, 2*h/5),
+            QPointF(3*w/5, 3*h/5),
+            QPointF(3*w/5, h),
         };
         painter.drawPolygon(points, 4);
 
-        QLinearGradient linear2(QPointF(width/2, 0), QPointF(width/2, height));
+        QLinearGradient linear2(QPointF(w/2, 0), QPointF(w/2, h));
         linear2.setColorAt(.35, _model->color());
         linear2.setColorAt(.5, Qt::white);
         linear2.setColorAt(.65, _model->color());
@@ -64,30 +64,30 @@ void TileView::paintEvent( QPaintEvent *ev)
         painter.setBrush(linear2);
 
         const QPointF points2[4] = {
-            QPointF(2*width/5, 2*height/5),
-            QPointF(3*width/5, 3*height/5),
-            QPointF(width, 3*height/5),
-            QPointF(width, 2*height/5),
+            QPointF(2*w/5, 2*h/5),
+            QPointF(3*w/5, 3*h/5),
+            QPointF(w, 3*h/5),
+            QPointF(w, 2*h/5),
         };
 
         painter.drawPolygon(points2, 4);
     } else if (type == TileModel::EndTile) {
-        QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
+        QLinearGradient linear(QPointF(0, h/2), QPointF(w, h/2));
         linear.setColorAt(.35, _model->color());
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, _model->color());
         painter.setBrush(linear);
 
         const QPointF points[4] = {
-            QPointF(2*width/5, 0),
-            QPointF(3*width/5, 0),
-            QPointF(3*width/5, height/2),
-            QPointF(2*width/5, height/2),
+            QPointF(2*w/5, 0),
+            QPointF(3*w/5, 0),
+            QPointF(3*w/5, h/2),
+            QPointF(2*w/5, h/2),
         };
         painter.drawPolygon(points, 4);
 
     } else if (type == TileModel::JunctionTile) {
-        QLinearGradient linear(QPointF(width/2, 0), QPointF(width/2, height));
+        QLinearGradient linear(QPointF(w/2, 0), QPointF(w/2, h));
         linear.setColorAt(.35, _model->color());
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, _model->color());
@@ -95,14 +95,14 @@ void TileView::paintEvent( QPaintEvent *ev)
         painter.setBrush(linear);
 
         const QPointF points[4] = {
-            QPointF(0, 2*height/5),
-            QPointF(0, 3*height/5),
-            QPointF(width, 3*height/5),
-            QPointF(width, 2*height/5),
+            QPointF(0, 2*h/5),
+            QPointF(0, 3*h/5),
+            QPointF(w, 3*h/5),
+            QPointF(w, 2*h/5),
         };
         painter.drawPolygon(points, 4);
 
-        QLinearGradient linear2(QPointF(0, height/2), QPointF(width, height/2));
+        QLinearGradient linear2(QPointF(0, h/2), QPointF(w, h/2));
         linear2.setColorAt(.35, _model->color());
         linear2.setColorAt(.5, Qt::white);
         linear2.setColorAt(.65, _model->color());
@@ -110,23 +110,23 @@ void TileView::paintEvent( QPaintEvent *ev)
         painter.setBrush(linear2);
 
         const QPointF points2[4] = {
-            QPointF(2*width/5, 3*height/5),
-            QPointF(width/2, height/2),
-            QPointF(width/2, height),
-            QPointF(2*width/5, height),
+            QPointF(2*w/5, 3*h/5),
+            QPointF(w/2, h/2),
+            QPointF(w/2, h),
+            QPointF(2*w/5, h),
         };
         painter.drawPolygon(points2, 4);
 
         const QPointF points3[4] = {
-            QPointF(3*width/5, 3*height/5),
-            QPointF(width/2, height/2),
-            QPointF(width/2, height),
-            QPointF(3*width/5, height),
+            QPointF(3*w/5, 3*h/5),
+            QPointF(w/2, h/2),
+            QPointF(w/2, h),
+            QPointF(3*w/5, h),
         };
         painter.drawPolygon(points3, 4);
 
     } else if (type == TileModel::LineTile) {
-        QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
+        QLinearGradient linear(QPointF(0, h/2), QPointF(w, h/2));
         linear.setColorAt(.35, _model->color());
         linear.setColorAt(.5, Qt::white);
         linear.setColorAt(.65, _model->color());
@@ -134,10 +134,10 @@ void TileView::paintEvent( QPaintEvent *ev)
         painter.setBrush(linear);
 
         const QPointF points[4] = {
-            QPointF(2*width/5, 0),
-            QPointF(3*width/5, 0),
-            QPointF(3*width/5, height),
-            QPointF(2*width/5, height),
+            QPointF(2*w/5, 0),
+            QPointF(3*w/5, 0),
+            QPointF(3*w/5, h),
+            QPointF(2*w/5, h),
         };
         painter.drawPolygon(points, 4);
     }

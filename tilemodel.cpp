@@ -34,11 +34,12 @@ TileModel::TileModel(const QVector<bool>& nodes, QObject *parent)
 void TileModel::connected(bool connectionState) {
     if (connectionState) {
         setColor(TileModel::ConnectedTileColor); // change tile color to green
+        setBgdColor(Qt::transparent);
         setClickState(false);
     }
     else {
         setColor(TileModel::DetachedTileColor);
-//        setClickState(true);
+        //        setClickState(true);
     }
 }
 
@@ -47,14 +48,11 @@ void TileModel::rotate(int n) {
     n %= 4;
     for(int j = 1; j <= n; ++j){
         bool last =  _nodes[3];
-//        for (int i = 3; i > 0; i--)
-//            _nodes[i] = _nodes[i - 1];
-//        _nodes[0] = last;
         _nodes[3] = _nodes[2];
         _nodes[2] = _nodes[1];
         _nodes[1] = _nodes[0];
         _nodes[0] = last;
-        //  for animation   
+        //  for animation
     }
     if (_timer->isActive())
         _animationAngle += n*90;

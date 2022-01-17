@@ -53,9 +53,9 @@ public:
     void loadGame(const size_t, const size_t, const QString&, const size_t, const size_t, const size_t, const QVector<QPair<size_t, size_t>>&, const QVector<QPair<QPair<size_t, size_t>, QVector<bool>>>&);
     //  GETERS
     QGridLayout* getLayout() const { return gridLayout; }
-    size_t getHintRamaining() const{return GameModel::HINTLIMIT - this->_hintCount;}
-    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> getRotatedTiles() const{return this->_rotatedTiles;}
-    QVector<QPair<size_t, size_t> > getHintedTiles() const{return this->_hintedTiles;}
+    size_t getHintRamaining() const{return GameModel::HINTLIMIT - _hintCount;}
+    QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> getRotatedTiles() const{return _rotatedTiles;}
+    QVector<QPair<size_t, size_t> > getHintedTiles() const{return _hintedTiles;}
     size_t getTotalPlayTime() const {return _totalTime; }
     bool started() const { return _started; }
     size_t getTotalSteps() const { return _totalSteps; }
