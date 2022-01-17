@@ -46,7 +46,8 @@ void NetworkPuzzleFile::loadData()
     QJsonArray hintedTilesArray = hintedTiles.toArray();
     foreach (const QJsonValue &value, hintedTilesArray){
         QString valueString = value.toString();
-        this->hintedTiles.push_back({valueString[0].digitValue(), valueString[1].digitValue()});
+        QPair<size_t, size_t> pos({valueString[0].digitValue(), valueString[1].digitValue()});
+        this->hintedTiles.push_back(pos);
     }
 
     QJsonValue rotatedTiles = this->gameObj["rotatedTiles"];
@@ -54,10 +55,10 @@ void NetworkPuzzleFile::loadData()
 
     foreach (const auto &value, changedTilesArray) {
         QJsonObject valueObject = value.toObject();
-        QPair<size_t, size_t> pos;
+
         QJsonValue position = valueObject["position"];
         QString posString = position.toString();
-        pos = {posString[0].digitValue(), posString[1].digitValue()};
+        QPair<size_t, size_t> pos({posString[0].digitValue(), posString[1].digitValue()});
 
         QVector<bool> nds(4, false);
         QJsonValue nodes = valueObject["nodes"];
