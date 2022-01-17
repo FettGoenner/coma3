@@ -31,14 +31,14 @@ TileModel::TileModel(const QVector<bool>& nodes, QObject *parent)
     connect(_timer, &QTimer::timeout, this, &TileModel::rotateTimeout);
 }
 
-void TileModel::connected(bool connectionState){
-    if (connectionState){
+void TileModel::connected(bool connectionState) {
+    if (connectionState) {
         setColor(TileModel::ConnectedTileColor); // change tile color to green
         setClickState(false);
     }
     else {
         setColor(TileModel::DetachedTileColor);
-        setClickState(true);
+//        setClickState(true);
     }
 }
 

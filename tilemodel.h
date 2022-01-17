@@ -55,7 +55,7 @@ public:
     //SETERS
     void setNodes(const QVector<bool> &nodes);   //  {north,east,south,west}
     void rotate(int n = 1); //  rotates tile n times
-    void setClickState( bool clickState ){ _clickable = clickState; emit tileChanged(); }
+    void setClickState( bool clickState ){ _clickable = clickState; }
     void setBgdColor( QColor);
 
 protected:
