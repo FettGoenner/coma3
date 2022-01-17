@@ -328,11 +328,10 @@ QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
     QStack<QVector<int>> tileStack;
     tileStack.push({startTileY, startTileX});
     this->_startTile = {startTileY, startTileX};
-    QVector<int> currentTile;
     while (!tileStack.empty()) {
-        currentTile = tileStack.top();
+        QVector<int> currentTile = tileStack.top();
         int currentY = currentTile[0], currentX = currentTile[1];
-        QVector<QVector<int>> chooseTile{
+        QVector<QVector<int>> chooseTile {
             {currentY - 1, currentX,     TileModel::North, TileModel::South},
             {currentY,     currentX + 1, TileModel::East,  TileModel::West},
             {currentY,     currentX - 1, TileModel::West,  TileModel::East},
