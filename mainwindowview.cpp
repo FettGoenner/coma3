@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this->gameModel, &GameModel::sendSeed, this->seedStatusLabel, &QLabel::setText);
     // show the game window
     connect(this->gameModel, &GameModel::onGameInit, this, &MainWindow::showGameWindow);
+    connect(this->gameModel, &GameModel::onGameInit, this, [=]() {
+        this->dockWindow->setSolutionBtnEnabled(true); // set solution button to disable
+    });
     connect(this->gameModel, &GameModel::onGameStatus, this, &MainWindow::showGameWindow);
     connect(this->gameModel, &GameModel::gameStart, this, &MainWindow::showGameWindow);
 

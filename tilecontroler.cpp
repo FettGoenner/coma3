@@ -15,7 +15,6 @@ TileControler::TileControler(TileModel* model, TileView* view, QObject *parent)
 
     connect(_model, &TileModel::resetedTile, this, [=]() {
         _model->setBgdColor(Qt::transparent);
-//        this->stopHintAnimation();
     });
 
     // set background color to yellow if the tile rotated by hint
@@ -24,7 +23,7 @@ TileControler::TileControler(TileModel* model, TileView* view, QObject *parent)
     });
 }
 
-void TileControler::mouseReleaseEvent(QMouseEvent* ev)
+void TileControler::mouseReleaseEvent(QMouseEvent* )
 {
     if (!_model->timer()->isActive() && _model->clickable())
     {
@@ -40,7 +39,7 @@ bool TileControler::eventFilter(QObject*, QEvent* event)
         // relevante Ereignistypen behandeln:
         // cast auf speziellen Typ durchfuehren und die speziellen Event-Methoden aufrufen
     case QEvent::MouseButtonPress:
-        mouseReleaseEvent(dynamic_cast<QMouseEvent*>(event));
+        mouseReleaseEvent(static_cast<QMouseEvent*>(event));
         break;
     default:
         return false;

@@ -12,12 +12,19 @@
 class GameModel : public QObject
 {
     Q_OBJECT
+public:
+    static const size_t MAX_SIZE = 30;
+    static const size_t MIN_SIZE = 2;
+    static const size_t HINTLIMIT = 3;
 
+    enum GameType{Depth = 0, Prim};
+
+private:
     size_t _DIM;
     size_t _totalTime;
     size_t _totalSteps;
     size_t _gameSeed;
-    size_t _algo = GameModel::Depth;
+    GameModel::GameType _algo = GameModel::Depth;
     size_t _hintCount = 0;
     QRandomGenerator gen; // for random values
     QVector<int> _startTile;
@@ -41,21 +48,18 @@ class GameModel : public QObject
     void clear();
 
 public:
-    static const size_t MAX_SIZE = 30;
-    static const size_t MIN_SIZE = 2;
-    enum GameType{Depth = 0, Prim};
-    static const size_t HINTLIMIT = 3;
     explicit GameModel(size_t size = 7, size_t gameSeed = QRandomGenerator::global()->bounded(0, INT_MAX), QObject *parent = nullptr);
+
     void loadGame(const size_t, const size_t, const QString&, const size_t, const size_t, const size_t, const QVector<QPair<size_t, size_t>>&, const QVector<QPair<QPair<size_t, size_t>, QVector<bool>>>&);
     //  GETERS
-    QGridLayout* getLayout(){ return gridLayout; } const
+    QGridLayout* getLayout() const { return gridLayout; }
     size_t getHintRamaining() const{return GameModel::HINTLIMIT - this->_hintCount;}
     QVector<QPair<QPair<size_t, size_t>, QVector<bool>>> getRotatedTiles() const{return this->_rotatedTiles;}
     QVector<QPair<size_t, size_t> > getHintedTiles() const{return this->_hintedTiles;}
-    size_t& getTotalPlayTime() {return _totalTime; } const
-    bool& started(){ return _started; }const
-    size_t& getTotalSteps(){ return _totalSteps; } const
-    size_t& getSeed() {return _gameSeed; } const
+    size_t getTotalPlayTime() const {return _totalTime; }
+    bool started() const { return _started; }
+    size_t getTotalSteps() const { return _totalSteps; }
+    size_t getSeed() const {return _gameSeed; }
     QVector<QVector<TileModel*>>& game() { return _game; }
     //  SETERS
     void setStep(size_t steps)
@@ -63,7 +67,7 @@ public:
         _totalSteps = steps;
         emit sendSteps(QString::number(_totalSteps));
     }
-    void initGame( int algo=Depth );
+    void initGame(GameModel::GameType algo  =Depth);
     void setSize(size_t size);
     void setSeed(size_t seed)
     {

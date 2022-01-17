@@ -2,11 +2,10 @@
 #define TILECONTROLER_H
 
 #include <QObject>
+#include <QMouseEvent>
 
-class QMouseEvent;
-
-class TileModel;
-class TileView;
+#include "tilemodel.h"
+#include "tileview.h"
 
 class TileControler : public QObject
 {

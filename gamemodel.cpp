@@ -1,7 +1,6 @@
 #include <QStack>
 
 #include "gamemodel.h"
-#include "functile.h"
 #include "endtile.h"
 #include "junctiontile.h"
 #include "cornertile.h"
@@ -57,7 +56,7 @@ void GameModel::clearEverything(bool clearLayout)
 }
 
 //  INIT GAME
-void GameModel::initGame(int algo)
+void GameModel::initGame(GameModel::GameType algo)
 {
     _algo = algo;
     // get initialized game with QStrings in a 2d Vector
@@ -78,7 +77,7 @@ void GameModel::initGame(int algo)
             // get the string of the nodes on the position [i,j]
             QVector<bool> nodes = gameAfterAlgo[i][j];
             TileModel *tileModel;
-            int tileType = TileModel::typeByVector(nodes);
+            TileModel::TileNames tileType = TileModel::typeByVector(nodes);
             if (tileType == TileModel::EndTile) {
                 tileModel = new EndTile(nodes);
             } else if (tileType == TileModel::JunctionTile) {
@@ -90,18 +89,17 @@ void GameModel::initGame(int algo)
             } else
                 throw "This Tile does not match to any tile";
 
-            // rotate the tile randomly
-            for (int k = 0; k < getBounded(0, 4); ++k)
-                tileModel->rotate();
-
             // save tile in 2d vector playGround
             _game[i][j] = tileModel;
-            _resetVector[i][j] = tileModel->nodes();
 
             // create TileView
             TileView *tileView = new TileView(tileModel, Qt::blue);
 
             gridLayout->addWidget(tileView, i, j);
+
+            // rotate the tile randomly
+            tileModel->rotate(getBounded(0, 4));
+            _resetVector[i][j] = tileModel->nodes();
 
             new TileControler(tileModel, tileView, this);
 
@@ -215,6 +213,7 @@ void GameModel::showSolution()
         for (size_t j = 0; j < this->_DIM; ++j) {
             emit _game[i][j]->resetedTile();
             _game[i][j]->setNodes(_answer[i][j]);
+            tileRotatedByView(_game[i][j]);
         }
     }
     emit onGameStatus(true);
@@ -229,19 +228,21 @@ void GameModel::showSolutionOnRandomTile()
         _started = true;
         emit this->gameStart();
     }
-    QVector<QVector<size_t>> unSolvedTiles;
+    QVector<QPair<size_t, size_t>> unSolvedTiles;
 
     // set all unsolved tiles in a vector
-    for (size_t i = 0; i < _DIM; ++i)
-        for (size_t j = 0; j < _DIM; ++j)
-            if (_game[i][j]->nodes() != _answer[i][j])
+    for (size_t i = 0; i < this->_DIM; ++i)
+        for (size_t j = 0; j < this->_DIM; ++j)
+            if (this->_game[i][j]->nodes() != this->_answer[i][j])
                 unSolvedTiles.push_back({i, j});
     // get the position randomly
-    QVector<size_t> position = unSolvedTiles[getBounded(0, unSolvedTiles.size())];
-    _game[position[0]][position[1]]->setNodes(_answer[position[0]][position[1]]);
-    emit _game[position[0]][position[1]]->rotatedByHint();
-    emit hintSuccessed(GameModel::HINTLIMIT - ++_hintCount);
-    checkAnswer();
+    QPair<size_t, size_t> position = unSolvedTiles[this->getBounded(0, unSolvedTiles.size())];
+    this->_game[position.first][position.second]->setNodes(this->_answer[position.first][position.second]);
+
+    this->_hintedTiles.push_back(position);
+    emit this->_game[position.first][position.second]->rotatedByHint();
+    emit this->hintSuccessed(GameModel::HINTLIMIT - ++this->_hintCount);
+    this->checkAnswer();
 }
 
 void GameModel::changeGameStarted(bool started)
@@ -321,7 +322,7 @@ void GameModel::tileRotatedByView(TileModel *tile)
 //  DEPTH ALGO
 QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
 {
-    int m = this->_DIM;
+    int m = _DIM;
     QVector<QVector<QVector<bool>>> v(m, QVector<QVector<bool>>(m, {0, 0, 0, 0}));
     int startTileY = getBounded(0, m), startTileX = getBounded(0, m);
     QStack<QVector<int>> tileStack;
@@ -357,11 +358,11 @@ QVector<QVector<QVector<bool>>> GameModel::depthAlgo()
 //  PRIM ALGO
 QVector<QVector<QVector<bool>>> GameModel::primAlgo()
 {
-    int m = this->_DIM;
+    int m = _DIM;
     QVector<QVector<QVector<bool>>> v(m, QVector<QVector<bool>>(m, {0, 0, 0, 0}));
     QVector<QVector<bool>> usedV(m, QVector<bool>(m, false));
     int startTileY = getBounded(0, m), startTileX = getBounded(0, m);
-    this->_startTile = {startTileY, startTileX};
+    _startTile = {startTileY, startTileX};
     QVector<int> currentTile({startTileY, startTileX});
     QVector<QVector<int>> awaitTiles;
     do {

@@ -4,17 +4,22 @@
 #include "tileview.h"
 #include "tilemodel.h"
 
-TileView::TileView( TileModel* model,QColor color, QFrame* parent )
+TileView::TileView( TileModel* model, QColor color, QFrame* parent )
     : QFrame( parent ),
       _model( model )
 {
     _model->setColor( color );
     setCursor( Qt::PointingHandCursor );
-    connect(_model, &TileModel::tileChanged, this, QOverload<>::of(&TileView::update));
+
 
     setCursor(Qt::PointingHandCursor);
     _model->setBgdColor(Qt::transparent);
     this->setStyleSheet(_model->bgdColor());  
+
+    connect(_model, &TileModel::tileChanged, this, QOverload<>::of(&TileView::update));
+    connect(_model, &TileModel::bgcChanged, this, [=]() {
+        setStyleSheet(_model->bgdColor());
+    });
 }
 
 // draws the Tile visual
@@ -25,12 +30,14 @@ void TileView::paintEvent( QPaintEvent *ev)
     // draw the deflaut TurnNode, from right to bottom
     QPainter painter(this);
     painter.translate(width/2, height/2);
-    if (_model->angle() % 90 == 0) {
+    if (_model->angle() % 180 != 0) {
         double temp = width;
         width = height;
         height = temp;
     }
+    painter.rotate(_model->angle());
     painter.translate(-width/2, -height/2);
+    //    this->tileColor.setAlphaF((qCos(this->alphaValueF) + 1.5)/2.5);
     painter.setPen(Qt::NoPen);
     if (type == TileModel::CornerTile) {
         QLinearGradient linear(QPointF(0, height/2), QPointF(width, height/2));
@@ -137,15 +144,3 @@ void TileView::paintEvent( QPaintEvent *ev)
 
     return QWidget::paintEvent(ev);
 }
-
-/*
-void TileView::mouseReleaseEvent(QMouseEvent *ev)
-{
-    if (!_model->timer()->isActive() && _model->clickable())
-    {
-        _model->rotate();
-        emit _model->clicked();
-    }
-    return QWidget::mousePressEvent(ev);
-}
-*/
