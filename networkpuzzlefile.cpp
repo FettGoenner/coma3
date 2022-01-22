@@ -274,7 +274,7 @@ void NetworkPuzzleFile::updateData(GameModel &gameModel, QString fileName)
     obj["rotatedTiles"] = rotatedTilesArray;
 
     if (fileName != ".json") {
-        fileName = fileName;
+        _fileName = fileName;
         _gameFile.setFileName(NetworkPuzzleFile::GAME_FILE_PATH + fileName);
     }
 

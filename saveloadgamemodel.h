@@ -18,7 +18,7 @@ public:
     GameModel *currentGame;
 
 private:
-    QVector<NetworkPuzzleFile*> fileVector;
+    QVector<NetworkPuzzleFile*> _fileVector;
 signals:
 
 public slots:
