@@ -23,7 +23,7 @@ TileControler::TileControler(TileModel* model, TileView* view, QObject *parent)
     });
 }
 
-void TileControler::mouseReleaseEvent(QMouseEvent* )
+void TileControler::mouseReleaseEvent(QMouseEvent*)
 {
     if (!_model->timer()->isActive() && _model->clickable())
     {

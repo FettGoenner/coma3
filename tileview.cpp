@@ -4,12 +4,12 @@
 #include "tileview.h"
 #include "tilemodel.h"
 
-TileView::TileView( TileModel* model, QColor color, QFrame* parent )
-    : QFrame( parent ),
-      _model( model )
+TileView::TileView(TileModel* model, QColor color, QFrame* parent)
+    : QFrame(parent),
+      _model(model)
 {
-    _model->setColor( color );
-    setCursor( Qt::PointingHandCursor );
+    _model->setColor(color);
+    setCursor(Qt::PointingHandCursor);
 
 
     setCursor(Qt::PointingHandCursor);
@@ -23,7 +23,7 @@ TileView::TileView( TileModel* model, QColor color, QFrame* parent )
 }
 
 // draws the Tile visual
-void TileView::paintEvent( QPaintEvent *ev)
+void TileView::paintEvent(QPaintEvent *ev)
 {
     auto type = _model->type();
     double w = width(), h = height();
